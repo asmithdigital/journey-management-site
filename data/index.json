@@ -1,0 +1,23 @@
+{
+  "hierarchy": [
+    {
+      "id": "insurance-lifecycle",
+      "name": "Insurance Customer Lifecycle",
+      "level": "top",
+      "description": "End-to-end customer journey from awareness through renewal",
+      "owner": "CX Team",
+      "children": [
+        { "id": "awareness-consideration", "name": "Awareness & Consideration", "level": "sub-journey" },
+        { "id": "home-insurance-purchase", "name": "Home Insurance Purchase", "level": "sub-journey" },
+        { "id": "onboarding-first-use", "name": "Onboarding & First Use", "level": "sub-journey" },
+        { "id": "claims-process", "name": "Claims Process", "level": "sub-journey" },
+        { "id": "renewal-retention", "name": "Renewal & Retention", "level": "sub-journey" }
+      ]
+    }
+  ],
+  "metadata": {
+    "totalJourneys": 6,
+    "totalInsights": 47,
+    "lastUpdated": "2026-05-10"
+  }
+}

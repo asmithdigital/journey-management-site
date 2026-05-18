@@ -1,0 +1,130 @@
+{
+  "id": "home-insurance-purchase",
+  "name": "Home Insurance Purchase Journey",
+  "level": "sub-journey",
+  "parent": "insurance-lifecycle",
+  "owner": "Product Team — Home Insurance",
+  "status": "validated",
+  "lastUpdated": "2026-05-10",
+  "summary": "Covers the journey from first price comparison through to policy purchase. Key drop-off occurs at the quote form stage where users abandon before seeing a price.",
+  "stages": [
+    {
+      "id": "research-compare",
+      "name": "Research & Compare",
+      "order": 1,
+      "touchpoints": ["Price comparison sites", "Google search", "Brand website landing page"],
+      "actions": ["Compares 3-4 providers on price comparison site", "Reads reviews and ratings", "Checks excess amounts and coverage levels"],
+      "thoughts": ["Is this the cheapest option?", "Do I actually need contents cover?", "What does excess mean?"],
+      "emotions": { "label": "Anxious", "score": 2, "description": "Overwhelmed by options and unfamiliar terminology" },
+      "painPoints": [
+        "Too many options with no clear way to compare",
+        "Insurance jargon in policy descriptions",
+        "Prices vary wildly and it is unclear why"
+      ],
+      "opportunities": [
+        "Simplify comparison view — highlight the 3 things that matter most",
+        "Provide plain-English policy summaries",
+        "Show price breakdown explaining what drives the cost"
+      ]
+    },
+    {
+      "id": "enter-details",
+      "name": "Enter Details (Quote Form)",
+      "order": 2,
+      "touchpoints": ["Brand website quote form"],
+      "actions": ["Clicks 'Get a quote'", "Enters property details", "Enters personal details", "Selects coverage options"],
+      "thoughts": ["Why do they need all this information?", "I do not have my property details to hand", "This is taking too long"],
+      "emotions": { "label": "Frustrated", "score": 1, "description": "Form feels long and demanding — many users abandon here" },
+      "painPoints": [
+        "Form requires information users do not have readily available (rebuild cost, year of roof replacement)",
+        "No progress indicator — users do not know how long the form will take",
+        "Cannot save and return later"
+      ],
+      "opportunities": [
+        "Reduce required fields — pre-fill from public data where possible",
+        "Add progress bar with estimated time remaining",
+        "Allow save-and-return with email link"
+      ]
+    },
+    {
+      "id": "review-price",
+      "name": "Review Price & Coverage",
+      "order": 3,
+      "touchpoints": ["Brand website results page"],
+      "actions": ["Reviews quoted price", "Compares coverage options", "Adjusts excess to see price change", "Goes back to comparison site to check alternatives"],
+      "thoughts": ["Is this a good price?", "What am I actually covered for?", "Can I get it cheaper elsewhere?"],
+      "emotions": { "label": "Sceptical", "score": 2, "description": "Price has been revealed but trust is not yet established" },
+      "painPoints": [
+        "Unclear what is and is not covered without reading the full policy document",
+        "No benchmark — users do not know if the price is competitive",
+        "Adjusting excess recalculates the entire page, losing scroll position"
+      ],
+      "opportunities": [
+        "Coverage summary card — 5 bullet points of what is covered, 3 of what is not",
+        "Show market comparison indicator",
+        "Inline excess slider that updates price without page reload"
+      ]
+    },
+    {
+      "id": "purchase",
+      "name": "Purchase & Payment",
+      "order": 4,
+      "touchpoints": ["Brand website checkout", "Email confirmation"],
+      "actions": ["Enters payment details", "Reviews terms and conditions", "Clicks purchase", "Receives confirmation email"],
+      "thoughts": ["I hope I have chosen the right cover", "When does the policy start?", "Where do I find my policy documents?"],
+      "emotions": { "label": "Relieved", "score": 3, "description": "Task is complete but residual uncertainty about the decision" },
+      "painPoints": [
+        "Terms and conditions are long and legalistic",
+        "Policy start date is not prominent in the confirmation",
+        "Confirmation email does not clearly explain next steps"
+      ],
+      "opportunities": [
+        "Plain-English terms summary with the key commitments highlighted",
+        "Prominent policy start date on confirmation page and email",
+        "Clear next steps: download documents, set up online account, add to calendar"
+      ]
+    }
+  ],
+  "insights": [
+    {
+      "id": "ins-001",
+      "text": "7 of 10 users could not explain what 'excess' means after reading the policy summary",
+      "source": "Usability study, March 2026",
+      "sourceType": "usability-test",
+      "severity": "high",
+      "stage": "research-compare",
+      "recurrence": 7,
+      "totalParticipants": 10
+    },
+    {
+      "id": "ins-002",
+      "text": "Average form completion time is 8 minutes — 60% of users who start the form abandon before completing it",
+      "source": "Analytics data, Q1 2026",
+      "sourceType": "analytics",
+      "severity": "high",
+      "stage": "enter-details",
+      "recurrence": null,
+      "totalParticipants": null
+    },
+    {
+      "id": "ins-003",
+      "text": "Users who adjusted their excess level were 40% more likely to complete the purchase — engagement with the pricing model builds confidence",
+      "source": "A/B test results, February 2026",
+      "sourceType": "experiment",
+      "severity": "medium",
+      "stage": "review-price",
+      "recurrence": null,
+      "totalParticipants": 2400
+    },
+    {
+      "id": "ins-004",
+      "text": "3 of 6 interview participants said they went back to the comparison site after seeing the quote to check if it was competitive",
+      "source": "User interviews, April 2026",
+      "sourceType": "interview",
+      "severity": "medium",
+      "stage": "review-price",
+      "recurrence": 3,
+      "totalParticipants": 6
+    }
+  ]
+}
