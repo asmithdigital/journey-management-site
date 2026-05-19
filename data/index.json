@@ -1,21 +1,19 @@
 {
   "hierarchy": [
     {
-      "id": "taskly-user-lifecycle",
+      "id": "taskly-lifecycle",
       "name": "Taskly User Lifecycle",
       "level": "top",
-      "description": "End-to-end user journey from app discovery through daily habitual use",
+      "description": "End-to-end experience from app discovery through advocacy or churn",
       "owner": "Product Team",
       "children": [
-        { "id": "sign-up", "name": "Sign-Up", "level": "sub-journey" },
-        { "id": "first-task", "name": "First Task", "level": "sub-journey" },
-        { "id": "daily-use", "name": "Daily Use", "level": "sub-journey" }
+        { "id": "account-creation", "name": "Account Creation", "level": "sub-journey" }
       ]
     }
   ],
   "metadata": {
-    "totalJourneys": 4,
-    "totalInsights": 9,
+    "totalJourneys": 2,
+    "totalInsights": 12,
     "lastUpdated": "2026-05-19"
   }
 }
