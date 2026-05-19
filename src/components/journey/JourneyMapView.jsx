@@ -197,8 +197,7 @@ export default function JourneyMapView({ journey }) {
 
           {/* ── Phase headers ─────────────────────────────── */}
           <div className="phase-header-corner">
-            <span className="phase-corner-label">Phases</span>
-            <span className="phase-corner-label">Steps</span>
+            <span className="phase-corner-label">Phases / Steps</span>
           </div>
           {stages.map(stage => (
             <div key={stage.id} className="phase-header-cell">
