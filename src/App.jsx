@@ -29,7 +29,7 @@ export default function App() {
         setIndex(idx)
 
         const journeyIds = idx.hierarchy.flatMap(top =>
-          (top.children || []).map(c => c.id)
+          [top.id, ...(top.children || []).map(c => c.id)]
         )
 
         const loaded = {}

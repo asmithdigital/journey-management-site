@@ -1,0 +1,231 @@
+{
+  "id": "taskly-lifecycle",
+  "name": "Taskly User Lifecycle",
+  "level": "top",
+  "owner": "Product Team",
+  "status": "validated",
+  "lastUpdated": "2026-05-19",
+  "summary": "The end-to-end experience of someone discovering, adopting, and becoming a regular user of the Taskly app — from first hearing about it through advocacy or churn.",
+  "stages": [
+    {
+      "id": "discovery",
+      "name": "Discovery",
+      "order": 1,
+      "touchpoints": ["Social media", "App Store listing", "Word of mouth"],
+      "actions": ["Sees an ad or hears about Taskly from a friend", "Reads the App Store listing", "Looks at screenshots and reviews"],
+      "thoughts": ["Another task app, is this one actually different?"],
+      "emotions": { "label": "Skeptical", "score": 2, "description": "Cautious — productivity apps have disappointed before, so the bar to even download is already high." },
+      "painPoints": [
+        "App Store listing doesn't clearly differentiate from competitors",
+        "Screenshots look generic and don't show what makes Taskly unique"
+      ],
+      "opportunities": [
+        "Highlight unique features in first 3 screenshots",
+        "Add social proof (ratings, testimonials) to the App Store listing"
+      ]
+    },
+    {
+      "id": "download-first-open",
+      "name": "Download & First Open",
+      "order": 2,
+      "touchpoints": ["App Store", "Splash screen", "Onboarding flow"],
+      "actions": ["Taps install and waits for download", "Opens the app for the first time", "Reads the welcome screen"],
+      "thoughts": ["Let me see what this can do."],
+      "emotions": { "label": "Curious", "score": 3, "description": "Cautiously engaged — willing to give the app a chance but quick to abandon if the first screen is a wall of sign-up fields." },
+      "painPoints": [
+        "Onboarding asks for account creation before showing the product",
+        "Loading time is noticeable on older devices"
+      ],
+      "opportunities": [
+        "Show the product before asking for sign-up",
+        "Progressive profiling instead of an upfront form"
+      ]
+    },
+    {
+      "id": "account-creation",
+      "name": "Account Creation",
+      "order": 3,
+      "touchpoints": ["Sign-up screen", "Email verification"],
+      "actions": ["Fills in the sign-up form", "Waits for verification email", "Taps verification link"],
+      "thoughts": ["Why do they need all this information?"],
+      "emotions": { "label": "Mildly frustrated", "score": 2, "description": "Friction from the form dampens the initial curiosity. Social login expectations go unmet." },
+      "painPoints": [
+        "Form requires full name, email, and password before seeing anything",
+        "No social login option (Google, Apple)",
+        "Email verification adds friction before any value is experienced"
+      ],
+      "opportunities": [
+        "Allow social login (Google, Apple)",
+        "Defer profile completion until after the first task",
+        "Skip email verification for the first 7 days"
+      ]
+    },
+    {
+      "id": "first-task",
+      "name": "First Task",
+      "order": 4,
+      "touchpoints": ["Home screen", "Task creation modal", "Task list"],
+      "actions": ["Taps the 'New task' button", "Fills in the task details", "Views the completed task in the list"],
+      "thoughts": ["How does this actually work?"],
+      "emotions": { "label": "Engaged", "score": 3, "description": "Interested and exploring, but the blank slate is mildly intimidating without guidance." },
+      "painPoints": [
+        "No guided tutorial or first-run walkthrough",
+        "Empty state is uninspiring and offers no starting point",
+        "Unclear how to set due dates or priorities"
+      ],
+      "opportunities": [
+        "Pre-populate with sample tasks to show what's possible",
+        "Contextual tooltips on first use of each feature",
+        "Quick-start template library"
+      ]
+    },
+    {
+      "id": "exploration",
+      "name": "Exploration",
+      "order": 5,
+      "touchpoints": ["Settings", "Categories", "Search", "Filters"],
+      "actions": ["Browses settings and customisation options", "Creates categories or tags", "Tries search and filters"],
+      "thoughts": ["Oh, it can do that too."],
+      "emotions": { "label": "Pleasantly surprised", "score": 4, "description": "Discovering hidden depth creates genuine delight, but the discoverability of those features is too low." },
+      "painPoints": [
+        "Advanced features are buried in menus and hard to find",
+        "No feature discovery prompts or in-app hints",
+        "Settings screen is overwhelming with no clear hierarchy"
+      ],
+      "opportunities": [
+        "Progressive feature reveals based on usage milestones",
+        "\"Did you know?\" nudges for underused features",
+        "Simplified settings with an Advanced toggle"
+      ]
+    },
+    {
+      "id": "habit-formation",
+      "name": "Habit Formation",
+      "order": 6,
+      "touchpoints": ["Push notifications", "Home screen widget", "Daily digest"],
+      "actions": ["Opens the app daily", "Checks off completed tasks", "Receives (or doesn't) a daily digest"],
+      "thoughts": ["This is becoming part of my routine."],
+      "emotions": { "label": "Satisfied", "score": 4, "description": "Routine is building. Users who reach this point are high-value, but many drop off before getting here because there's no external trigger." },
+      "painPoints": [
+        "No reminders or push notifications enabled by default",
+        "No home screen widget available to glance at tasks",
+        "Daily digest email is too verbose to read quickly"
+      ],
+      "opportunities": [
+        "Smart default notifications (one morning reminder)",
+        "Launch a home screen widget for iOS and Android",
+        "Concise daily summary: 3 tasks, one-line format"
+      ]
+    },
+    {
+      "id": "power-usage",
+      "name": "Power Usage",
+      "order": 7,
+      "touchpoints": ["Recurring tasks", "Shared lists", "Integrations"],
+      "actions": ["Sets up recurring tasks", "Shares a list with a teammate or family member", "Looks for calendar or tool integrations"],
+      "thoughts": ["I need this to work with my other tools."],
+      "emotions": { "label": "Committed but wanting more", "score": 3, "description": "Deep investment in the app but hitting a ceiling — missing integrations and collaboration features create frustration right when engagement is highest." },
+      "painPoints": [
+        "No calendar integration (Google Calendar, Apple Calendar)",
+        "Sharing tasks with others is clunky and requires them to create an account",
+        "No support for recurring task patterns (e.g., every weekday)"
+      ],
+      "opportunities": [
+        "Google Calendar and Apple Calendar sync",
+        "Simplified sharing via link invite (no account required to view)",
+        "Smart recurring task suggestions based on past behaviour"
+      ]
+    },
+    {
+      "id": "advocacy-or-churn",
+      "name": "Advocacy or Churn",
+      "order": 8,
+      "touchpoints": ["App review prompt", "Referral flow", "Support tickets"],
+      "actions": ["Responds to an app review prompt (or ignores it)", "Tells a friend about the app, or starts looking at alternatives", "Contacts support if something breaks"],
+      "thoughts": ["Should I tell people about this or try something else?"],
+      "emotions": { "label": "Varies", "score": 3, "description": "Advocates are enthusiastic (5/5); churners are frustrated (1/5). The outcome here is shaped by everything that came before." },
+      "painPoints": [
+        "No referral programme — there's no incentive to share",
+        "Support response time is slow, especially for free-tier users",
+        "Free tier limitations push users away before they experience full value"
+      ],
+      "opportunities": [
+        "Built-in referral rewards (e.g., one month of premium per referral)",
+        "Priority support response for users in their first 30 days",
+        "Extended premium trial to delay the paywall and build habit first"
+      ]
+    }
+  ],
+  "insights": [
+    {
+      "id": "tl-ins-001",
+      "text": "Sign-up drop-off is 42% higher when the registration screen is the first thing users see vs. after a 3-screen product preview",
+      "source": "A/B test, March 2026",
+      "sourceType": "experiment",
+      "severity": "high",
+      "stage": "download-first-open",
+      "recurrence": null,
+      "totalParticipants": 2400
+    },
+    {
+      "id": "tl-ins-002",
+      "text": "7 of 10 usability test participants expected a 'Sign in with Google' option and expressed surprise when they couldn't find it",
+      "source": "Usability study, April 2026",
+      "sourceType": "usability-test",
+      "severity": "high",
+      "stage": "account-creation",
+      "recurrence": 7,
+      "totalParticipants": 10
+    },
+    {
+      "id": "tl-ins-003",
+      "text": "Users who create their first task within 5 minutes of sign-up have a 3× higher 30-day retention rate than those who don't",
+      "source": "Cohort analysis, Q1 2026",
+      "sourceType": "analytics",
+      "severity": "high",
+      "stage": "first-task",
+      "recurrence": null,
+      "totalParticipants": 8200
+    },
+    {
+      "id": "tl-ins-004",
+      "text": "Only 12% of users discover the recurring tasks feature organically within their first month — the other 88% never use it",
+      "source": "Feature usage analytics, May 2026",
+      "sourceType": "analytics",
+      "severity": "medium",
+      "stage": "exploration",
+      "recurrence": null,
+      "totalParticipants": 15000
+    },
+    {
+      "id": "tl-ins-005",
+      "text": "Push notification opt-in rate is 23% — but users who opt in have 2× the weekly active session count vs. those who don't",
+      "source": "Engagement survey, February 2026",
+      "sourceType": "survey",
+      "severity": "medium",
+      "stage": "habit-formation",
+      "recurrence": null,
+      "totalParticipants": 1200
+    },
+    {
+      "id": "tl-ins-006",
+      "text": "38% of churned users cited missing integrations (primarily calendar) as their primary reason for switching to a competitor",
+      "source": "Churn exit survey, Q1 2026",
+      "sourceType": "survey",
+      "severity": "high",
+      "stage": "power-usage",
+      "recurrence": null,
+      "totalParticipants": 340
+    },
+    {
+      "id": "tl-ins-007",
+      "text": "Users who refer at least one friend have an 89% 6-month retention rate vs. 41% for non-referrers — yet no referral mechanism exists in the app",
+      "source": "Referral programme pilot, April 2026",
+      "sourceType": "analytics",
+      "severity": "medium",
+      "stage": "advocacy-or-churn",
+      "recurrence": null,
+      "totalParticipants": 620
+    }
+  ]
+}

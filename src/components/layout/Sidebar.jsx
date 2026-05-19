@@ -92,15 +92,16 @@ export default function Sidebar() {
 
         {frameworksOpen && hierarchy.map(top => (
           <div key={top.id}>
-            <button
-              className="sidebar-expand-btn"
-              onClick={() => {}}
+            <Link
+              to={`/journey/${top.id}`}
+              className={`sidebar-expand-btn${isJourneyActive(top.id) ? ' active' : ''}`}
+              style={{ textDecoration: 'none' }}
             >
               <span style={{ fontSize: 10, opacity: 0.5 }}>▶</span>
               <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {top.name}
               </span>
-            </button>
+            </Link>
             {(top.children || []).map(child => (
               <Link
                 key={child.id}

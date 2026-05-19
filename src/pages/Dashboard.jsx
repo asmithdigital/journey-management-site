@@ -40,8 +40,8 @@ export default function Dashboard() {
 
       {hierarchy.map(top => (
         <div key={top.id} className="journey-hierarchy-block">
-          <div className="journey-hierarchy-header">
-            <div>
+          <Link to={`/journey/${top.id}`} className="journey-hierarchy-header" style={{ display: 'flex', textDecoration: 'none' }}>
+            <div style={{ flex: 1 }}>
               <div className="journey-hierarchy-name">{top.name}</div>
               {top.description && (
                 <div className="journey-hierarchy-desc">{top.description}</div>
@@ -50,7 +50,7 @@ export default function Dashboard() {
             {top.owner && (
               <div className="journey-hierarchy-owner">{top.owner}</div>
             )}
-          </div>
+          </Link>
 
           <div className="journey-children-grid">
             {(top.children || []).map(child => {

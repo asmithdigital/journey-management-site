@@ -570,7 +570,7 @@ a {
 
 .phase-grid {
   display: grid;
-  grid-template-columns: 180px repeat(var(--phase-count, 4), minmax(200px, 280px));
+  grid-template-columns: 180px repeat(var(--phase-count, 4), minmax(300px, 420px));
   min-width: max-content;
   width: 100%;
 }

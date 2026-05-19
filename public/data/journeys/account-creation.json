@@ -1,0 +1,176 @@
+{
+  "id": "account-creation",
+  "name": "Account Creation",
+  "level": "sub-journey",
+  "parent": "taskly-lifecycle",
+  "owner": "Growth Team",
+  "status": "validated",
+  "lastUpdated": "2026-05-19",
+  "summary": "Detailed breakdown of Phase 3 in the Taskly User Lifecycle — what happens from the moment a user taps 'Get Started' through completing email verification.",
+  "stages": [
+    {
+      "id": "land-on-signup",
+      "name": "Land on Sign-Up Screen",
+      "order": 1,
+      "touchpoints": ["Sign-up screen"],
+      "actions": ["Taps 'Get Started' button", "Sees the sign-up form for the first time", "Decides whether to proceed"],
+      "thoughts": ["Okay, standard form."],
+      "emotions": { "label": "Neutral", "score": 3, "description": "No strong reaction yet — the user is prepared for a form but hasn't been told what to expect." },
+      "painPoints": [
+        "No indication of how long the sign-up process will take",
+        "No progress indicator to show how many steps are involved"
+      ],
+      "opportunities": [
+        "Show a 'Takes 30 seconds' reassurance below the heading",
+        "Add a subtle step progress bar at the top of the screen"
+      ]
+    },
+    {
+      "id": "enter-name",
+      "name": "Enter Name",
+      "order": 2,
+      "touchpoints": ["Name field"],
+      "actions": ["Taps the name field", "Types their full name", "Taps Next or moves to the email field"],
+      "thoughts": ["Do they really need my full name?"],
+      "emotions": { "label": "Slightly annoyed", "score": 2, "description": "The full name requirement feels unnecessary for a to-do app — friction out of proportion to the ask." },
+      "painPoints": [
+        "Field requires both first and last name with no explanation of why",
+        "No placeholder text showing the expected format",
+        "Keyboard doesn't auto-capitalise on Android devices"
+      ],
+      "opportunities": [
+        "Accept just a first name initially and ask for last name only when needed",
+        "Enable auto-capitalise on the field",
+        "Show a friendly placeholder like 'What should we call you?'"
+      ]
+    },
+    {
+      "id": "enter-email",
+      "name": "Enter Email",
+      "order": 3,
+      "touchpoints": ["Email field", "Inline validation"],
+      "actions": ["Types their email address", "Sees real-time validation feedback", "Moves on once the field shows as valid"],
+      "thoughts": ["Hope they don't spam me."],
+      "emotions": { "label": "Cautious", "score": 2, "description": "Privacy concern surfaces here — there's no explanation of what the email will be used for." },
+      "painPoints": [
+        "No indication of what the email address is used for",
+        "Validation error fires on every keystroke, not just on blur",
+        "No privacy reassurance or link to privacy policy"
+      ],
+      "opportunities": [
+        "Add microcopy: 'We only use this to recover your account'",
+        "Validate on blur rather than on every keystroke",
+        "Add a small privacy reassurance note with a link to the privacy policy"
+      ]
+    },
+    {
+      "id": "create-password",
+      "name": "Create Password",
+      "order": 4,
+      "touchpoints": ["Password field", "Strength indicator"],
+      "actions": ["Types a password", "Reads the strength indicator", "Adjusts password to meet requirements"],
+      "thoughts": ["What are the requirements?"],
+      "emotions": { "label": "Frustrated", "score": 2, "description": "Hidden requirements that only appear after failure create unnecessary friction and a sense of being tricked." },
+      "painPoints": [
+        "Password requirements are not shown until after the first attempt fails",
+        "Strength indicator labels ('fair', 'good') are vague and don't guide the user",
+        "No show/hide toggle on the password field"
+      ],
+      "opportunities": [
+        "Show requirements upfront as a live checklist that ticks off as the user types",
+        "Replace vague strength labels with specific guidance ('Add a number or symbol')",
+        "Add a show/hide toggle to the password field"
+      ]
+    },
+    {
+      "id": "submit-form",
+      "name": "Submit Form",
+      "order": 5,
+      "touchpoints": ["Submit button", "Loading state", "Error handling"],
+      "actions": ["Taps the 'Get Started' button", "Waits for the response", "Handles any errors that appear"],
+      "thoughts": ["Did it work?"],
+      "emotions": { "label": "Anxious", "score": 2, "description": "No feedback during submission creates uncertainty — the user can't tell if something is happening or if it's frozen." },
+      "painPoints": [
+        "Button shows no loading state after being tapped",
+        "On failure, the error message is vague ('Something went wrong')",
+        "The password field is cleared on error, forcing the user to retype it"
+      ],
+      "opportunities": [
+        "Show a clear loading spinner on the button after tap",
+        "Display specific, actionable error messages ('That email is already registered — try signing in')",
+        "Preserve form state (especially the password field) on failure"
+      ]
+    },
+    {
+      "id": "email-verification",
+      "name": "Email Verification",
+      "order": 6,
+      "touchpoints": ["Verification email", "Confirmation screen"],
+      "actions": ["Switches to email app", "Finds and opens the verification email", "Taps the verification link"],
+      "thoughts": ["Where's the email? Is it in spam?"],
+      "emotions": { "label": "Impatient", "score": 2, "description": "The wait for the verification email breaks momentum at the worst possible time — right after committing to sign up." },
+      "painPoints": [
+        "Verification email takes 30–60 seconds to arrive",
+        "No resend option is available for the first 2 minutes",
+        "Tapping the verification link opens in the browser, not back in the app"
+      ],
+      "opportunities": [
+        "Reduce email delivery time to under 5 seconds via a dedicated transactional email service",
+        "Show an immediate 'Resend email' option with no delay",
+        "Use a deep link in the verification email to open directly in the app"
+      ]
+    }
+  ],
+  "insights": [
+    {
+      "id": "ac-ins-001",
+      "text": "6 of 8 usability test participants tapped an area where they expected a 'Continue with Google' button to be — it doesn't exist",
+      "source": "Usability study, April 2026",
+      "sourceType": "usability-test",
+      "severity": "high",
+      "stage": "land-on-signup",
+      "recurrence": 6,
+      "totalParticipants": 8
+    },
+    {
+      "id": "ac-ins-002",
+      "text": "Removing the 'last name required' validation and accepting just a first name increased form completion by 18% in a 2-week A/B test",
+      "source": "A/B test, March 2026",
+      "sourceType": "experiment",
+      "severity": "high",
+      "stage": "enter-name",
+      "recurrence": null,
+      "totalParticipants": 1800
+    },
+    {
+      "id": "ac-ins-003",
+      "text": "5 of 8 usability test participants were confused about which password requirement they failed — requirements were only shown after a failed submission",
+      "source": "Usability study, April 2026",
+      "sourceType": "usability-test",
+      "severity": "high",
+      "stage": "create-password",
+      "recurrence": 5,
+      "totalParticipants": 8
+    },
+    {
+      "id": "ac-ins-004",
+      "text": "3 of 8 usability participants abandoned the flow during the email verification wait — all three cited not knowing if it had worked as their reason",
+      "source": "Usability study, April 2026",
+      "sourceType": "usability-test",
+      "severity": "medium",
+      "stage": "email-verification",
+      "recurrence": 3,
+      "totalParticipants": 8
+    },
+    {
+      "id": "ac-ins-005",
+      "text": "'Something went wrong' accounted for 100% of support tickets related to sign-up failures — users could not determine whether to retry or contact support",
+      "source": "Support ticket analysis, May 2026",
+      "sourceType": "analytics",
+      "severity": "high",
+      "stage": "submit-form",
+      "recurrence": null,
+      "totalParticipants": 47
+    }
+  ]
+}
