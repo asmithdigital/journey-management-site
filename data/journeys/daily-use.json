@@ -1,0 +1,95 @@
+{
+  "id": "daily-use",
+  "name": "Daily Use",
+  "level": "sub-journey",
+  "parent": "taskly-user-lifecycle",
+  "owner": "Engagement Team",
+  "status": "validated",
+  "lastUpdated": "2026-05-19",
+  "summary": "Covers the retained user's typical daily interaction with Taskly — opening the app, reviewing tasks, and marking items complete. Users in this phase are broadly satisfied but the lack of proactive reminders means the app depends entirely on the user to remember to open it, limiting its effectiveness as a productivity tool.",
+  "stages": [
+    {
+      "id": "open-app",
+      "name": "Open App",
+      "order": 1,
+      "touchpoints": ["Device home screen", "Taskly app — home screen"],
+      "actions": ["Remembers they need to check their tasks", "Finds and opens the Taskly app", "Reviews the task list for the day"],
+      "thoughts": ["I keep forgetting to check this", "I should add this to my morning routine", "I wish this reminded me to open it"],
+      "emotions": { "label": "Satisfied", "score": 4, "description": "Generally positive about the tool when they remember to use it, but the reliance on manual habit formation is a fragile engagement model" },
+      "painPoints": [
+        "No reminders or notifications to prompt users to open the app and check their tasks",
+        "App has no home screen widget, so it competes with dozens of other app icons for attention"
+      ],
+      "opportunities": [
+        "Push notifications for due tasks to bring users back to the app at the right moment",
+        "Build a home screen widget showing today's task count and the next due item"
+      ]
+    },
+    {
+      "id": "check-tasks",
+      "name": "Check Tasks",
+      "order": 2,
+      "touchpoints": ["Taskly app — home screen task list", "Taskly app — 'Due Today' view"],
+      "actions": ["Scans the task list", "Identifies which tasks are due today", "Re-prioritises or reschedules tasks as needed"],
+      "thoughts": ["Which of these actually needs doing today?", "I have too many things listed — I need to trim this down", "I forgot I had added that"],
+      "emotions": { "label": "Satisfied", "score": 4, "description": "The task list is genuinely useful for recalling outstanding work, though an overloaded list can shift the mood toward mild anxiety" },
+      "painPoints": [
+        "No smart or AI-assisted prioritisation — users manually decide what to tackle each day",
+        "Overdue tasks accumulate without a clear prompt to reschedule or dismiss them"
+      ],
+      "opportunities": [
+        "Daily digest view that automatically surfaces the three most important tasks for today",
+        "Overdue task prompt — a weekly nudge to reschedule or archive stale items"
+      ]
+    },
+    {
+      "id": "mark-complete",
+      "name": "Mark Complete",
+      "order": 3,
+      "touchpoints": ["Taskly app — home screen task list"],
+      "actions": ["Works through tasks during the day", "Returns to Taskly to tick off completed items", "Feels a sense of accomplishment at end of day"],
+      "thoughts": ["That satisfying tick is the best part", "I wish I could see a summary of what I got done this week", "I should add tomorrow's tasks before I close the app"],
+      "emotions": { "label": "Satisfied", "score": 4, "description": "Completion interactions are the emotional high point of the daily journey — users report genuine satisfaction from ticking off tasks" },
+      "painPoints": [
+        "No weekly or daily completion summary to reinforce progress and the habit loop",
+        "No reminders or notifications for tasks approaching their due time during the day"
+      ],
+      "opportunities": [
+        "End-of-day summary notification showing tasks completed and tasks still open",
+        "Due-time push notifications for tasks with a specific time set, surfaced at the right moment"
+      ]
+    }
+  ],
+  "insights": [
+    {
+      "id": "du-ins-001",
+      "text": "Users who enable at least one notification retain at 2x the rate of users with all notifications off at the 30-day mark",
+      "source": "Cohort analysis, Q1 2026",
+      "sourceType": "analytics",
+      "severity": "high",
+      "stage": "open-app",
+      "recurrence": null,
+      "totalParticipants": null
+    },
+    {
+      "id": "du-ins-002",
+      "text": "In exit surveys, 'no reminders' was cited as a reason for churning by 41% of users who cancelled in their first month",
+      "source": "Exit survey, Q1 2026",
+      "sourceType": "survey",
+      "severity": "high",
+      "stage": "open-app",
+      "recurrence": null,
+      "totalParticipants": 320
+    },
+    {
+      "id": "du-ins-003",
+      "text": "5 of 7 interview participants said they would use the app more if it sent them a morning reminder listing their tasks for the day",
+      "source": "User interviews, May 2026",
+      "sourceType": "interview",
+      "severity": "medium",
+      "stage": "check-tasks",
+      "recurrence": 5,
+      "totalParticipants": 7
+    }
+  ]
+}
