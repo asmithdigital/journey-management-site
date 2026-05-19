@@ -1,9 +1,9 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { Routes, Route } from 'react-router-dom'
-import Sidebar from './components/Sidebar.jsx'
+import Sidebar from './components/layout/Sidebar.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import JourneyMap from './pages/JourneyMap.jsx'
-import OpportunityMatrix from './pages/OpportunityMatrix.jsx'
+import OpportunityMatrix from './components/matrix/OpportunityMatrix.jsx'
 import Search from './pages/Search.jsx'
 
 export const DataContext = createContext(null)
@@ -37,11 +37,9 @@ export default function App() {
           journeyIds.map(async id => {
             try {
               const r = await fetch(`${BASE}data/journeys/${id}.json`)
-              if (r.ok) {
-                loaded[id] = await r.json()
-              }
+              if (r.ok) loaded[id] = await r.json()
             } catch {
-              // journey file doesn't exist yet — that's expected
+              // journey file doesn't exist yet — expected
             }
           })
         )
@@ -58,16 +56,14 @@ export default function App() {
   if (loading) {
     return (
       <div className="app-shell">
-        <div className="loading-state" style={{ margin: 'auto', width: '100%' }}>
-          Loading…
-        </div>
+        <div className="loading-state" style={{ flex: 1 }}>Loading…</div>
       </div>
     )
   }
 
   if (error) {
     return (
-      <div className="app-shell" style={{ padding: 40 }}>
+      <div className="app-shell">
         <div className="error-state">Error: {error}</div>
       </div>
     )
@@ -81,7 +77,11 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/journey/:journeyId" element={<JourneyMap />} />
-            <Route path="/matrix" element={<OpportunityMatrix />} />
+            <Route path="/matrix" element={
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                <OpportunityMatrix allJourneys={journeys} />
+              </div>
+            } />
             <Route path="/search" element={<Search />} />
           </Routes>
         </main>

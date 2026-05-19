@@ -1,100 +1,54 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useData } from '../App.jsx'
-import Breadcrumb from '../components/Breadcrumb.jsx'
-import StageCard from '../components/StageCard.jsx'
-import InsightCard from '../components/InsightCard.jsx'
+import TopBar from '../components/layout/TopBar.jsx'
+import SummaryCards from '../components/shared/SummaryCards.jsx'
+import TabNav from '../components/shared/TabNav.jsx'
+import JourneyMapView from '../components/journey/JourneyMapView.jsx'
+import OpportunityMatrix from '../components/matrix/OpportunityMatrix.jsx'
+import InsightCard from '../components/cards/InsightCard.jsx'
 
-const EMOTION_COLOURS = {
-  1: '#8a2020',
-  2: '#7a5200',
-  3: '#72706a',
-  4: 'rgba(10, 107, 84, 0.6)',
-  5: '#0a6b54',
-}
+function InsightsTab({ journey }) {
+  const stages = [...(journey.stages || [])].sort((a, b) => a.order - b.order)
+  const insights = journey.insights || []
 
-function EmotionChart({ stages }) {
-  const sorted = [...stages].sort((a, b) => a.order - b.order)
-  const W = Math.max(sorted.length * 160, 400)
-  const H = 160
-  const PAD = { top: 20, right: 40, bottom: 48, left: 40 }
-  const chartW = W - PAD.left - PAD.right
-  const chartH = H - PAD.top - PAD.bottom
-
-  const xStep = chartW / Math.max(sorted.length - 1, 1)
-  const yScale = score => chartH - ((score - 1) / 4) * chartH
-
-  const points = sorted.map((stage, i) => ({
-    x: PAD.left + i * xStep,
-    y: PAD.top + yScale(stage.emotions?.score ?? 3),
-    score: stage.emotions?.score ?? 3,
-    label: stage.name,
-    colour: EMOTION_COLOURS[stage.emotions?.score ?? 3],
-  }))
-
-  const pathD = points
-    .map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x},${p.y}`)
-    .join(' ')
+  const allInsights = [
+    ...insights.map(ins => ({
+      ...ins,
+      type: ins.severity === 'high' ? 'pain' : 'need',
+      stageName: stages.find(s => s.id === ins.stage)?.name ?? ins.stage,
+    })),
+    ...stages.flatMap(stage =>
+      (stage.painPoints || []).map((text, i) => ({
+        id: `${stage.id}-pain-${i}`,
+        text,
+        type: 'pain',
+        severity: 'high',
+        stageName: stage.name,
+      }))
+    ),
+  ]
 
   return (
-    <div className="emotion-chart-wrap">
-      <div className="emotion-chart-title">Emotion Journey</div>
-      <svg
-        width={W}
-        height={H}
-        style={{ display: 'block', minWidth: W }}
-        aria-label="Emotion journey line chart"
-      >
-        {[1, 2, 3, 4, 5].map(score => {
-          const y = PAD.top + yScale(score)
-          return (
-            <g key={score}>
-              <line
-                x1={PAD.left}
-                y1={y}
-                x2={W - PAD.right}
-                y2={y}
-                stroke="#e8e4d8"
-                strokeWidth={1}
-              />
-              <text
-                x={PAD.left - 8}
-                y={y + 4}
-                textAnchor="end"
-                fontSize={9}
-                fill="var(--color-text-muted)"
-                fontFamily="JetBrains Mono, monospace"
-              >
-                {score}
-              </text>
-            </g>
-          )
-        })}
-
-        <path
-          d={pathD}
-          fill="none"
-          stroke="var(--color-border)"
-          strokeWidth={2}
-          strokeLinejoin="round"
-        />
-
-        {points.map((p, i) => (
-          <g key={i}>
-            <circle cx={p.x} cy={p.y} r={7} fill={p.colour} />
-            <text
-              x={p.x}
-              y={H - 6}
-              textAnchor="middle"
-              fontSize={10}
-              fill="var(--color-text-muted)"
-              fontFamily="DM Sans, sans-serif"
-            >
-              {p.label.length > 16 ? p.label.slice(0, 15) + '…' : p.label}
-            </text>
-          </g>
+    <div style={{ padding: '16px 20px', overflow: 'auto', flex: 1 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 10 }}>
+        {allInsights.map(ins => (
+          <InsightCard key={ins.id} insight={ins} />
         ))}
-      </svg>
+        {allInsights.length === 0 && (
+          <div style={{ fontSize: 13, color: 'var(--text-muted)', gridColumn: '1/-1' }}>
+            No insights available for this journey.
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+function PlaceholderTab({ label }) {
+  return (
+    <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <span style={{ fontSize: 14, color: 'var(--text-muted)' }}>{label} view coming soon</span>
     </div>
   )
 }
@@ -102,108 +56,37 @@ function EmotionChart({ stages }) {
 export default function JourneyMap() {
   const { journeyId } = useParams()
   const { index, journeys } = useData()
+  const [activeTab, setActiveTab] = useState('journey')
 
   const journey = journeys[journeyId]
-
   const hierarchy = index?.hierarchy || []
-  const parentNode = hierarchy.find(top =>
-    top.children?.some(c => c.id === journeyId)
-  )
+  const parentNode = hierarchy.find(top => top.children?.some(c => c.id === journeyId))
 
   if (!journey) {
-    const childNode = hierarchy
-      .flatMap(top => top.children || [])
-      .find(c => c.id === journeyId)
-
+    const childNode = hierarchy.flatMap(top => top.children || []).find(c => c.id === journeyId)
     return (
-      <div className="page-container">
-        <Breadcrumb
-          items={[
-            { label: 'Home', href: '/' },
-            { label: parentNode?.name || 'Journey', href: '/' },
-            { label: childNode?.name || journeyId },
-          ]}
-        />
-        <div className="no-data-state">
-          <strong>No data yet</strong>
-          This journey hasn't been mapped yet. Add a JSON file to{' '}
-          <code>public/data/journeys/{journeyId}.json</code> to get started.
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <TopBar journey={{ name: childNode?.name ?? journeyId }} parentName={parentNode?.name} />
+        <div className="no-data-page">
+          <h2>No data yet</h2>
+          <p>Add a JSON file at <code>public/data/journeys/{journeyId}.json</code> to get started.</p>
         </div>
       </div>
     )
   }
 
-  const stages = (journey.stages || []).sort((a, b) => a.order - b.order)
-  const insights = journey.insights || []
-  const useScrollRow = stages.length <= 4
-
-  const breadcrumbItems = [
-    { label: 'Home', href: '/' },
-    parentNode ? { label: parentNode.name, href: '/' } : null,
-    { label: journey.name },
-  ].filter(Boolean)
-
   return (
-    <div className="page-container">
-      <Breadcrumb items={breadcrumbItems} />
-
-      <div className="metadata-bar">
-        <div className="metadata-item">
-          <span className="metadata-label">Owner</span>
-          <span className="metadata-value">{journey.owner}</span>
-        </div>
-        <div className="metadata-item">
-          <span className="metadata-label">Status</span>
-          <span className={`status-badge ${journey.status}`}>{journey.status}</span>
-        </div>
-        <div className="metadata-item">
-          <span className="metadata-label">Updated</span>
-          <span className="metadata-value">{journey.lastUpdated}</span>
-        </div>
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      <TopBar journey={journey} parentName={parentNode?.name} />
+      <SummaryCards />
+      <TabNav activeTab={activeTab} onTabChange={setActiveTab} />
+      <div className="journey-view-content">
+        {activeTab === 'journey' && <JourneyMapView journey={journey} />}
+        {activeTab === 'insights' && <InsightsTab journey={journey} />}
+        {activeTab === 'opportunities' && <OpportunityMatrix journey={journey} />}
+        {activeTab === 'solutions' && <PlaceholderTab label="Solutions" />}
+        {activeTab === 'metrics' && <PlaceholderTab label="Metrics" />}
       </div>
-
-      <h1 className="page-heading" style={{ marginBottom: 12 }}>{journey.name}</h1>
-
-      {journey.summary && (
-        <div className="journey-summary">{journey.summary}</div>
-      )}
-
-      <div className="section">
-        <h2 className="section-heading">
-          Journey Stages
-          <span className="count-badge">{stages.length}</span>
-        </h2>
-
-        {useScrollRow ? (
-          <div className="stages-scroll-row">
-            {stages.map(stage => (
-              <StageCard key={stage.id} stage={stage} />
-            ))}
-          </div>
-        ) : (
-          <div className="stages-stack">
-            {stages.map(stage => (
-              <StageCard key={stage.id} stage={stage} />
-            ))}
-          </div>
-        )}
-      </div>
-
-      {stages.length > 0 && <EmotionChart stages={stages} />}
-
-      {insights.length > 0 && (
-        <div className="section">
-          <h2 className="section-heading">
-            Insights
-            <span className="count-badge">{insights.length}</span>
-          </h2>
-          <div className="insights-grid">
-            {insights.map(insight => (
-              <InsightCard key={insight.id} insight={insight} stages={stages} />
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   )
 }

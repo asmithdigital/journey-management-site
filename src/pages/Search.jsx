@@ -4,7 +4,7 @@ import { useData } from '../App.jsx'
 
 function highlight(text, query) {
   if (!query) return text
-  const parts = text.split(new RegExp(`(${escapeRegex(query)})`, 'gi'))
+  const parts = text.split(new RegExp(`(${query})`, 'gi'))
   return parts.map((part, i) =>
     part.toLowerCase() === query.toLowerCase()
       ? <mark key={i}>{part}</mark>
@@ -12,164 +12,136 @@ function highlight(text, query) {
   )
 }
 
-function escapeRegex(str) {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-}
-
-function searchJourney(journey, query) {
-  const q = query.toLowerCase()
-  const results = []
-
-  if (journey.name.toLowerCase().includes(q)) {
-    results.push({
-      section: 'Journey Name',
-      text: journey.name,
-      stageId: null,
-      stageName: null,
-    })
-  }
-
-  ;(journey.stages || []).forEach(stage => {
-    const stageName = stage.name
-
-    if (stageName.toLowerCase().includes(q)) {
-      results.push({ section: 'Stage Name', text: stageName, stageId: stage.id, stageName })
-    }
-
-    ;(stage.touchpoints || []).forEach(tp => {
-      if (tp.toLowerCase().includes(q)) {
-        results.push({ section: 'Touchpoint', text: tp, stageId: stage.id, stageName })
-      }
-    })
-
-    ;(stage.actions || []).forEach(a => {
-      if (a.toLowerCase().includes(q)) {
-        results.push({ section: 'Action', text: a, stageId: stage.id, stageName })
-      }
-    })
-
-    ;(stage.thoughts || []).forEach(t => {
-      if (t.toLowerCase().includes(q)) {
-        results.push({ section: 'Thought', text: t, stageId: stage.id, stageName })
-      }
-    })
-
-    ;(stage.painPoints || []).forEach(p => {
-      if (p.toLowerCase().includes(q)) {
-        results.push({ section: 'Pain Point', text: p, stageId: stage.id, stageName })
-      }
-    })
-
-    ;(stage.opportunities || []).forEach(o => {
-      if (o.toLowerCase().includes(q)) {
-        results.push({ section: 'Opportunity', text: o, stageId: stage.id, stageName })
-      }
-    })
-  })
-
-  ;(journey.insights || []).forEach(insight => {
-    if (insight.text.toLowerCase().includes(q)) {
-      const stage = (journey.stages || []).find(s => s.id === insight.stage)
-      results.push({
-        section: 'Insight',
-        text: insight.text,
-        stageId: insight.stage,
-        stageName: stage?.name || null,
-      })
-    }
-  })
-
-  return results
-}
-
 export default function Search() {
   const { journeys } = useData()
-  const [rawQuery, setRawQuery] = useState('')
   const [query, setQuery] = useState('')
+  const [results, setResults] = useState({ journeys: [], stages: [], insights: [], opportunities: [] })
+
+  const runSearch = useCallback((q) => {
+    if (!q.trim()) {
+      setResults({ journeys: [], stages: [], insights: [], opportunities: [] })
+      return
+    }
+    const lq = q.toLowerCase()
+
+    const matchedJourneys = Object.values(journeys).filter(j =>
+      j.name?.toLowerCase().includes(lq) || j.summary?.toLowerCase().includes(lq)
+    )
+
+    const matchedStages = []
+    const matchedInsights = []
+    const matchedOpps = []
+
+    Object.values(journeys).forEach(j => {
+      ;(j.stages || []).forEach(stage => {
+        if (stage.name?.toLowerCase().includes(lq)) {
+          matchedStages.push({ ...stage, journeyId: j.id, journeyName: j.name })
+        }
+        ;(stage.painPoints || []).forEach(text => {
+          if (text.toLowerCase().includes(lq)) {
+            matchedInsights.push({ id: `${j.id}-${stage.id}-${text.slice(0,10)}`, text, type: 'pain-point', stageName: stage.name, journeyId: j.id, journeyName: j.name })
+          }
+        })
+        ;(stage.opportunities || []).forEach(text => {
+          if (text.toLowerCase().includes(lq)) {
+            matchedOpps.push({ id: `${j.id}-${stage.id}-opp-${text.slice(0,10)}`, text, type: 'opportunity', stageName: stage.name, journeyId: j.id, journeyName: j.name })
+          }
+        })
+      })
+      ;(j.insights || []).forEach(ins => {
+        if (ins.text?.toLowerCase().includes(lq)) {
+          const stage = (j.stages || []).find(s => s.id === ins.stage)
+          matchedInsights.push({ ...ins, type: 'insight', stageName: stage?.name ?? ins.stage, journeyId: j.id, journeyName: j.name })
+        }
+      })
+    })
+
+    setResults({ journeys: matchedJourneys, stages: matchedStages, insights: matchedInsights, opportunities: matchedOpps })
+  }, [journeys])
 
   useEffect(() => {
-    const timer = setTimeout(() => setQuery(rawQuery.trim()), 300)
+    const timer = setTimeout(() => runSearch(query), 200)
     return () => clearTimeout(timer)
-  }, [rawQuery])
+  }, [query, runSearch])
 
-  const results = []
-
-  if (query.length >= 2) {
-    Object.values(journeys).forEach(journey => {
-      const hits = searchJourney(journey, query)
-      if (hits.length > 0) {
-        results.push({ journey, hits })
-      }
-    })
-  }
+  const hasResults = Object.values(results).some(arr => arr.length > 0)
 
   return (
-    <div className="page-container">
-      <h1 className="page-heading">Search</h1>
+    <div className="search-page">
+      <div className="page-header">
+        <div className="page-heading">Search</div>
+        <div className="page-subheading">Find journeys, insights, and opportunities</div>
+      </div>
 
       <div className="search-input-wrap">
-        <span className="search-icon" aria-hidden="true">⌕</span>
+        <span className="search-icon-prefix">⌕</span>
         <input
-          type="search"
           className="search-input"
-          placeholder="Search journeys, stages, pain points, insights…"
-          value={rawQuery}
-          onChange={e => setRawQuery(e.target.value)}
+          type="text"
+          placeholder="Search across all journeys…"
+          value={query}
+          onChange={e => setQuery(e.target.value)}
           autoFocus
         />
       </div>
 
-      {!query && (
-        <div className="search-placeholder">
-          Start typing to search across all journeys and insights.
-        </div>
+      {!query.trim() && (
+        <div className="search-empty">Start typing to search journeys, insights, and opportunities.</div>
       )}
 
-      {query.length === 1 && (
-        <div className="search-placeholder">
-          Keep typing…
-        </div>
+      {query.trim() && !hasResults && (
+        <div className="search-empty">No results found for "{query}".</div>
       )}
 
-      {query.length >= 2 && results.length === 0 && (
-        <div className="search-placeholder">
-          No results for "{query}"
-        </div>
-      )}
-
-      {results.length > 0 && (
-        <div className="search-results">
-          {results.map(({ journey, hits }) => (
-            <div key={journey.id}>
-              <div className="search-group-heading">
-                <Link to={`/journey/${journey.id}`}>{journey.name}</Link>
-                {' '}
-                <span style={{ fontWeight: 400, color: 'var(--color-text-muted)', fontSize: 13 }}>
-                  — {hits.length} match{hits.length !== 1 ? 'es' : ''}
-                </span>
-              </div>
-
-              {hits.map((hit, i) => (
-                <div key={i} className="search-result-item">
-                  <div style={{ flex: 1 }}>
-                    <div className="search-result-text">
-                      {highlight(hit.text, query)}
-                    </div>
-                    <div className="search-result-meta">
-                      <span className="search-type-tag">{hit.section}</span>
-                      {hit.stageName && (
-                        <span className="search-stage-label">{hit.stageName}</span>
-                      )}
-                      <Link
-                        to={`/journey/${journey.id}`}
-                        className="search-result-link"
-                      >
-                        View journey →
-                      </Link>
-                    </div>
-                  </div>
+      {results.journeys.length > 0 && (
+        <div className="search-results-group">
+          <div className="search-group-heading">Journeys ({results.journeys.length})</div>
+          {results.journeys.map(j => (
+            <Link key={j.id} to={`/journey/${j.id}`} className="search-result-item" style={{ display: 'block' }}>
+              <div className="search-result-text">{highlight(j.name, query)}</div>
+              {j.summary && (
+                <div className="search-result-meta">
+                  <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>
+                    {highlight(j.summary.slice(0, 100) + (j.summary.length > 100 ? '…' : ''), query)}
+                  </span>
                 </div>
-              ))}
+              )}
+            </Link>
+          ))}
+        </div>
+      )}
+
+      {results.insights.length > 0 && (
+        <div className="search-results-group">
+          <div className="search-group-heading">Insights & Pain Points ({results.insights.length})</div>
+          {results.insights.map(ins => (
+            <div key={ins.id} className="search-result-item">
+              <div className="search-result-text">{highlight(ins.text, query)}</div>
+              <div className="search-result-meta">
+                <span className="search-type-tag">{ins.type}</span>
+                <span className="search-stage-label">{ins.stageName}</span>
+                <Link to={`/journey/${ins.journeyId}`} style={{ fontSize: 11, color: 'var(--accent-purple)' }}>
+                  {ins.journeyName}
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {results.opportunities.length > 0 && (
+        <div className="search-results-group">
+          <div className="search-group-heading">Opportunities ({results.opportunities.length})</div>
+          {results.opportunities.map(opp => (
+            <div key={opp.id} className="search-result-item">
+              <div className="search-result-text">{highlight(opp.text, query)}</div>
+              <div className="search-result-meta">
+                <span className="search-type-tag">opportunity</span>
+                <span className="search-stage-label">{opp.stageName}</span>
+                <Link to={`/journey/${opp.journeyId}`} style={{ fontSize: 11, color: 'var(--accent-purple)' }}>
+                  {opp.journeyName}
+                </Link>
+              </div>
             </div>
           ))}
         </div>

@@ -4,7 +4,7 @@ import { useData } from '../App.jsx'
 
 export default function Sidebar() {
   const { index } = useData()
-  const [expanded, setExpanded] = useState({ 'insurance-lifecycle': true })
+  const [expanded, setExpanded] = useState({})
   const location = useLocation()
 
   const metadata = index?.metadata || {}
