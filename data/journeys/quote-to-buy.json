@@ -1,0 +1,164 @@
+{
+  "id": "quote-to-buy",
+  "name": "Quote to Buy (Home Insurance)",
+  "status": "validated",
+  "lastUpdated": "2026-05-10",
+  "owner": "EXD Team",
+  "description": "The end-to-end flow for getting a home and/or contents insurance quote and purchasing a policy online.",
+  "stages": [
+    {
+      "id": "start-quote",
+      "name": "Start Your Quote",
+      "order": 1,
+      "description": "User lands on the quote entry page, reviews legal requirements, selects cover type, and begins the flow",
+      "actions": ["Land on quote page", "Read duty to not misrepresent", "Accept privacy notice", "Select cover type (Home and Contents, Home only, Contents only)", "Click Next"],
+      "thoughts": ["How long will this take?", "Do I have to read all this legal text?", "What type of cover do I need?"],
+      "emotions": { "score": 4, "label": "Slightly negative" },
+      "painPoints": [
+        { "id": "qtb-pp-1", "description": "Two mandatory legal checkboxes must be ticked before proceeding. Users try to click Next without reading them and get a red error state with no clear instruction.", "severity": "high", "source": "Usability test round 4, April 2026", "evidenceCount": 7 },
+        { "id": "qtb-pp-2", "description": "No indication of how many steps or how long the process takes. Users have no mental model of the journey ahead.", "severity": "high", "source": "Usability test round 1, August 2025", "evidenceCount": 8 },
+        { "id": "qtb-pp-3", "description": "Cover type options (Home and Contents, Home only, Contents only) have no explanation of the difference. The mascot tip only appears if you select Home and Contents.", "severity": "medium", "source": "Usability test round 2, November 2025", "evidenceCount": 4 },
+        { "id": "qtb-pp-4", "description": "The 'Log in to save time' banner is easy to miss. Users who are already members don't realise they can pre-fill their details.", "severity": "medium", "source": "Analytics review, Q4 2025", "evidenceCount": 1 }
+      ],
+      "opportunities": [
+        { "id": "qtb-op-1", "description": "Add a progress indicator showing estimated time and step count at the top of the first page", "impact": "high", "effort": "low" },
+        { "id": "qtb-op-2", "description": "Pre-check the legal checkboxes or make them less prominent while still meeting compliance requirements", "impact": "medium", "effort": "medium" },
+        { "id": "qtb-op-3", "description": "Add brief descriptions under each cover type option explaining what it includes", "impact": "medium", "effort": "low" }
+      ]
+    },
+    {
+      "id": "home-address",
+      "name": "Home Address",
+      "order": 2,
+      "description": "User enters and confirms their home address",
+      "actions": ["Type address into search field", "Select from autocomplete results", "Confirm address", "Click Next"],
+      "thoughts": ["Will it find my address?", "Is this the right format?"],
+      "emotions": { "score": 6, "label": "Slightly positive" },
+      "painPoints": [
+        { "id": "qtb-pp-5", "description": "Address autocomplete doesn't find some rural addresses or new developments. The fallback ('Help - I can't find my address') opens a complex manual entry form.", "severity": "medium", "source": "Support ticket analysis, Q1 2026", "evidenceCount": 8 },
+        { "id": "qtb-pp-6", "description": "Address confirmation shows the address in all capitals which some users don't recognise as their address format", "severity": "low", "source": "Usability test round 3, February 2026", "evidenceCount": 2 }
+      ],
+      "opportunities": [
+        { "id": "qtb-op-4", "description": "Improve address search to handle partial matches and new developments", "impact": "medium", "effort": "high" }
+      ]
+    },
+    {
+      "id": "home-use",
+      "name": "Home Occupancy & Use",
+      "order": 3,
+      "description": "User describes how the home is used (owner-occupied, holiday home, unoccupied) and who lives there",
+      "actions": ["Select home use type", "Answer related people question", "Review any conditional messages"],
+      "thoughts": ["What counts as unoccupied?", "Does it matter who else lives here?"],
+      "emotions": { "score": 5, "label": "Neutral" },
+      "painPoints": [
+        { "id": "qtb-pp-7", "description": "Selecting '4 or more unrelated people' triggers an error that forces the user to call RAA. No explanation of why online quoting isn't possible for this scenario.", "severity": "high", "source": "Usability test round 4, April 2026", "evidenceCount": 3 },
+        { "id": "qtb-pp-8", "description": "'My home use is changing' info link opens but doesn't explain what to do if your situation is changing in the near future", "severity": "low", "source": "Usability test round 2, November 2025", "evidenceCount": 2 }
+      ],
+      "opportunities": [
+        { "id": "qtb-op-5", "description": "Explain why 4+ unrelated people requires a call and offer to pre-fill the phone form with the user's details", "impact": "medium", "effort": "low" }
+      ]
+    },
+    {
+      "id": "building-info",
+      "name": "Building Information",
+      "order": 4,
+      "description": "User enters details about their home (building type, wall material, roof material, year built, construction status)",
+      "actions": ["Select building type", "Select strata status", "Select wall material", "Select roof material", "Select year built", "Answer construction questions"],
+      "thoughts": ["What material is my wall?", "When was my house built?", "What does strata mean?"],
+      "emotions": { "score": 4, "label": "Slightly negative" },
+      "painPoints": [
+        { "id": "qtb-pp-9", "description": "Users don't know their wall or roof material. Info tooltips help but 40% of users in testing paused here to look it up or guess.", "severity": "high", "source": "Usability test round 3, February 2026", "evidenceCount": 5 },
+        { "id": "qtb-pp-10", "description": "Selecting 'under construction' triggers a coverage limitation warning but users don't understand what 'limited cover' means in practice", "severity": "medium", "source": "Usability test round 4, April 2026", "evidenceCount": 3 },
+        { "id": "qtb-pp-11", "description": "Year built dropdown has entries from 1800 to 2026. Users with older homes have to scroll through 200+ options.", "severity": "low", "source": "Usability test round 1, August 2025", "evidenceCount": 4 }
+      ],
+      "opportunities": [
+        { "id": "qtb-op-6", "description": "Add photos or illustrations to wall and roof material options to help users identify their materials visually", "impact": "high", "effort": "medium" },
+        { "id": "qtb-op-7", "description": "Replace year built dropdown with a text input that accepts a 4-digit year", "impact": "low", "effort": "low" }
+      ]
+    },
+    {
+      "id": "contents-cover",
+      "name": "Contents Cover & Optional Extras",
+      "order": 5,
+      "description": "User reviews contents sum insured, selects optional covers (accidental damage, valuable items, pet cover), and reviews contents summary",
+      "actions": ["Review sum insured", "Toggle optional covers", "Select coverage limits", "Add valuable items if applicable", "Review contents summary", "Click Next"],
+      "thoughts": ["How much contents cover do I need?", "Is accidental damage worth it?", "What about my bike?"],
+      "emotions": { "score": 5, "label": "Neutral" },
+      "painPoints": [
+        { "id": "qtb-pp-12", "description": "Users don't know how to estimate their contents sum insured. The pre-filled $1,000,000 default feels arbitrary and there's no calculator or guide.", "severity": "high", "source": "Usability test round 2, November 2025", "evidenceCount": 6 },
+        { "id": "qtb-pp-13", "description": "Optional cover toggles and radio options are visually complex. Users with low insurance literacy found this page overwhelming.", "severity": "medium", "source": "Usability test round 4, April 2026", "evidenceCount": 4 },
+        { "id": "qtb-pp-14", "description": "The contents summary page shows a basic table but doesn't explain what accidental damage cover actually covers in practical terms", "severity": "low", "source": "Usability test round 3, February 2026", "evidenceCount": 2 }
+      ],
+      "opportunities": [
+        { "id": "qtb-op-8", "description": "Add a contents calculator that walks users through room-by-room estimation", "impact": "high", "effort": "high" },
+        { "id": "qtb-op-9", "description": "Simplify the optional covers page with a recommendation engine based on the user's property type and location", "impact": "high", "effort": "high" }
+      ]
+    },
+    {
+      "id": "policy-holders",
+      "name": "Policy Holders",
+      "order": 6,
+      "description": "User adds personal details for all policy holders. Includes title, name, DOB, gender, member status, address, and contact details.",
+      "actions": ["Enter personal details", "Confirm RAA membership", "Verify address", "Add contact details", "Add additional policy holders if needed"],
+      "thoughts": ["Why do they need all this?", "Will I get a member discount?", "Do I need to add my partner?"],
+      "emotions": { "score": 4, "label": "Slightly negative" },
+      "painPoints": [
+        { "id": "qtb-pp-15", "description": "Title selection uses radio cards (Mr, Ms, Mrs, Miss, Other) but 'Other' doesn't offer a free-text alternative. Non-binary users feel excluded.", "severity": "medium", "source": "User interview, March 2026", "evidenceCount": 2 },
+        { "id": "qtb-pp-16", "description": "If the user is an existing member, the system finds their details but the address confirmation step is confusing. It pre-selects an address and asks 'My details have changed' as a link rather than a clear option.", "severity": "medium", "source": "Usability test round 4, April 2026", "evidenceCount": 3 },
+        { "id": "qtb-pp-17", "description": "Mobile number and email are marked as 'optional' but the validation icon shows red before any input, suggesting an error", "severity": "medium", "source": "Usability test round 3, February 2026", "evidenceCount": 5 }
+      ],
+      "opportunities": [
+        { "id": "qtb-op-10", "description": "Allow free-text entry for the 'Other' title option", "impact": "low", "effort": "low" },
+        { "id": "qtb-op-11", "description": "Pre-fill all member details and show them as a review card rather than re-entering in form fields", "impact": "high", "effort": "medium" },
+        { "id": "qtb-op-12", "description": "Remove red validation icons from optional fields that haven't been interacted with", "impact": "medium", "effort": "low" }
+      ]
+    },
+    {
+      "id": "your-quote",
+      "name": "Your Quote",
+      "order": 7,
+      "description": "User sees their quote with price, customisation options, optional covers, coverage details, and can proceed to buy or save the quote",
+      "actions": ["Review quote price", "Adjust home sum insured", "Adjust excess", "Review optional covers", "Review coverage inclusions", "Click Buy now or Save quote"],
+      "thoughts": ["Is this a good price?", "What if I increase my excess?", "What am I actually covered for?"],
+      "emotions": { "score": 6, "label": "Slightly positive" },
+      "painPoints": [
+        { "id": "qtb-pp-18", "description": "The quote page is extremely long (requires significant scrolling). Key information is spread across the page rather than summarised.", "severity": "high", "source": "Usability test round 4, April 2026", "evidenceCount": 6 },
+        { "id": "qtb-pp-19", "description": "Adjusting the excess dropdown doesn't immediately show the price impact. Users have to click 'Save quote' to recalculate.", "severity": "high", "source": "Usability test round 2, November 2025", "evidenceCount": 5 },
+        { "id": "qtb-pp-20", "description": "The 'See how you saved' link opens a breakdown but the discount amounts are confusing. Multi-policy discount shows a percentage but not the actual dollar saving.", "severity": "medium", "source": "Usability test round 3, February 2026", "evidenceCount": 3 }
+      ],
+      "opportunities": [
+        { "id": "qtb-op-13", "description": "Make quote page a sticky summary card that updates in real time as users adjust excess and cover options", "impact": "high", "effort": "high" },
+        { "id": "qtb-op-14", "description": "Show dollar impact immediately when excess is changed, before requiring a save/recalculate", "impact": "high", "effort": "medium" }
+      ]
+    },
+    {
+      "id": "summary-purchase",
+      "name": "Summary & Purchase",
+      "order": 8,
+      "description": "User reviews full summary of their quote, confirms details, opts in/out of marketing, and proceeds to payment",
+      "actions": ["Review summary", "Expand 'What you've told us' sections", "Read coverage limitation warnings", "Opt in/out of marketing", "Click This is correct - continue to purchase"],
+      "thoughts": ["Is everything correct?", "What does 'cover will be limited' mean?", "How do I pay?"],
+      "emotions": { "score": 5, "label": "Neutral" },
+      "painPoints": [
+        { "id": "qtb-pp-21", "description": "The summary page repeats information from the quote page. Users skip over it because they've already reviewed their quote.", "severity": "medium", "source": "Analytics review, Q1 2026", "evidenceCount": 1 },
+        { "id": "qtb-pp-22", "description": "The 'Your cover will be limited' warning appears at the bottom of a long page. Users under construction may miss it and not understand their coverage limitations.", "severity": "high", "source": "Usability test round 4, April 2026", "evidenceCount": 3 },
+        { "id": "qtb-pp-23", "description": "The marketing opt-in checkbox and its legal text are visually identical to the mandatory legal agreements from step 1, causing confusion about whether this is required.", "severity": "low", "source": "Usability test round 3, February 2026", "evidenceCount": 2 }
+      ],
+      "opportunities": [
+        { "id": "qtb-op-15", "description": "Surface coverage limitation warnings earlier in the flow (at the point where the user makes the triggering selection) rather than burying them in the summary", "impact": "high", "effort": "medium" },
+        { "id": "qtb-op-16", "description": "Consolidate the summary and quote pages into a single review step to eliminate repetition", "impact": "medium", "effort": "high" }
+      ]
+    }
+  ],
+  "insights": [
+    { "id": "qtb-in-1", "description": "7 of 8 participants in the April 2026 usability test tried to click Next without ticking the legal checkboxes. All 7 were confused by the red error state.", "severity": "high", "source": "Usability test round 4, April 2026", "relatedPainPoints": ["qtb-pp-1"] },
+    { "id": "qtb-in-2", "description": "8 of 8 participants in the August 2025 baseline study said they had no idea how many steps the quote process had or how long it would take.", "severity": "high", "source": "Usability test round 1, August 2025", "relatedPainPoints": ["qtb-pp-2"] },
+    { "id": "qtb-in-3", "description": "40% of users in the February 2026 test paused on the building information page because they didn't know their wall or roof material. Average time on this page was 3x longer than any other page.", "severity": "high", "source": "Usability test round 3, February 2026", "relatedPainPoints": ["qtb-pp-9"] },
+    { "id": "qtb-in-4", "description": "6 of 8 participants in the November 2025 test couldn't estimate their contents sum insured. All 6 left the default $1,000,000 without understanding if it was appropriate.", "severity": "high", "source": "Usability test round 2, November 2025", "relatedPainPoints": ["qtb-pp-12"] },
+    { "id": "qtb-in-5", "description": "Quote page average scroll depth is only 45%. More than half of users never see the coverage inclusions grid or the FAQ section at the bottom.", "severity": "medium", "source": "Analytics review, Q1 2026", "relatedPainPoints": ["qtb-pp-18"] },
+    { "id": "qtb-in-6", "description": "5 of 8 participants in November 2025 changed their excess to see the price impact but didn't realise they needed to click Save quote to recalculate. They assumed the price would update automatically.", "severity": "high", "source": "Usability test round 2, November 2025", "relatedPainPoints": ["qtb-pp-19"] },
+    { "id": "qtb-in-7", "description": "Conversion from quote page to purchase is 23%. The industry average for online home insurance is 31%. The 8 percentage point gap represents approximately $2.4M in annual premium.", "severity": "high", "source": "Analytics review, Q1 2026", "relatedPainPoints": ["qtb-pp-18", "qtb-pp-19"] },
+    { "id": "qtb-in-8", "description": "5 of 8 participants in the February 2026 test saw the red validation icon on the mobile number field before typing anything and assumed they had made an error.", "severity": "medium", "source": "Usability test round 3, February 2026", "relatedPainPoints": ["qtb-pp-17"] },
+    { "id": "qtb-in-9", "description": "Only 12% of members who see the 'Log in to save time' banner on the first page actually click it. The remaining 88% of existing members re-enter their details manually.", "severity": "medium", "source": "Analytics review, Q4 2025", "relatedPainPoints": ["qtb-pp-4"] }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "id": "claims",
+  "name": "Claims",
+  "status": "discovery",
+  "lastUpdated": "2026-04-30",
+  "owner": "EXD Team",
+  "description": "The experience of making an insurance claim, from initial notification through to resolution. Currently mapped from discovery research; digital claim lodgement is not yet available online.",
+  "stages": [
+    {
+      "id": "incident-occurs",
+      "name": "Incident Occurs",
+      "order": 1,
+      "description": "Something happens that may be covered by the member's insurance policy",
+      "actions": ["Experience the incident (storm, theft, accident, damage)", "Assess the situation", "Check if covered"],
+      "thoughts": ["Am I covered for this?", "What do I do first?", "Do I need to call the police?"],
+      "emotions": { "score": 2, "label": "Very negative" },
+      "painPoints": [
+        { "id": "clm-pp-1", "description": "Members don't know what their policy covers without logging into My Account and reading the PDS. In a crisis moment, this information needs to be immediately accessible.", "severity": "high", "source": "User interview, April 2026", "evidenceCount": 6 },
+        { "id": "clm-pp-2", "description": "No guidance on immediate steps to take. Members don't know whether they need a police report, photos, or tradesperson quotes before contacting RAA.", "severity": "high", "source": "User interview, April 2026", "evidenceCount": 5 }
+      ],
+      "opportunities": [
+        { "id": "clm-op-1", "description": "Add a 'What to do after an incident' guide accessible from My Account and the RAA app, tailored to the member's specific policy type", "impact": "high", "effort": "medium" },
+        { "id": "clm-op-2", "description": "Push notification via the RAA app after major weather events in the member's area with a direct link to start a claim", "impact": "high", "effort": "high" }
+      ]
+    },
+    {
+      "id": "lodge-claim",
+      "name": "Lodge a Claim",
+      "order": 2,
+      "description": "Member contacts RAA to lodge their claim. Currently phone-only with a 'Make a claim' link in My Account that also directs to phone.",
+      "actions": ["Navigate to My Account", "Click Make a claim", "Call RAA claims line", "Provide policy details and incident information", "Receive claim number"],
+      "thoughts": ["Can I do this online?", "How long will this call take?", "What information do they need?"],
+      "emotions": { "score": 2, "label": "Very negative" },
+      "painPoints": [
+        { "id": "clm-pp-3", "description": "No online claim lodgement. The 'Make a claim' button in My Account directs to a phone number. Members expect a digital form.", "severity": "high", "source": "Usability test round 3, February 2026", "evidenceCount": 7 },
+        { "id": "clm-pp-4", "description": "Phone wait times average 8-12 minutes during peak periods (after storms). Members already stressed by the incident face long holds.", "severity": "high", "source": "Contact centre data, Q1 2026", "evidenceCount": 1 },
+        { "id": "clm-pp-5", "description": "Members have to re-explain their policy details over the phone despite being logged into My Account. No data is passed to the call agent.", "severity": "medium", "source": "User interview, April 2026", "evidenceCount": 4 }
+      ],
+      "opportunities": [
+        { "id": "clm-op-3", "description": "Build an online claim lodgement form accessible from My Account that collects incident details, photos, and supporting documents", "impact": "high", "effort": "high" },
+        { "id": "clm-op-4", "description": "Pass member and policy context to the call agent when a member calls from My Account so they don't have to re-identify", "impact": "medium", "effort": "medium" }
+      ]
+    },
+    {
+      "id": "claim-progress",
+      "name": "Claim Progress & Resolution",
+      "order": 3,
+      "description": "Member waits for their claim to be assessed, receives updates, and the claim is resolved",
+      "actions": ["Wait for assessor contact", "Provide additional information if requested", "Receive claim decision", "Arrange repairs or replacement", "Receive payment"],
+      "thoughts": ["What's happening with my claim?", "How long will this take?", "Who do I contact for updates?"],
+      "emotions": { "score": 3, "label": "Negative" },
+      "painPoints": [
+        { "id": "clm-pp-6", "description": "No online claim tracking. Members cannot see the status of their claim in My Account. They must call for updates.", "severity": "high", "source": "User interview, April 2026", "evidenceCount": 6 },
+        { "id": "clm-pp-7", "description": "Communication is inconsistent. Some updates come by email, some by phone, some by letter. No single channel.", "severity": "high", "source": "User interview, April 2026", "evidenceCount": 5 },
+        { "id": "clm-pp-8", "description": "Average claim resolution time is not communicated upfront. Members have no expectation of timeline.", "severity": "medium", "source": "User interview, April 2026", "evidenceCount": 4 }
+      ],
+      "opportunities": [
+        { "id": "clm-op-5", "description": "Build a claim tracker in My Account showing the current status, next steps, and expected timeline", "impact": "high", "effort": "high" },
+        { "id": "clm-op-6", "description": "Consolidate all claim communications into a single thread in My Account with push notifications", "impact": "high", "effort": "high" }
+      ]
+    }
+  ],
+  "insights": [
+    { "id": "clm-in-1", "description": "7 of 8 participants in the February 2026 test expected to be able to lodge a claim online. All 7 were disappointed when the 'Make a claim' button led to a phone number.", "severity": "high", "source": "Usability test round 3, February 2026", "relatedPainPoints": ["clm-pp-3"] },
+    { "id": "clm-in-2", "description": "Claims call volume spikes 400% in the 48 hours after major storm events. Average wait time during these peaks is 18 minutes.", "severity": "high", "source": "Contact centre data, Q1 2026", "relatedPainPoints": ["clm-pp-4"] },
+    { "id": "clm-in-3", "description": "6 of 6 claims interview participants said the lack of online tracking was their biggest frustration. All had called multiple times for status updates.", "severity": "high", "source": "User interview, April 2026", "relatedPainPoints": ["clm-pp-6"] },
+    { "id": "clm-in-4", "description": "NPS for the claims journey is -12, compared to +45 for the quote to buy journey. Claims is the single biggest detractor of overall RAA member satisfaction.", "severity": "high", "source": "NPS survey, Q1 2026", "relatedPainPoints": ["clm-pp-3", "clm-pp-6", "clm-pp-7"] }
+  ]
+}
