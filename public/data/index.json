@@ -1,6 +1,21 @@
 {
   "hierarchy": [
     {
+      "id": "raa-membership",
+      "name": "RAA Membership",
+      "level": "top",
+      "description": "End-to-end member experience across all RAA digital products and services",
+      "owner": "EXD Team",
+      "children": [
+        { "id": "my-account", "name": "My Account", "level": "sub-journey" },
+        { "id": "insurance", "name": "Insurance", "level": "sub-journey", "children": [
+          { "id": "quote-to-buy", "name": "Quote to Buy (Home)", "level": "sub-journey" },
+          { "id": "renewals", "name": "Renewals", "level": "sub-journey" },
+          { "id": "claims", "name": "Claims", "level": "sub-journey" }
+        ]}
+      ]
+    },
+    {
       "id": "taskly-lifecycle",
       "name": "Taskly User Lifecycle",
       "level": "top",
@@ -12,8 +27,8 @@
     }
   ],
   "metadata": {
-    "totalJourneys": 2,
-    "totalInsights": 12,
-    "lastUpdated": "2026-05-19"
+    "totalJourneys": 7,
+    "totalInsights": 89,
+    "lastUpdated": "2026-05-21"
   }
 }

@@ -1,0 +1,104 @@
+{
+  "id": "my-account",
+  "name": "My Account",
+  "status": "validated",
+  "lastUpdated": "2026-04-15",
+  "owner": "EXD Team",
+  "description": "The authenticated member portal where members manage their products, payments, personal details, and membership benefits.",
+  "stages": [
+    {
+      "id": "login",
+      "name": "Log In",
+      "order": 1,
+      "description": "Member navigates to login page and authenticates",
+      "actions": ["Navigate to raa.com.au", "Click account icon", "Select Log in to My Account", "Enter email and password", "Click Log in"],
+      "thoughts": ["Where do I log in?", "What was my password?", "I hope this is quick"],
+      "emotions": { "score": 5, "label": "Neutral" },
+      "painPoints": [
+        { "id": "ma-pp-1", "description": "No social login option (Google, Apple). Users must create and remember a separate RAA password", "severity": "high", "source": "Usability test round 3, March 2026", "evidenceCount": 6 },
+        { "id": "ma-pp-2", "description": "Login page has no indication of what My Account lets you do, reducing motivation for first-time visitors", "severity": "medium", "source": "Analytics review, January 2026", "evidenceCount": 3 },
+        { "id": "ma-pp-3", "description": "Forgot password flow requires email verification which can take 30-60 seconds, causing abandonment", "severity": "medium", "source": "Support ticket analysis, February 2026", "evidenceCount": 12 }
+      ],
+      "opportunities": [
+        { "id": "ma-op-1", "description": "Add social login (Google, Apple) to reduce friction and eliminate password management", "impact": "high", "effort": "medium" },
+        { "id": "ma-op-2", "description": "Add value proposition messaging on login page explaining what members can do in My Account", "impact": "medium", "effort": "low" }
+      ]
+    },
+    {
+      "id": "dashboard",
+      "name": "My Account Home",
+      "order": 2,
+      "description": "Member lands on dashboard showing their products, quick actions, and membership summary",
+      "actions": ["View product summary", "Check savings amount", "Access quick actions", "View membership card"],
+      "thoughts": ["What products do I have?", "How much have I saved?", "I need to update my payment details"],
+      "emotions": { "score": 6, "label": "Slightly positive" },
+      "painPoints": [
+        { "id": "ma-pp-4", "description": "Products are listed without visual hierarchy. Car insurance policies look identical, differentiated only by rego number", "severity": "medium", "source": "Usability test round 2, December 2025", "evidenceCount": 5 },
+        { "id": "ma-pp-5", "description": "Quick action cards are not personalised. All members see the same 4 actions regardless of their situation", "severity": "low", "source": "Stakeholder feedback, November 2025", "evidenceCount": 2 },
+        { "id": "ma-pp-6", "description": "Cross-sell banner for car insurance appears even for members who already have car insurance", "severity": "medium", "source": "Usability test round 3, March 2026", "evidenceCount": 4 }
+      ],
+      "opportunities": [
+        { "id": "ma-op-3", "description": "Add vehicle images or colour-coded tags to differentiate multiple car insurance policies", "impact": "medium", "effort": "medium" },
+        { "id": "ma-op-4", "description": "Personalise quick actions based on member context (upcoming renewal, recent claim, payment due)", "impact": "high", "effort": "high" },
+        { "id": "ma-op-5", "description": "Suppress cross-sell for products the member already holds", "impact": "medium", "effort": "low" }
+      ]
+    },
+    {
+      "id": "manage-details",
+      "name": "Manage Personal Details",
+      "order": 3,
+      "description": "Member updates their personal information, payment details, or communication preferences",
+      "actions": ["Navigate to My details", "Select sub-section", "Edit information", "Save changes"],
+      "thoughts": ["How do I change my address?", "Is my payment card up to date?", "Can I change my email?"],
+      "emotions": { "score": 4, "label": "Slightly negative" },
+      "painPoints": [
+        { "id": "ma-pp-7", "description": "Changing address requires updating it separately for membership AND each insurance policy. Not synced.", "severity": "high", "source": "Support ticket analysis, Q1 2026", "evidenceCount": 34 },
+        { "id": "ma-pp-8", "description": "No confirmation email or notification after updating payment details, causing anxiety about whether it worked", "severity": "medium", "source": "Usability test round 2, December 2025", "evidenceCount": 4 },
+        { "id": "ma-pp-9", "description": "Communication preferences page has 8 different toggles with no clear explanation of what each controls", "severity": "medium", "source": "Usability test round 1, August 2025", "evidenceCount": 3 }
+      ],
+      "opportunities": [
+        { "id": "ma-op-6", "description": "Sync address changes across membership and all policies in a single update", "impact": "high", "effort": "high" },
+        { "id": "ma-op-7", "description": "Send confirmation email after any detail change with a summary of what was updated", "impact": "medium", "effort": "low" }
+      ]
+    },
+    {
+      "id": "view-products",
+      "name": "View My Products",
+      "order": 4,
+      "description": "Member browses their product portfolio, views policy details, and manages individual products",
+      "actions": ["Navigate to My products", "View product list", "Click View details on a product", "Review policy information"],
+      "thoughts": ["What am I covered for?", "When does my policy renew?", "How much am I paying?"],
+      "emotions": { "score": 5, "label": "Neutral" },
+      "painPoints": [
+        { "id": "ma-pp-10", "description": "Policy detail pages show raw policy numbers and dates without context. Members don't know what their excess is without clicking through multiple pages.", "severity": "medium", "source": "Usability test round 3, March 2026", "evidenceCount": 5 },
+        { "id": "ma-pp-11", "description": "No way to compare two products side by side (e.g. comparing home vs contents cover)", "severity": "low", "source": "User interview, January 2026", "evidenceCount": 2 }
+      ],
+      "opportunities": [
+        { "id": "ma-op-8", "description": "Add a summary card at the top of each product detail page showing the key information at a glance (excess, premium, renewal date, cover level)", "impact": "high", "effort": "medium" }
+      ]
+    },
+    {
+      "id": "member-benefits",
+      "name": "Member Benefits & Rewards",
+      "order": 5,
+      "description": "Member discovers and accesses their membership benefits, discounts, and rewards",
+      "actions": ["Scroll to member benefits section", "Click View all benefits", "Browse reward categories", "Access a reward"],
+      "thoughts": ["What discounts can I get?", "Is this worth my membership fee?", "How do I use my card?"],
+      "emotions": { "score": 7, "label": "Positive" },
+      "painPoints": [
+        { "id": "ma-pp-12", "description": "Benefits section is below the fold on the dashboard. Most users don't scroll past their products.", "severity": "medium", "source": "Analytics review, Q4 2025", "evidenceCount": 1 },
+        { "id": "ma-pp-13", "description": "Clicking RAA Rewards or competitions opens in a new tab on an external site, losing the My Account context", "severity": "low", "source": "Usability test round 2, December 2025", "evidenceCount": 3 }
+      ],
+      "opportunities": [
+        { "id": "ma-op-9", "description": "Surface a personalised 'Top benefit for you' card higher on the dashboard based on member location and interests", "impact": "medium", "effort": "medium" }
+      ]
+    }
+  ],
+  "insights": [
+    { "id": "ma-in-1", "description": "34 support tickets in Q1 2026 were about address changes not syncing across policies. This is the single highest-volume complaint category for My Account.", "severity": "high", "source": "Support ticket analysis, Q1 2026", "relatedPainPoints": ["ma-pp-7"] },
+    { "id": "ma-in-2", "description": "6 of 8 participants in the March 2026 usability test expected social login on the login page. 3 attempted to click where a Google button would be.", "severity": "high", "source": "Usability test round 3, March 2026", "relatedPainPoints": ["ma-pp-1"] },
+    { "id": "ma-in-3", "description": "Analytics show 62% of My Account sessions end on the dashboard without navigating deeper. Members check their summary and leave.", "severity": "medium", "source": "Analytics review, Q1 2026", "relatedPainPoints": ["ma-pp-12"] },
+    { "id": "ma-in-4", "description": "Members with 3+ products spend 40% longer on the dashboard than single-product members, suggesting the product list becomes harder to parse at scale.", "severity": "medium", "source": "Analytics review, January 2026", "relatedPainPoints": ["ma-pp-4"] },
+    { "id": "ma-in-5", "description": "The cross-sell banner for car insurance was clicked by only 0.3% of members who already hold car insurance, indicating it adds clutter without value for existing customers.", "severity": "medium", "source": "Analytics review, Q4 2025", "relatedPainPoints": ["ma-pp-6"] }
+  ]
+}
