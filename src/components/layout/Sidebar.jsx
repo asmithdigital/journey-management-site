@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { NavLink, Link, useLocation } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { NavLink, useLocation } from 'react-router-dom'
 import { useData } from '../../App.jsx'
 
 const NAV_ITEMS = [
@@ -26,16 +26,107 @@ const BOTTOM_ITEMS = [
   { icon: '⚙', label: 'Settings' },
 ]
 
+function StatusDot({ status }) {
+  return <span className={`sidebar-status-dot ${status}`} title={status} />
+}
+
+function TreeNode({ node, depth, openNodes, toggleNode, journeys }) {
+  const location = useLocation()
+  const hasChildren = (node.children || []).length > 0
+  const hasData = !!journeys[node.id]
+  const isOpen = openNodes[node.id] !== false
+  const isActive = location.pathname === `/journey/${node.id}`
+  const jStatus = journeys[node.id]?.status
+  const extraPL = depth * 14
+
+  if (!hasChildren) {
+    return (
+      <NavLink
+        to={`/journey/${node.id}`}
+        end
+        className={({ isActive: ia }) => `sidebar-tree-item${ia ? ' active' : ''}`}
+        style={{ paddingLeft: 22 + extraPL }}
+      >
+        <span className="sidebar-tree-bullet" />
+        <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {node.name}
+        </span>
+        {jStatus && <StatusDot status={jStatus} />}
+      </NavLink>
+    )
+  }
+
+  return (
+    <div>
+      <div
+        className={`sidebar-tree-group-row${isActive ? ' active' : ''}`}
+        style={{ paddingLeft: 12 + extraPL }}
+      >
+        <button
+          className="sidebar-tree-toggle"
+          onClick={() => toggleNode(node.id)}
+          aria-label={isOpen ? 'Collapse' : 'Expand'}
+        >
+          {isOpen ? '▾' : '▸'}
+        </button>
+        {hasData ? (
+          <NavLink
+            to={`/journey/${node.id}`}
+            end
+            className={({ isActive: ia }) => `sidebar-tree-group-name${ia ? ' active' : ''}`}
+          >
+            {node.name}
+          </NavLink>
+        ) : (
+          <span
+            className="sidebar-tree-group-name"
+            onClick={() => toggleNode(node.id)}
+            style={{ cursor: 'pointer' }}
+          >
+            {node.name}
+          </span>
+        )}
+        {jStatus && <StatusDot status={jStatus} />}
+      </div>
+      {isOpen && (node.children || []).map(child => (
+        <TreeNode
+          key={child.id}
+          node={child}
+          depth={depth + 1}
+          openNodes={openNodes}
+          toggleNode={toggleNode}
+          journeys={journeys}
+        />
+      ))}
+    </div>
+  )
+}
+
 export default function Sidebar() {
-  const { index } = useData()
+  const { index, journeys } = useData()
   const [frameworksOpen, setFrameworksOpen] = useState(true)
   const [blocksOpen, setBlocksOpen] = useState(false)
-  const location = useLocation()
+  const [openNodes, setOpenNodes] = useState({})
 
   const hierarchy = index?.hierarchy || []
 
-  function isJourneyActive(id) {
-    return location.pathname === `/journey/${id}`
+  // Default: all nodes open on first load
+  useEffect(() => {
+    if (hierarchy.length > 0 && Object.keys(openNodes).length === 0) {
+      const defaults = {}
+      function setDefaults(nodes) {
+        nodes.forEach(n => {
+          defaults[n.id] = true
+          if (n.children) setDefaults(n.children)
+        })
+      }
+      setDefaults(hierarchy)
+      setOpenNodes(defaults)
+    }
+  }, [hierarchy])
+
+  function toggleNode(id) {
+    setOpenNodes(prev => ({ ...prev, [id]: prev[id] === false ? true : false }))
   }
 
   return (
@@ -91,30 +182,14 @@ export default function Sidebar() {
         </div>
 
         {frameworksOpen && hierarchy.map(top => (
-          <div key={top.id}>
-            <Link
-              to={`/journey/${top.id}`}
-              className={`sidebar-expand-btn${isJourneyActive(top.id) ? ' active' : ''}`}
-              style={{ textDecoration: 'none' }}
-            >
-              <span style={{ fontSize: 10, opacity: 0.5 }}>▶</span>
-              <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                {top.name}
-              </span>
-            </Link>
-            {(top.children || []).map(child => (
-              <Link
-                key={child.id}
-                to={`/journey/${child.id}`}
-                className={`sidebar-tree-item${isJourneyActive(child.id) ? ' active' : ''}`}
-              >
-                <span className="sidebar-tree-bullet" />
-                <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  {child.name}
-                </span>
-              </Link>
-            ))}
-          </div>
+          <TreeNode
+            key={top.id}
+            node={top}
+            depth={0}
+            openNodes={openNodes}
+            toggleNode={toggleNode}
+            journeys={journeys}
+          />
         ))}
       </div>
 

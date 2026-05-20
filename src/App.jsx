@@ -14,6 +14,10 @@ export function useData() {
 
 const BASE = import.meta.env.BASE_URL
 
+function collectAllIds(nodes) {
+  return nodes.flatMap(node => [node.id, ...collectAllIds(node.children || [])])
+}
+
 export default function App() {
   const [index, setIndex] = useState(null)
   const [journeys, setJourneys] = useState({})
@@ -28,9 +32,7 @@ export default function App() {
         const idx = await res.json()
         setIndex(idx)
 
-        const journeyIds = idx.hierarchy.flatMap(top =>
-          [top.id, ...(top.children || []).map(c => c.id)]
-        )
+        const journeyIds = collectAllIds(idx.hierarchy)
 
         const loaded = {}
         await Promise.all(

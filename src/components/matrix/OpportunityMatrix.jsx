@@ -12,19 +12,41 @@ function simpleHash(str) {
 
 const STATUS_CYCLE = ['open', 'validated', 'in-progress', 'open', 'solved', 'open']
 
+// impact → customer value band; low effort → high business value
+const IMPACT_BASE = { high: 76, medium: 50, low: 24 }
+const EFFORT_BASE  = { low: 76, medium: 50, high: 24 }
+
+function bandedValue(base, seed) {
+  return Math.min(95, Math.max(5, base + (simpleHash(seed) % 14) - 7))
+}
+
 export function deriveOpportunitiesFromJourney(journey) {
   const opps = []
   let idx = 0
   ;(journey.stages || []).forEach(stage => {
-    ;(stage.opportunities || []).forEach(text => {
+    ;(stage.opportunities || []).forEach(opp => {
+      const isObj = typeof opp === 'object' && opp !== null
+      const text = isObj ? opp.description : opp
+      const id   = isObj ? opp.id : `${journey.id}-${stage.id}-${idx}`
+
+      const customerValue = isObj && opp.impact
+        ? bandedValue(IMPACT_BASE[opp.impact] ?? 50, text + 'cv')
+        : 20 + (simpleHash(text + 'cv') % 70)
+
+      const businessValue = isObj && opp.effort
+        ? bandedValue(EFFORT_BASE[opp.effort] ?? 50, text + 'bv')
+        : 20 + (simpleHash(text + 'bv') % 70)
+
       opps.push({
-        id: `${journey.id}-${stage.id}-${idx}`,
+        id,
         title: text,
+        impact: isObj ? opp.impact : null,
+        effort: isObj ? opp.effort : null,
         status: STATUS_CYCLE[idx % STATUS_CYCLE.length],
-        businessValue: 20 + (simpleHash(text + 'bv') % 70),
-        customerValue: 20 + (simpleHash(text + 'cv') % 70),
+        businessValue,
+        customerValue,
         stepsLinked: 1 + (idx % 3),
-        score: 30 + (simpleHash(text) % 60),
+        score: Math.round((customerValue + businessValue) / 2),
         stageName: stage.name,
         journeyName: journey.name,
       })
@@ -44,18 +66,17 @@ export default function OpportunityMatrix({ journey, allJourneys }) {
 
   return (
     <div className="matrix-view">
-      {/* Controls bar */}
       <div className="matrix-controls">
         <div className="matrix-controls-left">
           <div className="matrix-axis-dropdown">
             <span className="matrix-dd-icon">✏</span>
-            Customer Value
+            Customer Value (Impact)
             <span className="matrix-dd-chevron">▾</span>
           </div>
           <span className="matrix-controls-sep">›</span>
           <div className="matrix-axis-dropdown">
             <span className="matrix-dd-icon">✏</span>
-            Business Value
+            Business Value (Effort ↓)
             <span className="matrix-dd-chevron">▾</span>
           </div>
           <span className="matrix-controls-sep">›</span>
@@ -77,7 +98,6 @@ export default function OpportunityMatrix({ journey, allJourneys }) {
         </div>
       </div>
 
-      {/* Scatter plot */}
       <ScatterPlot opportunities={opportunities} xField={xAxis} yField={yAxis} />
     </div>
   )

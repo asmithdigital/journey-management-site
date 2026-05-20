@@ -25,10 +25,10 @@ export default function EmotionCurve({ stages }) {
     const x = N === 1
       ? containerWidth / 2
       : ((i + 0.5) / N) * containerWidth
-    const score = stage.emotions?.score ?? 3  // 1–5 scale
-    const normalized = (score - 1) / 4        // 0 to 1
-    const y = H - 10 - normalized * (H - 20) // inverted: high score = low y
-    return { x, y, positive: score >= 3 }
+    const score = stage.emotions?.score ?? 5  // 1–10 scale; 5 = neutral
+    const normalized = (score - 1) / 9        // 0 to 1
+    const y = H - 10 - normalized * (H - 20) // inverted: high score = low y (top)
+    return { x, y, positive: score >= 5 }
   })
 
   const pathD = points.reduce((d, p, i) => {

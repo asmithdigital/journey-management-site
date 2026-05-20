@@ -8,6 +8,48 @@ import JourneyMapView from '../components/journey/JourneyMapView.jsx'
 import OpportunityMatrix from '../components/matrix/OpportunityMatrix.jsx'
 import InsightCard from '../components/cards/InsightCard.jsx'
 
+function findAncestors(nodes, targetId, acc = []) {
+  for (const node of nodes) {
+    if (node.id === targetId) return acc
+    if (node.children) {
+      const result = findAncestors(node.children, targetId, [...acc, node])
+      if (result !== null) return result
+    }
+  }
+  return null
+}
+
+function findNode(nodes, targetId) {
+  for (const node of nodes) {
+    if (node.id === targetId) return node
+    if (node.children) {
+      const found = findNode(node.children, targetId)
+      if (found) return found
+    }
+  }
+  return null
+}
+
+function normalisePainPoint(pp, stageId, index) {
+  if (typeof pp === 'string') {
+    return {
+      id: `${stageId}-pain-${index}`,
+      text: pp,
+      type: 'pain',
+      severity: 'high',
+      stageName: null,
+    }
+  }
+  return {
+    id: pp.id,
+    text: pp.description,
+    source: pp.source,
+    evidenceCount: pp.evidenceCount,
+    type: pp.severity === 'high' ? 'pain' : pp.severity === 'medium' ? 'need' : 'gain',
+    severity: pp.severity,
+  }
+}
+
 function InsightsTab({ journey }) {
   const stages = [...(journey.stages || [])].sort((a, b) => a.order - b.order)
   const insights = journey.insights || []
@@ -15,15 +57,12 @@ function InsightsTab({ journey }) {
   const allInsights = [
     ...insights.map(ins => ({
       ...ins,
-      type: ins.severity === 'high' ? 'pain' : 'need',
-      stageName: stages.find(s => s.id === ins.stage)?.name ?? ins.stage,
+      text: ins.description ?? ins.text,
+      type: ins.severity === 'high' ? 'pain' : ins.severity === 'medium' ? 'need' : 'gain',
     })),
     ...stages.flatMap(stage =>
-      (stage.painPoints || []).map((text, i) => ({
-        id: `${stage.id}-pain-${i}`,
-        text,
-        type: 'pain',
-        severity: 'high',
+      (stage.painPoints || []).map((pp, i) => ({
+        ...normalisePainPoint(pp, stage.id, i),
         stageName: stage.name,
       }))
     ),
@@ -60,13 +99,16 @@ export default function JourneyMap() {
 
   const journey = journeys[journeyId]
   const hierarchy = index?.hierarchy || []
-  const parentNode = hierarchy.find(top => top.children?.some(c => c.id === journeyId))
+  const ancestors = findAncestors(hierarchy, journeyId) ?? []
+  const hierarchyNode = findNode(hierarchy, journeyId)
 
   if (!journey) {
-    const childNode = hierarchy.flatMap(top => top.children || []).find(c => c.id === journeyId)
     return (
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-        <TopBar journey={{ name: childNode?.name ?? journeyId }} parentName={parentNode?.name} />
+        <TopBar
+          journey={{ name: hierarchyNode?.name ?? journeyId }}
+          ancestors={ancestors}
+        />
         <div className="no-data-page">
           <h2>No data yet</h2>
           <p>Add a JSON file at <code>public/data/journeys/{journeyId}.json</code> to get started.</p>
@@ -77,7 +119,7 @@ export default function JourneyMap() {
 
   return (
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-      <TopBar journey={journey} parentName={parentNode?.name} />
+      <TopBar journey={journey} ancestors={ancestors} />
       <SummaryCards />
       <TabNav activeTab={activeTab} onTabChange={setActiveTab} />
       <div className="journey-view-content">

@@ -58,16 +58,8 @@ export default function ScatterPlot({ opportunities }) {
         {/* Grid lines */}
         {gridLines.map(v => (
           <g key={`grid-${v}`}>
-            <line
-              x1={plotX(v)} y1={pt}
-              x2={plotX(v)} y2={pt + plotH}
-              stroke="#f3f4f6" strokeWidth={1}
-            />
-            <line
-              x1={pl} y1={plotY(v)}
-              x2={pl + plotW} y2={plotY(v)}
-              stroke="#f3f4f6" strokeWidth={1}
-            />
+            <line x1={plotX(v)} y1={pt} x2={plotX(v)} y2={pt + plotH} stroke="#f3f4f6" strokeWidth={1} />
+            <line x1={pl} y1={plotY(v)} x2={pl + plotW} y2={plotY(v)} stroke="#f3f4f6" strokeWidth={1} />
           </g>
         ))}
 
@@ -77,47 +69,28 @@ export default function ScatterPlot({ opportunities }) {
 
         {/* X axis labels */}
         {[0, 20, 40, 60, 80, 100].map(v => (
-          <text
-            key={`xl-${v}`}
-            x={plotX(v)} y={pt + plotH + 18}
-            textAnchor="middle"
-            fontSize={11}
-            fill="#9b9b9b"
-          >
+          <text key={`xl-${v}`} x={plotX(v)} y={pt + plotH + 18} textAnchor="middle" fontSize={11} fill="#9b9b9b">
             {v}
           </text>
         ))}
 
         {/* Y axis labels */}
         {[0, 20, 40, 60, 80, 100].map(v => (
-          <text
-            key={`yl-${v}`}
-            x={pl - 10} y={plotY(v) + 4}
-            textAnchor="end"
-            fontSize={11}
-            fill="#9b9b9b"
-          >
+          <text key={`yl-${v}`} x={pl - 10} y={plotY(v) + 4} textAnchor="end" fontSize={11} fill="#9b9b9b">
             {v}
           </text>
         ))}
 
         {/* Axis titles */}
-        <text
-          x={pl + plotW / 2} y={pt + plotH + 40}
-          textAnchor="middle"
-          fontSize={12}
-          fill="#6b6b6b"
-        >
-          Business Value →
+        <text x={pl + plotW / 2} y={pt + plotH + 40} textAnchor="middle" fontSize={12} fill="#6b6b6b">
+          Business Value (Low Effort →)
         </text>
         <text
           x={18} y={pt + plotH / 2}
-          textAnchor="middle"
-          fontSize={12}
-          fill="#6b6b6b"
+          textAnchor="middle" fontSize={12} fill="#6b6b6b"
           transform={`rotate(-90, 18, ${pt + plotH / 2})`}
         >
-          Customer Value →
+          Customer Value (High Impact →)
         </text>
 
         {/* Circles */}
@@ -136,7 +109,7 @@ export default function ScatterPlot({ opportunities }) {
                 stroke={isHovered ? '#5b21b6' : '#8b5cf6'}
                 strokeWidth={isHovered ? 2 : 1.5}
                 style={{ cursor: 'pointer', transition: 'stroke 0.12s, stroke-width 0.12s' }}
-                onMouseEnter={e => {
+                onMouseEnter={() => {
                   setHoveredId(opp.id)
                   setTooltip({ opp, x: cx, y: cy, r })
                 }}
@@ -147,9 +120,7 @@ export default function ScatterPlot({ opportunities }) {
               />
               <text
                 x={cx} y={cy + r + 14}
-                textAnchor="middle"
-                fontSize={11}
-                fill="#4b5563"
+                textAnchor="middle" fontSize={11} fill="#4b5563"
                 style={{ pointerEvents: 'none', userSelect: 'none' }}
               >
                 {shortTitle}
@@ -162,21 +133,26 @@ export default function ScatterPlot({ opportunities }) {
       {/* Tooltip */}
       {tooltip && (() => {
         const { opp, x, y, r } = tooltip
-        const tipW = 210
-        const tipH = 90
+        const tipW = 230
+        const tipH = opp.impact ? 110 : 90
         const tipX = Math.min(w - tipW - 8, Math.max(8, x - tipW / 2))
         const tipY = y - r - tipH - 10 < pt ? y + r + 10 : y - r - tipH - 10
 
         return (
-          <div
-            className="scatter-tooltip"
-            style={{ left: tipX, top: tipY }}
-          >
+          <div className="scatter-tooltip" style={{ left: tipX, top: tipY, width: tipW }}>
             <div className="scatter-tooltip-title">{opp.title}</div>
+            {opp.impact && (
+              <div className="scatter-tooltip-values" style={{ marginBottom: 4 }}>
+                <span className={`impact-tag impact-${opp.impact}`}>{opp.impact} impact</span>
+                {' '}
+                <span className={`effort-tag effort-${opp.effort}`}>{opp.effort} effort</span>
+              </div>
+            )}
             <div className="scatter-tooltip-values">
               Business: {opp.businessValue} &nbsp;|&nbsp; Customer: {opp.customerValue}
             </div>
             <div className="scatter-tooltip-meta" style={{ marginBottom: 6 }}>
+              {opp.stageName && <span>{opp.stageName} · </span>}
               Steps linked: {opp.stepsLinked}
             </div>
             <StatusTag status={opp.status} />

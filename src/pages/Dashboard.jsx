@@ -2,6 +2,60 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { useData } from '../App.jsx'
 
+function StatusBadge({ status }) {
+  const labels = {
+    validated: 'Validated',
+    'in-progress': 'In Progress',
+    discovery: 'Discovery',
+    open: 'Open',
+  }
+  return (
+    <span className={`status-tag ${status}`} style={{ fontSize: 10, cursor: 'default', marginBottom: 4, display: 'inline-flex' }}>
+      {labels[status] ?? status}
+    </span>
+  )
+}
+
+function JourneyCard({ node, journeys }) {
+  const jData = journeys[node.id]
+  if (jData) {
+    return (
+      <Link to={`/journey/${node.id}`} className="journey-child-card">
+        <div className="journey-child-name">{node.name}</div>
+        {jData.status && <StatusBadge status={jData.status} />}
+        <div className="journey-child-tag has-data">
+          {jData.stages?.length ?? 0} stages · {jData.insights?.length ?? 0} insights
+        </div>
+      </Link>
+    )
+  }
+  return (
+    <div className="journey-child-card no-data">
+      <div className="journey-child-name">{node.name}</div>
+      <div className="journey-child-tag">no data yet</div>
+    </div>
+  )
+}
+
+function JourneyChildrenSection({ nodes, journeys }) {
+  return nodes.map(node => {
+    if (node.children && node.children.length > 0) {
+      // Intermediate container node — render as a full-width sub-group
+      return (
+        <div key={node.id} className="journey-sub-group">
+          <div className="journey-sub-group-header">{node.name}</div>
+          <div className="journey-children-grid journey-sub-grid">
+            {node.children.map(child => (
+              <JourneyCard key={child.id} node={child} journeys={journeys} />
+            ))}
+          </div>
+        </div>
+      )
+    }
+    return <JourneyCard key={node.id} node={node} journeys={journeys} />
+  })
+}
+
 export default function Dashboard() {
   const { index, journeys } = useData()
 
@@ -40,7 +94,7 @@ export default function Dashboard() {
 
       {hierarchy.map(top => (
         <div key={top.id} className="journey-hierarchy-block">
-          <Link to={`/journey/${top.id}`} className="journey-hierarchy-header" style={{ display: 'flex', textDecoration: 'none' }}>
+          <div className="journey-hierarchy-header">
             <div style={{ flex: 1 }}>
               <div className="journey-hierarchy-name">{top.name}</div>
               {top.description && (
@@ -50,29 +104,10 @@ export default function Dashboard() {
             {top.owner && (
               <div className="journey-hierarchy-owner">{top.owner}</div>
             )}
-          </Link>
+          </div>
 
           <div className="journey-children-grid">
-            {(top.children || []).map(child => {
-              const hasData = !!journeys[child.id]
-              return hasData ? (
-                <Link
-                  key={child.id}
-                  to={`/journey/${child.id}`}
-                  className="journey-child-card"
-                >
-                  <div className="journey-child-name">{child.name}</div>
-                  <div className="journey-child-tag has-data">
-                    {journeys[child.id].stages?.length ?? 0} stages · has data
-                  </div>
-                </Link>
-              ) : (
-                <div key={child.id} className="journey-child-card no-data">
-                  <div className="journey-child-name">{child.name}</div>
-                  <div className="journey-child-tag">no data yet</div>
-                </div>
-              )
-            })}
+            <JourneyChildrenSection nodes={top.children || []} journeys={journeys} />
           </div>
         </div>
       ))}

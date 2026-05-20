@@ -4,7 +4,7 @@ import InsightCard from '../cards/InsightCard.jsx'
 import MetricChip from '../cards/MetricChip.jsx'
 import EmotionCurve from './EmotionCurve.jsx'
 
-/* ─── Data derivation helpers ──────────────────────────────── */
+/* ─── Helpers ──────────────────────────────────────────────────── */
 
 function simpleHash(str) {
   let h = 5381
@@ -17,26 +17,52 @@ function simpleHash(str) {
 
 const STATUS_CYCLE = ['open', 'validated', 'in-progress', 'open', 'solved', 'open']
 
-function deriveOpportunity(text, globalIdx, stageId) {
-  const h = simpleHash(text)
+// impact → customer value band; effort (inverted) → business value band
+const IMPACT_BASE = { high: 76, medium: 50, low: 24 }
+const EFFORT_BASE  = { low: 76, medium: 50, high: 24 }
+
+function bandedValue(base, seed) {
+  return Math.min(95, Math.max(5, base + (simpleHash(seed) % 14) - 7))
+}
+
+function deriveOpportunity(opp, globalIdx, stageId) {
+  const isObj = typeof opp === 'object' && opp !== null
+  const text   = isObj ? opp.description : opp
+  const id     = isObj ? opp.id : `${stageId}-opp-${globalIdx}`
+
+  const customerValue = isObj && opp.impact
+    ? bandedValue(IMPACT_BASE[opp.impact] ?? 50, text + 'cv')
+    : 20 + (simpleHash(text + 'cv') % 70)
+
+  const businessValue = isObj && opp.effort
+    ? bandedValue(EFFORT_BASE[opp.effort] ?? 50, text + 'bv')
+    : 20 + (simpleHash(text + 'bv') % 70)
+
   return {
-    id: `${stageId}-opp-${globalIdx}`,
+    id,
     title: text,
+    impact: isObj ? opp.impact : null,
+    effort: isObj ? opp.effort : null,
     status: STATUS_CYCLE[globalIdx % STATUS_CYCLE.length],
-    businessValue: 20 + (simpleHash(text + 'bv') % 70),
-    customerValue: 20 + (simpleHash(text + 'cv') % 70),
+    businessValue,
+    customerValue,
     stepsLinked: 1 + (globalIdx % 3),
-    score: 30 + (h % 60),
+    score: Math.round((customerValue + businessValue) / 2),
     stageId,
   }
 }
 
-function derivePainPoint(text, index, stageId) {
+function derivePainPoint(pp, index, stageId) {
+  if (typeof pp === 'string') {
+    return { id: `${stageId}-pain-${index}`, text: pp, type: 'pain', severity: 'high' }
+  }
   return {
-    id: `${stageId}-pain-${index}`,
-    text,
-    type: 'pain',
-    severity: 'high',
+    id: pp.id,
+    text: pp.description,
+    source: pp.source,
+    evidenceCount: pp.evidenceCount,
+    type: pp.severity === 'high' ? 'pain' : pp.severity === 'medium' ? 'need' : 'gain',
+    severity: pp.severity,
   }
 }
 
@@ -49,7 +75,7 @@ const STAGE_METRICS = [
   [{ name: 'Conversion Rate' }, { name: 'CSAT' }],
 ]
 
-/* ─── Swim lane label cell ─────────────────────────────────── */
+/* ─── Swim lane label cell ─────────────────────────────────────── */
 
 function LaneLabel({ label, collapsed, onToggle, className = '' }) {
   return (
@@ -66,7 +92,7 @@ function LaneLabel({ label, collapsed, onToggle, className = '' }) {
   )
 }
 
-/* ─── Detail Drawer ────────────────────────────────────────── */
+/* ─── Detail Drawer ────────────────────────────────────────────── */
 
 function DetailDrawer({ item, type, onClose }) {
   if (!item) return null
@@ -93,15 +119,24 @@ function DetailDrawer({ item, type, onClose }) {
                 <div className="drawer-section-label">Description</div>
                 <div className="drawer-section-content">{item.title}</div>
               </div>
+              {(item.impact || item.effort) && (
+                <div className="drawer-section">
+                  <div className="drawer-section-label">Impact / Effort</div>
+                  <div className="drawer-section-content" style={{ display: 'flex', gap: 6 }}>
+                    {item.impact && (
+                      <span className={`impact-tag impact-${item.impact}`}>{item.impact} impact</span>
+                    )}
+                    {item.effort && (
+                      <span className={`effort-tag effort-${item.effort}`}>{item.effort} effort</span>
+                    )}
+                  </div>
+                </div>
+              )}
               <div className="drawer-section">
                 <div className="drawer-section-label">Scores</div>
                 <div className="drawer-section-content">
                   Business Value: {item.businessValue} · Customer Value: {item.customerValue}
                 </div>
-              </div>
-              <div className="drawer-section">
-                <div className="drawer-section-label">Steps linked</div>
-                <div className="drawer-section-content">{item.stepsLinked}</div>
               </div>
             </>
           )}
@@ -115,6 +150,12 @@ function DetailDrawer({ item, type, onClose }) {
                 <div className="drawer-section">
                   <div className="drawer-section-label">Source</div>
                   <div className="drawer-section-content">{item.source}</div>
+                </div>
+              )}
+              {item.evidenceCount && (
+                <div className="drawer-section">
+                  <div className="drawer-section-label">Evidence</div>
+                  <div className="drawer-section-content">{item.evidenceCount} sources</div>
                 </div>
               )}
               {item.severity && (
@@ -133,39 +174,44 @@ function DetailDrawer({ item, type, onClose }) {
   )
 }
 
-/* ─── Main component ───────────────────────────────────────── */
+/* ─── Main component ───────────────────────────────────────────── */
 
 export default function JourneyMapView({ journey }) {
   const stages = [...(journey.stages || [])].sort((a, b) => a.order - b.order)
   const allInsights = journey.insights || []
 
   const [collapsed, setCollapsed] = useState({})
-  const [drawer, setDrawer] = useState(null) // { item, type }
+  const [drawer, setDrawer] = useState(null)
 
   function toggleLane(id) {
     setCollapsed(prev => ({ ...prev, [id]: !prev[id] }))
   }
 
-  // Build derived opportunities per stage (with a running global index)
+  // Build derived opportunities per stage
   let oppGlobalIdx = 0
   const oppsByStage = stages.map(stage => {
-    const list = (stage.opportunities || []).map(text => {
-      const opp = deriveOpportunity(text, oppGlobalIdx, stage.id)
+    const list = (stage.opportunities || []).map(opp => {
+      const derived = deriveOpportunity(opp, oppGlobalIdx, stage.id)
       oppGlobalIdx++
-      return opp
+      return derived
     })
     return list
   })
 
-  // Build insights per stage: structured insights + pain points
+  // Build insights per stage: top-level structured insights + stage pain points
   const insightsByStage = stages.map(stage => {
     const structured = allInsights
       .filter(ins => ins.stage === stage.id)
-      .map(ins => ({ ...ins, type: ins.severity === 'high' ? 'pain' : 'need' }))
+      .map(ins => ({
+        ...ins,
+        text: ins.description ?? ins.text,
+        type: ins.severity === 'high' ? 'pain' : ins.severity === 'medium' ? 'need' : 'gain',
+      }))
 
-    const painPoints = (stage.painPoints || []).map((text, i) => derivePainPoint(text, i, stage.id))
+    const painPoints = (stage.painPoints || []).map((pp, i) =>
+      derivePainPoint(pp, i, stage.id)
+    )
 
-    // Deduplicate: prefer structured where they overlap
     return [...structured, ...painPoints]
   })
 
@@ -272,7 +318,6 @@ export default function JourneyMapView({ journey }) {
             onToggle={() => toggleLane('emotion')}
             className="emotion-bg"
           />
-          {/* Spans all phase columns */}
           <div
             className="swim-lane-cell emotion-bg"
             style={{ gridColumn: `2 / span ${N}`, padding: '8px 0' }}
@@ -361,7 +406,7 @@ export default function JourneyMapView({ journey }) {
           })}
 
           {/* ── Touchpoints matrix lane ───────────────────── */}
-          <div className={`swim-lane-label-cell touchpoints-bg`} style={{ flexDirection: 'column', gap: 0 }}>
+          <div className="swim-lane-label-cell touchpoints-bg" style={{ flexDirection: 'column', gap: 0 }}>
             <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', width: '100%' }}>
               <span className="swim-lane-label-text">Touchpoints</span>
               <button

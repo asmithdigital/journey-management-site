@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 export default function OpportunityCard({ opportunity, onClick }) {
-  const { title, status, score, businessValue, customerValue, stepsLinked } = opportunity
+  const { title, status, score, businessValue, customerValue, impact, effort } = opportunity
 
   const statusLabel = {
     'open': 'Open',
@@ -23,6 +23,13 @@ export default function OpportunityCard({ opportunity, onClick }) {
       </div>
 
       <div className="opp-card-title">{title}</div>
+
+      {(impact || effort) && (
+        <div className="opp-impact-effort">
+          {impact && <span className={`impact-tag impact-${impact}`}>{impact} impact</span>}
+          {effort && <span className={`effort-tag effort-${effort}`}>{effort} effort</span>}
+        </div>
+      )}
 
       <div className="opp-card-score-row">
         <div className="score-bar-track">

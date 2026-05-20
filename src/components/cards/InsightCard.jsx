@@ -1,7 +1,9 @@
 import React from 'react'
 
 export default function InsightCard({ insight, onClick }) {
-  const { text, type, severity, source, recurrence, totalParticipants } = insight
+  const { description, text, type, severity, source, recurrence, totalParticipants, evidenceCount } = insight
+
+  const displayText = description ?? text
 
   const tagType = type ?? (severity === 'high' ? 'pain' : severity === 'medium' ? 'need' : 'gain')
   const tagLabel = {
@@ -16,6 +18,8 @@ export default function InsightCard({ insight, onClick }) {
 
   const linkedCount = recurrence && totalParticipants
     ? `${recurrence}:${totalParticipants}`
+    : evidenceCount
+    ? `${evidenceCount} sources`
     : null
 
   return (
@@ -32,7 +36,7 @@ export default function InsightCard({ insight, onClick }) {
         </div>
       </div>
 
-      <div className="insight-card-text">{text}</div>
+      <div className="insight-card-text">{displayText}</div>
 
       {source && (
         <div className="insight-card-footer">
