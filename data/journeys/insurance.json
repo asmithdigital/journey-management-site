@@ -5,6 +5,11 @@
   "lastUpdated": "2026-05-21",
   "owner": "EXD Team",
   "description": "The end-to-end insurance experience across quoting, purchasing, renewing, and claiming.",
+  "nestedJourneyPhaseMap": {
+    "quote-to-buy": ["ins-awareness", "ins-get-quote", "ins-purchase"],
+    "renewals": ["ins-ongoing", "ins-renewal"],
+    "claims": ["ins-claim", "ins-resolution"]
+  },
   "stages": [
     {
       "id": "ins-awareness",
