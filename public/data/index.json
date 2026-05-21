@@ -60,6 +60,26 @@
     {
       "date": "2026-05-21",
       "type": "added",
+      "description": "Per-journey changelog tabs added to all journey detail pages"
+    },
+    {
+      "date": "2026-05-21",
+      "type": "added",
+      "description": "What's New page showing aggregated changelog entries across all journeys"
+    },
+    {
+      "date": "2026-05-21",
+      "type": "added",
+      "description": "Automated changelog system via git hooks"
+    },
+    {
+      "date": "2026-05-21",
+      "type": "added",
+      "description": "SPA routing fix for direct URL access from external links"
+    },
+    {
+      "date": "2026-05-21",
+      "type": "added",
       "description": "RAA Membership journeys added: My Account, Quote to Buy, Renewals, Claims"
     },
     {
