@@ -59,6 +59,11 @@
   "changelog": [
     {
       "date": "2026-05-21",
+      "type": "changed",
+      "description": "Visual overhaul of the journey management platform — improved contrast, card layouts, phase columns, and sidebar styling"
+    },
+    {
+      "date": "2026-05-21",
       "type": "added",
       "description": "Per-journey changelog tabs added to all journey detail pages"
     },
