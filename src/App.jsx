@@ -6,6 +6,11 @@ import JourneyMap from './pages/JourneyMap.jsx'
 import OpportunityMatrix from './components/matrix/OpportunityMatrix.jsx'
 import Search from './pages/Search.jsx'
 import WhatsNew from './pages/WhatsNew.jsx'
+import GlobalInsights from './pages/GlobalInsights.jsx'
+import GlobalOpportunities from './pages/GlobalOpportunities.jsx'
+import GlobalSolutions from './pages/GlobalSolutions.jsx'
+import GlobalMetrics from './pages/GlobalMetrics.jsx'
+import Personas from './pages/Personas.jsx'
 
 export const DataContext = createContext(null)
 export const SidebarContext = createContext({ sidebarOpen: false, openSidebar: () => {}, closeSidebar: () => {} })
@@ -108,6 +113,11 @@ export default function App() {
               } />
               <Route path="/search" element={<Search />} />
               <Route path="/whats-new" element={<WhatsNew />} />
+              <Route path="/insights" element={<GlobalInsights />} />
+              <Route path="/opportunities" element={<GlobalOpportunities />} />
+              <Route path="/solutions" element={<GlobalSolutions />} />
+              <Route path="/metrics" element={<GlobalMetrics />} />
+              <Route path="/personas" element={<Personas />} />
             </Routes>
           </main>
         </div>

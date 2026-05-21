@@ -10,6 +10,14 @@ const NAV_ITEMS = [
   { icon: '⊞', label: 'Data hub', to: '#' },
 ]
 
+const REPOSITORY_ITEMS = [
+  { icon: '◈', label: 'Insights', to: '/insights' },
+  { icon: '◆', label: 'Opportunities', to: '/opportunities' },
+  { icon: '✓', label: 'Solutions', to: '/solutions' },
+  { icon: '▣', label: 'Metrics', to: '/metrics' },
+  { icon: '◉', label: 'Personas', to: '/personas' },
+]
+
 const BUILDING_BLOCKS = [
   { icon: '⊞', label: 'Journeys' },
   { icon: '◉', label: 'Personas' },
@@ -103,6 +111,7 @@ export default function Sidebar() {
   const { index, journeys } = useData()
   const { sidebarOpen, closeSidebar } = useContext(SidebarContext)
   const [frameworksOpen, setFrameworksOpen] = useState(true)
+  const [repositoryOpen, setRepositoryOpen] = useState(true)
   const [blocksOpen, setBlocksOpen] = useState(false)
   const [openNodes, setOpenNodes] = useState({})
 
@@ -193,6 +202,34 @@ export default function Sidebar() {
               toggleNode={toggleNode}
               journeys={journeys}
             />
+          ))}
+        </div>
+
+        {/* Repository */}
+        <div className="sidebar-section">
+          <div className="sidebar-section-header">
+            <span className="sidebar-section-label">Repository</span>
+            <div className="sidebar-section-actions">
+              <button
+                className="sidebar-icon-btn"
+                onClick={() => setRepositoryOpen(o => !o)}
+                title="Collapse"
+              >
+                {repositoryOpen ? '▾' : '▸'}
+              </button>
+            </div>
+          </div>
+          {repositoryOpen && REPOSITORY_ITEMS.map(item => (
+            <NavLink
+              key={item.label}
+              to={item.to}
+              className={({ isActive }) => `sidebar-tree-item${isActive ? ' active' : ''}`}
+              style={{ paddingLeft: 22 }}
+              onClick={closeSidebar}
+            >
+              <span className="sidebar-nav-icon" style={{ fontSize: 12, marginRight: 6 }}>{item.icon}</span>
+              {item.label}
+            </NavLink>
           ))}
         </div>
 
