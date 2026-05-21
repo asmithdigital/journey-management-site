@@ -1687,6 +1687,120 @@ a.sidebar-tree-group-name.active {
   line-height: 1.6;
 }
 
+/* ─── What's New / Changelog ─────────────────────────────────── */
+
+.whats-new-page {
+  padding: 24px 28px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.changelog-month-group {
+  margin-bottom: 28px;
+}
+
+.changelog-month-heading {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: var(--text-muted);
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.changelog-entries {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.changelog-entry {
+  display: flex;
+  gap: 16px;
+  background: white;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 12px 14px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.changelog-entry-date {
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  padding-top: 2px;
+  min-width: 110px;
+}
+
+.changelog-entry-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.changelog-entry-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.changelog-entry-desc {
+  font-size: 13px;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+.changelog-journey-link {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--accent-purple);
+  text-decoration: none;
+  transition: opacity 0.12s;
+}
+
+.changelog-journey-link:hover {
+  opacity: 0.75;
+  text-decoration: underline;
+}
+
+.changelog-workspace-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.changelog-type-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 7px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.changelog-type-added {
+  background: var(--gain-bg);
+  color: var(--gain-text);
+  border: 1px solid #bbf7d0;
+}
+
+.changelog-type-changed {
+  background: var(--status-inprogress-bg);
+  color: var(--status-inprogress-text);
+  border: 1px solid var(--status-inprogress-border);
+}
+
+.changelog-type-fixed {
+  background: var(--need-bg);
+  color: var(--need-text);
+  border: 1px solid #bfdbfe;
+}
+
 /* ─── Scrollbars ─────────────────────────────────────────────── */
 
 .journey-canvas::-webkit-scrollbar,

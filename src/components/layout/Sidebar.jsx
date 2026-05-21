@@ -5,7 +5,7 @@ import { useData } from '../../App.jsx'
 const NAV_ITEMS = [
   { icon: '⌂', label: 'Home', to: '/' },
   { icon: '⌕', label: 'Search', to: '/search' },
-  { icon: '⚐', label: 'Updates', to: '#' },
+  { icon: '✦', label: "What's New", to: '/whats-new' },
   { icon: '◎', label: 'Goals', to: '#' },
   { icon: '⊞', label: 'Data hub', to: '#' },
 ]

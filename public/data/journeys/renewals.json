@@ -11,16 +11,49 @@
       "name": "Receive Renewal Notice",
       "order": 1,
       "description": "Member receives email and/or letter notifying them their policy is due for renewal",
-      "actions": ["Receive email notification", "Open renewal email", "Click through to My Account or call"],
-      "thoughts": ["How much will it cost this year?", "Has my premium gone up?", "Do I need to do anything?"],
-      "emotions": { "score": 4, "label": "Slightly negative" },
+      "actions": [
+        "Receive email notification",
+        "Open renewal email",
+        "Click through to My Account or call"
+      ],
+      "thoughts": [
+        "How much will it cost this year?",
+        "Has my premium gone up?",
+        "Do I need to do anything?"
+      ],
+      "emotions": {
+        "score": 4,
+        "label": "Slightly negative"
+      },
       "painPoints": [
-        { "id": "ren-pp-1", "description": "Renewal email doesn't show the new premium amount. Members have to log in to see the price, which many don't do until the renewal date passes.", "severity": "high", "source": "Support ticket analysis, Q1 2026", "evidenceCount": 18 },
-        { "id": "ren-pp-2", "description": "The email CTA says 'View your renewal' but links to the My Account login page, not directly to the renewal details. Members who aren't logged in face an extra step.", "severity": "medium", "source": "Analytics review, February 2026", "evidenceCount": 1 }
+        {
+          "id": "ren-pp-1",
+          "description": "Renewal email doesn't show the new premium amount. Members have to log in to see the price, which many don't do until the renewal date passes.",
+          "severity": "high",
+          "source": "Support ticket analysis, Q1 2026",
+          "evidenceCount": 18
+        },
+        {
+          "id": "ren-pp-2",
+          "description": "The email CTA says 'View your renewal' but links to the My Account login page, not directly to the renewal details. Members who aren't logged in face an extra step.",
+          "severity": "medium",
+          "source": "Analytics review, February 2026",
+          "evidenceCount": 1
+        }
       ],
       "opportunities": [
-        { "id": "ren-op-1", "description": "Include the new premium amount and the year-on-year change in the renewal email subject line and body", "impact": "high", "effort": "low" },
-        { "id": "ren-op-2", "description": "Deep link the email CTA directly to the renewal summary page, with authentication handled inline", "impact": "medium", "effort": "medium" }
+        {
+          "id": "ren-op-1",
+          "description": "Include the new premium amount and the year-on-year change in the renewal email subject line and body",
+          "impact": "high",
+          "effort": "low"
+        },
+        {
+          "id": "ren-op-2",
+          "description": "Deep link the email CTA directly to the renewal summary page, with authentication handled inline",
+          "impact": "medium",
+          "effort": "medium"
+        }
       ]
     },
     {
@@ -28,16 +61,50 @@
       "name": "Review Renewal Details",
       "order": 2,
       "description": "Member reviews the renewed policy details, premium changes, and coverage",
-      "actions": ["Log in to My Account", "Navigate to the renewing product", "Review new premium", "Compare with previous year"],
-      "thoughts": ["Why did my premium go up?", "Is this still the right cover for me?", "Can I get a better deal?"],
-      "emotions": { "score": 3, "label": "Negative" },
+      "actions": [
+        "Log in to My Account",
+        "Navigate to the renewing product",
+        "Review new premium",
+        "Compare with previous year"
+      ],
+      "thoughts": [
+        "Why did my premium go up?",
+        "Is this still the right cover for me?",
+        "Can I get a better deal?"
+      ],
+      "emotions": {
+        "score": 3,
+        "label": "Negative"
+      },
       "painPoints": [
-        { "id": "ren-pp-3", "description": "No year-on-year comparison shown. Members can't see what changed between last year and this year without checking old documents.", "severity": "high", "source": "User interview, January 2026", "evidenceCount": 4 },
-        { "id": "ren-pp-4", "description": "No explanation of why the premium changed (claims history, market changes, property value adjustment). Members feel the increase is arbitrary.", "severity": "high", "source": "Usability test round 3, February 2026", "evidenceCount": 6 }
+        {
+          "id": "ren-pp-3",
+          "description": "No year-on-year comparison shown. Members can't see what changed between last year and this year without checking old documents.",
+          "severity": "high",
+          "source": "User interview, January 2026",
+          "evidenceCount": 4
+        },
+        {
+          "id": "ren-pp-4",
+          "description": "No explanation of why the premium changed (claims history, market changes, property value adjustment). Members feel the increase is arbitrary.",
+          "severity": "high",
+          "source": "Usability test round 3, February 2026",
+          "evidenceCount": 6
+        }
       ],
       "opportunities": [
-        { "id": "ren-op-3", "description": "Show a side-by-side comparison of last year vs this year premium, excess, and coverage", "impact": "high", "effort": "medium" },
-        { "id": "ren-op-4", "description": "Add a 'Why your premium changed' explanation with the contributing factors", "impact": "high", "effort": "medium" }
+        {
+          "id": "ren-op-3",
+          "description": "Show a side-by-side comparison of last year vs this year premium, excess, and coverage",
+          "impact": "high",
+          "effort": "medium"
+        },
+        {
+          "id": "ren-op-4",
+          "description": "Add a 'Why your premium changed' explanation with the contributing factors",
+          "impact": "high",
+          "effort": "medium"
+        }
       ]
     },
     {
@@ -45,22 +112,87 @@
       "name": "Adjust or Accept",
       "order": 3,
       "description": "Member decides whether to accept the renewal as-is, adjust their coverage, or let it lapse",
-      "actions": ["Decide to accept, adjust, or leave", "If adjusting: change excess, sum insured, or optional covers", "Confirm renewal"],
-      "thoughts": ["Should I shop around?", "Can I reduce my premium by increasing excess?", "What if I just let it lapse?"],
-      "emotions": { "score": 4, "label": "Slightly negative" },
+      "actions": [
+        "Decide to accept, adjust, or leave",
+        "If adjusting: change excess, sum insured, or optional covers",
+        "Confirm renewal"
+      ],
+      "thoughts": [
+        "Should I shop around?",
+        "Can I reduce my premium by increasing excess?",
+        "What if I just let it lapse?"
+      ],
+      "emotions": {
+        "score": 4,
+        "label": "Slightly negative"
+      },
       "painPoints": [
-        { "id": "ren-pp-5", "description": "There's no in-flow option to adjust cover at renewal. Members must call or start a new quote to change anything.", "severity": "high", "source": "Support ticket analysis, Q4 2025", "evidenceCount": 22 },
-        { "id": "ren-pp-6", "description": "Auto-renewal happens by default. Some members don't realise they've been renewed until they see the charge on their bank statement.", "severity": "high", "source": "Complaints analysis, Q1 2026", "evidenceCount": 9 }
+        {
+          "id": "ren-pp-5",
+          "description": "There's no in-flow option to adjust cover at renewal. Members must call or start a new quote to change anything.",
+          "severity": "high",
+          "source": "Support ticket analysis, Q4 2025",
+          "evidenceCount": 22
+        },
+        {
+          "id": "ren-pp-6",
+          "description": "Auto-renewal happens by default. Some members don't realise they've been renewed until they see the charge on their bank statement.",
+          "severity": "high",
+          "source": "Complaints analysis, Q1 2026",
+          "evidenceCount": 9
+        }
       ],
       "opportunities": [
-        { "id": "ren-op-5", "description": "Allow members to adjust excess, sum insured, and optional covers online during the renewal window without starting a new quote", "impact": "high", "effort": "high" },
-        { "id": "ren-op-6", "description": "Send a clear reminder 7 days before auto-renewal with the premium amount and a one-click option to pause or cancel", "impact": "high", "effort": "medium" }
+        {
+          "id": "ren-op-5",
+          "description": "Allow members to adjust excess, sum insured, and optional covers online during the renewal window without starting a new quote",
+          "impact": "high",
+          "effort": "high"
+        },
+        {
+          "id": "ren-op-6",
+          "description": "Send a clear reminder 7 days before auto-renewal with the premium amount and a one-click option to pause or cancel",
+          "impact": "high",
+          "effort": "medium"
+        }
       ]
     }
   ],
   "insights": [
-    { "id": "ren-in-1", "description": "18 support tickets in Q1 2026 were from members who didn't know their new premium until after auto-renewal charged their account.", "severity": "high", "source": "Support ticket analysis, Q1 2026", "relatedPainPoints": ["ren-pp-1", "ren-pp-6"] },
-    { "id": "ren-in-2", "description": "22 support calls in Q4 2025 were members wanting to adjust their cover at renewal but finding no online option. Average call duration: 12 minutes.", "severity": "high", "source": "Support ticket analysis, Q4 2025", "relatedPainPoints": ["ren-pp-5"] },
-    { "id": "ren-in-3", "description": "6 of 8 participants in the February 2026 test said they felt the premium increase was 'unfair' or 'unexplained'. All 6 said a simple explanation would have made the increase acceptable.", "severity": "high", "source": "Usability test round 3, February 2026", "relatedPainPoints": ["ren-pp-4"] }
+    {
+      "id": "ren-in-1",
+      "description": "18 support tickets in Q1 2026 were from members who didn't know their new premium until after auto-renewal charged their account.",
+      "severity": "high",
+      "source": "Support ticket analysis, Q1 2026",
+      "relatedPainPoints": [
+        "ren-pp-1",
+        "ren-pp-6"
+      ]
+    },
+    {
+      "id": "ren-in-2",
+      "description": "22 support calls in Q4 2025 were members wanting to adjust their cover at renewal but finding no online option. Average call duration: 12 minutes.",
+      "severity": "high",
+      "source": "Support ticket analysis, Q4 2025",
+      "relatedPainPoints": [
+        "ren-pp-5"
+      ]
+    },
+    {
+      "id": "ren-in-3",
+      "description": "6 of 8 participants in the February 2026 test said they felt the premium increase was 'unfair' or 'unexplained'. All 6 said a simple explanation would have made the increase acceptable.",
+      "severity": "high",
+      "source": "Usability test round 3, February 2026",
+      "relatedPainPoints": [
+        "ren-pp-4"
+      ]
+    }
+  ],
+  "changelog": [
+    {
+      "date": "2026-05-21",
+      "type": "added",
+      "description": "Journey data published with full research findings, pain points, opportunities, and insights"
+    }
   ]
 }

@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard.jsx'
 import JourneyMap from './pages/JourneyMap.jsx'
 import OpportunityMatrix from './components/matrix/OpportunityMatrix.jsx'
 import Search from './pages/Search.jsx'
+import WhatsNew from './pages/WhatsNew.jsx'
 
 export const DataContext = createContext(null)
 
@@ -85,6 +86,7 @@ export default function App() {
               </div>
             } />
             <Route path="/search" element={<Search />} />
+            <Route path="/whats-new" element={<WhatsNew />} />
           </Routes>
         </main>
       </div>

@@ -92,6 +92,34 @@ function PlaceholderTab({ label }) {
   )
 }
 
+function ChangelogTab({ journey }) {
+  const entries = [...(journey.changelog || [])].sort((a, b) => b.date.localeCompare(a.date))
+  return (
+    <div style={{ padding: '16px 20px', overflow: 'auto', flex: 1 }}>
+      {entries.length === 0 && (
+        <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>No changelog entries yet.</div>
+      )}
+      <div className="changelog-entries">
+        {entries.map((entry, i) => (
+          <div key={i} className="changelog-entry">
+            <div className="changelog-entry-date">
+              {new Date(entry.date + 'T00:00:00').toLocaleDateString('en-AU', {
+                day: 'numeric', month: 'long', year: 'numeric',
+              })}
+            </div>
+            <div className="changelog-entry-body">
+              <div className="changelog-entry-top">
+                <span className={`changelog-type-badge changelog-type-${entry.type}`}>{entry.type}</span>
+              </div>
+              <div className="changelog-entry-desc">{entry.description}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export default function JourneyMap() {
   const { journeyId } = useParams()
   const { index, journeys } = useData()
@@ -128,6 +156,7 @@ export default function JourneyMap() {
         {activeTab === 'opportunities' && <OpportunityMatrix journey={journey} />}
         {activeTab === 'solutions' && <PlaceholderTab label="Solutions" />}
         {activeTab === 'metrics' && <PlaceholderTab label="Metrics" />}
+        {activeTab === 'changelog' && <ChangelogTab journey={journey} />}
       </div>
     </div>
   )
