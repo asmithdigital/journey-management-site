@@ -1,5 +1,12 @@
 import React from 'react'
 
+const TYPE_STYLE = {
+  pain:        { background: '#FFF5F5', borderLeft: '3px solid #FF5630' },
+  need:        { background: '#F0F5FF', borderLeft: '3px solid #0052CC' },
+  gain:        { background: '#F0FFF4', borderLeft: '3px solid #36B37E' },
+  observation: { background: '#F8F5FF', borderLeft: '3px solid #6554C0' },
+}
+
 export default function InsightCard({ insight, onClick }) {
   const { description, text, type, severity, source, recurrence, totalParticipants, evidenceCount } = insight
 
@@ -22,8 +29,10 @@ export default function InsightCard({ insight, onClick }) {
     ? `${evidenceCount} sources`
     : null
 
+  const cardStyle = TYPE_STYLE[tagType] ?? {}
+
   return (
-    <div className="insight-card" onClick={onClick}>
+    <div className="insight-card" style={cardStyle} onClick={onClick}>
       <div className="insight-card-top">
         <span className={`insight-tag ${tagType}`}>{tagLabel} ▾</span>
         {linkedCount && (

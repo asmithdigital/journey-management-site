@@ -11,7 +11,11 @@ export default function OpportunityCard({ opportunity, onClick }) {
   }[status] ?? 'Open'
 
   return (
-    <div className="opportunity-card" onClick={onClick}>
+    <div
+      className="opportunity-card"
+      style={{ background: '#F8F5FF', borderLeft: '3px solid #6554C0' }}
+      onClick={onClick}
+    >
       <div className="opp-card-top">
         <span className={`status-tag ${status}`}>
           {statusLabel} <span className="tag-chevron">▾</span>
