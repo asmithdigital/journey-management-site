@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Link } from 'react-router-dom'
+import { SidebarContext } from '../../App.jsx'
 
 function StatusBadge({ status }) {
   const labels = {
@@ -16,8 +17,10 @@ function StatusBadge({ status }) {
 }
 
 export default function TopBar({ journey, ancestors = [] }) {
+  const { openSidebar } = useContext(SidebarContext)
   return (
     <div className="topbar">
+      <button className="topbar-hamburger-btn" onClick={openSidebar} aria-label="Open menu">☰</button>
       <div className="topbar-left">
         <Link to="/" className="topbar-breadcrumb-link">Journeys</Link>
         {ancestors.map(anc => (

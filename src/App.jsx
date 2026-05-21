@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import Sidebar from './components/layout/Sidebar.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import JourneyMap from './pages/JourneyMap.jsx'
@@ -8,6 +8,7 @@ import Search from './pages/Search.jsx'
 import WhatsNew from './pages/WhatsNew.jsx'
 
 export const DataContext = createContext(null)
+export const SidebarContext = createContext({ sidebarOpen: false, openSidebar: () => {}, closeSidebar: () => {} })
 
 export function useData() {
   return useContext(DataContext)
@@ -19,11 +20,29 @@ function collectAllIds(nodes) {
   return nodes.flatMap(node => [node.id, ...collectAllIds(node.children || [])])
 }
 
+function MobileAppBar() {
+  const location = useLocation()
+  const { openSidebar } = useContext(SidebarContext)
+  // Journey pages have their own TopBar with a hamburger button
+  if (location.pathname.startsWith('/journey/')) return null
+  return (
+    <div className="mobile-app-bar">
+      <button className="hamburger-btn" onClick={openSidebar} aria-label="Open menu">
+        ☰
+      </button>
+    </div>
+  )
+}
+
 export default function App() {
   const [index, setIndex] = useState(null)
   const [journeys, setJourneys] = useState({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+
+  const openSidebar = () => setSidebarOpen(true)
+  const closeSidebar = () => setSidebarOpen(false)
 
   useEffect(() => {
     async function loadData() {
@@ -74,22 +93,25 @@ export default function App() {
 
   return (
     <DataContext.Provider value={{ index, journeys }}>
-      <div className="app-shell">
-        <Sidebar />
-        <main className="main-content">
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/journey/:journeyId" element={<JourneyMap />} />
-            <Route path="/matrix" element={
-              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-                <OpportunityMatrix allJourneys={journeys} />
-              </div>
-            } />
-            <Route path="/search" element={<Search />} />
-            <Route path="/whats-new" element={<WhatsNew />} />
-          </Routes>
-        </main>
-      </div>
+      <SidebarContext.Provider value={{ sidebarOpen, openSidebar, closeSidebar }}>
+        <div className="app-shell">
+          <Sidebar />
+          <main className="main-content">
+            <MobileAppBar />
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/journey/:journeyId" element={<JourneyMap />} />
+              <Route path="/matrix" element={
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                  <OpportunityMatrix allJourneys={journeys} />
+                </div>
+              } />
+              <Route path="/search" element={<Search />} />
+              <Route path="/whats-new" element={<WhatsNew />} />
+            </Routes>
+          </main>
+        </div>
+      </SidebarContext.Provider>
     </DataContext.Provider>
   )
 }
