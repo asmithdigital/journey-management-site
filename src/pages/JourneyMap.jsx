@@ -5,7 +5,6 @@ import TopBar from '../components/layout/TopBar.jsx'
 import TabNav from '../components/shared/TabNav.jsx'
 import JourneyMapView from '../components/journey/JourneyMapView.jsx'
 import OpportunityMatrix from '../components/matrix/OpportunityMatrix.jsx'
-import InsightCard from '../components/cards/InsightCard.jsx'
 
 function findAncestors(nodes, targetId, acc = []) {
   for (const node of nodes) {
@@ -41,9 +40,78 @@ function normalisePainPoint(pp, stageId, index) {
   }
 }
 
-/* ─── Insights tab ─────────────────────────────────────────────── */
+/* ─── Insight detail panel ─────────────────────────────────────── */
+
+function InsightDetailPanel({ item, onClose }) {
+  if (!item) return null
+  const TYPE_BADGE = {
+    pain:        { background: '#FF5630', color: 'white' },
+    need:        { background: '#0052CC', color: 'white' },
+    gain:        { background: '#36B37E', color: 'white' },
+    observation: { background: '#6554C0', color: 'white' },
+  }
+  const badge = TYPE_BADGE[item.type] ?? { background: '#5E6C84', color: 'white' }
+  const typeLabel = item.type ? item.type.charAt(0).toUpperCase() + item.type.slice(1) : 'Insight'
+
+  return (
+    <div className="drawer-overlay" onClick={onClose}>
+      <div className="drawer-panel" onClick={e => e.stopPropagation()}>
+        <div className="drawer-header">
+          <span className="insight-tag" style={{ ...badge, marginRight: 8, flexShrink: 0 }}>
+            {typeLabel}
+          </span>
+          <div className="drawer-title" style={{ flex: 1 }}>{item.text}</div>
+          <button className="drawer-close" onClick={onClose}>×</button>
+        </div>
+        <div className="drawer-body">
+          <div className="drawer-section">
+            <div className="drawer-section-label">Full text</div>
+            <div className="drawer-section-content" style={{ lineHeight: 1.7 }}>{item.text}</div>
+          </div>
+          {item.severity && (
+            <div className="drawer-section">
+              <div className="drawer-section-label">Severity</div>
+              <div className="drawer-section-content">
+                <span className={`insight-tag ${item.severity}`}>{item.severity}</span>
+              </div>
+            </div>
+          )}
+          {item.source && (
+            <div className="drawer-section">
+              <div className="drawer-section-label">Source</div>
+              <div className="drawer-section-content">{item.source}</div>
+            </div>
+          )}
+          {item.evidenceCount && (
+            <div className="drawer-section">
+              <div className="drawer-section-label">Evidence</div>
+              <div className="drawer-section-content">{item.evidenceCount} sources</div>
+            </div>
+          )}
+          {item.stageName && (
+            <div className="drawer-section">
+              <div className="drawer-section-label">Stage</div>
+              <div className="drawer-section-content">{item.stageName}</div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* ─── Insights tab — table list (Fix 3) ────────────────────────── */
+
+const TYPE_DOT_COLOR = {
+  pain:        '#FF5630',
+  need:        '#0052CC',
+  gain:        '#36B37E',
+  observation: '#6554C0',
+}
 
 function InsightsTab({ journey }) {
+  const [selected, setSelected] = useState(null)
+
   const stages = [...(journey.stages || [])].sort((a, b) => a.order - b.order)
   const insights = journey.insights || []
 
@@ -62,15 +130,49 @@ function InsightsTab({ journey }) {
   ]
 
   return (
-    <div style={{ padding: '16px 20px', overflow: 'auto', flex: 1 }}>
-      {allInsights.length === 0 && (
-        <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>No insights available for this journey.</div>
+    <div style={{ flex: 1, overflow: 'auto', display: 'flex', flexDirection: 'column' }}>
+      {allInsights.length === 0 ? (
+        <div style={{ padding: '24px 20px', fontSize: 13, color: 'var(--text-muted)' }}>
+          No insights available for this journey.
+        </div>
+      ) : (
+        <div className="insights-list-wrap">
+          <div className="insights-list-header">
+            <span className="ilc-dot" />
+            <span className="ilc-text">Insight</span>
+            <span className="ilc-sev">Severity</span>
+            <span className="ilc-src">Source</span>
+            <span className="ilc-ev">Evidence</span>
+          </div>
+          {allInsights.map(ins => (
+            <div
+              key={ins.id}
+              className="insights-list-row"
+              onClick={() => setSelected(ins)}
+            >
+              <span className="ilc-dot">
+                <span
+                  className="insights-type-dot"
+                  style={{ background: TYPE_DOT_COLOR[ins.type] ?? '#C1C7D0' }}
+                />
+              </span>
+              <span className="ilc-text insights-list-text">{ins.text}</span>
+              <span className="ilc-sev">
+                {ins.severity && (
+                  <span className={`insight-tag ${ins.severity}`} style={{ fontSize: 10 }}>
+                    {ins.severity}
+                  </span>
+                )}
+              </span>
+              <span className="ilc-src insights-list-meta">{ins.source ?? '—'}</span>
+              <span className="ilc-ev insights-list-meta">
+                {ins.evidenceCount ? `${ins.evidenceCount} src` : '—'}
+              </span>
+            </div>
+          ))}
+        </div>
       )}
-      <div className="insights-tab-list">
-        {allInsights.map(ins => (
-          <InsightCard key={ins.id} insight={ins} />
-        ))}
-      </div>
+      {selected && <InsightDetailPanel item={selected} onClose={() => setSelected(null)} />}
     </div>
   )
 }
@@ -115,79 +217,7 @@ function PlaceholderTab({ label }) {
   )
 }
 
-/* ─── Filter bar (Parts 7 & 8) ─────────────────────────────────── */
-
-const TYPE_PILLS = [
-  { id: 'all', label: 'All' },
-  { id: 'pain', label: 'Pain' },
-  { id: 'need', label: 'Need' },
-  { id: 'gain', label: 'Gain' },
-  { id: 'observation', label: 'Observation' },
-  { id: 'opportunities', label: 'Opportunities' },
-]
-
-const SEVERITY_PILLS = [
-  { id: 'high', label: 'High' },
-  { id: 'medium', label: 'Medium' },
-  { id: 'low', label: 'Low' },
-]
-
-const TYPE_ACTIVE_STYLE = {
-  all:           { background: '#172B4D', color: 'white', borderColor: '#172B4D' },
-  pain:          { background: '#FF5630', color: 'white', borderColor: '#FF5630' },
-  need:          { background: '#0052CC', color: 'white', borderColor: '#0052CC' },
-  gain:          { background: '#36B37E', color: 'white', borderColor: '#36B37E' },
-  observation:   { background: '#6554C0', color: 'white', borderColor: '#6554C0' },
-  opportunities: { background: '#6554C0', color: 'white', borderColor: '#6554C0' },
-}
-
-const SEV_ACTIVE_STYLE = {
-  high:   { background: '#FFEBE6', color: '#BF2600', borderColor: '#FFBDAD' },
-  medium: { background: '#FFF0B3', color: '#5E4701', borderColor: '#FFE380' },
-  low:    { background: '#E3FCEF', color: '#006644', borderColor: '#ABF5D1' },
-}
-
-function FilterBar({ typeFilters, severityFilters, onTypeToggle, onSeverityToggle }) {
-  return (
-    <div className="filter-bar">
-      <span className="filter-bar-label">Filter</span>
-      <div className="filter-bar-pills">
-        {TYPE_PILLS.map(pill => {
-          const isActive = typeFilters.has(pill.id)
-          return (
-            <button
-              key={pill.id}
-              className={`filter-pill${isActive ? ' active' : ''}`}
-              style={isActive ? (TYPE_ACTIVE_STYLE[pill.id] ?? {}) : {}}
-              onClick={() => onTypeToggle(pill.id)}
-            >
-              {pill.label}
-            </button>
-          )
-        })}
-      </div>
-      <div className="filter-bar-divider" />
-      <span className="filter-bar-label">Severity</span>
-      <div className="filter-bar-pills">
-        {SEVERITY_PILLS.map(pill => {
-          const isActive = severityFilters.has(pill.id)
-          return (
-            <button
-              key={pill.id}
-              className={`filter-pill${isActive ? ' active' : ''}`}
-              style={isActive ? (SEV_ACTIVE_STYLE[pill.id] ?? {}) : {}}
-              onClick={() => onSeverityToggle(pill.id)}
-            >
-              {pill.label}
-            </button>
-          )
-        })}
-      </div>
-    </div>
-  )
-}
-
-/* ─── Parent Journey View (Part 1 — no data, has children) ──────── */
+/* ─── Parent Journey View ──────────────────────────────────────── */
 
 const STATUS_DOT_COLORS = {
   validated:     '#36B37E',
@@ -195,8 +225,6 @@ const STATUS_DOT_COLORS = {
   discovery:     '#6554C0',
   open:          '#C1C7D0',
 }
-
-const ACCENT_COLORS_PARENT = ['#0052CC', '#6554C0', '#36B37E', '#FF991F', '#00B8D9']
 
 function ParentChildCard({ node, journeys }) {
   const jData = journeys[node.id]
@@ -279,7 +307,6 @@ export default function JourneyMap() {
   const { journeyId } = useParams()
   const { index, journeys } = useData()
 
-  // ALL hooks must be declared before any conditional return
   const [activeTab, setActiveTab] = useState('journey')
   const [typeFilters, setTypeFilters] = useState(new Set(['all']))
   const [severityFilters, setSeverityFilters] = useState(new Set())
@@ -300,7 +327,6 @@ export default function JourneyMap() {
     })),
   [hierarchyNode, journeys])
 
-  // Compute badge counts for TabNav (Part 11) — must be declared before early returns
   const insightCount = useMemo(() => {
     if (!journey) return null
     const isFiltered = !typeFilters.has('all') || severityFilters.size > 0
@@ -333,7 +359,7 @@ export default function JourneyMap() {
     return [...(journey.stages || [])].reduce((acc, s) => acc + (s.opportunities || []).length, 0)
   }, [journey, typeFilters, severityFilters])
 
-  // Conditional returns AFTER all hooks
+  // Conditional returns after all hooks
   if (!journey && hierarchyNode?.children?.length > 0) {
     return (
       <ParentJourneyView
@@ -386,6 +412,10 @@ export default function JourneyMap() {
     })
   }
 
+  const filterProps = activeTab === 'journey'
+    ? { typeFilters, severityFilters, onTypeToggle: toggleTypeFilter, onSeverityToggle: toggleSeverityFilter }
+    : null
+
   return (
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
       <TopBar journey={journey} ancestors={ancestors} />
@@ -394,15 +424,8 @@ export default function JourneyMap() {
         onTabChange={setActiveTab}
         insightCount={insightCount}
         oppCount={oppCount}
+        filterProps={filterProps}
       />
-      {activeTab === 'journey' && (
-        <FilterBar
-          typeFilters={typeFilters}
-          severityFilters={severityFilters}
-          onTypeToggle={toggleTypeFilter}
-          onSeverityToggle={toggleSeverityFilter}
-        />
-      )}
       <div className="journey-view-content">
         {activeTab === 'journey' && (
           <JourneyMapView

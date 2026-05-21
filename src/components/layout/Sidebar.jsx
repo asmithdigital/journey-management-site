@@ -34,7 +34,6 @@ function TreeNode({ node, depth, openNodes, toggleNode, journeys }) {
   const location = useLocation()
   const { closeSidebar } = useContext(SidebarContext)
   const hasChildren = (node.children || []).length > 0
-  const hasData = !!journeys[node.id]
   const isOpen = openNodes[node.id] !== false
   const isActive = location.pathname === `/journey/${node.id}`
   const jStatus = journeys[node.id]?.status
@@ -58,6 +57,7 @@ function TreeNode({ node, depth, openNodes, toggleNode, journeys }) {
     )
   }
 
+  // Parent node with children: arrow toggles, name navigates
   return (
     <div>
       <div
@@ -71,24 +71,14 @@ function TreeNode({ node, depth, openNodes, toggleNode, journeys }) {
         >
           {isOpen ? '▾' : '▸'}
         </button>
-        {hasData ? (
-          <NavLink
-            to={`/journey/${node.id}`}
-            end
-            className={({ isActive: ia }) => `sidebar-tree-group-name${ia ? ' active' : ''}`}
-            onClick={closeSidebar}
-          >
-            {node.name}
-          </NavLink>
-        ) : (
-          <span
-            className="sidebar-tree-group-name"
-            onClick={() => toggleNode(node.id)}
-            style={{ cursor: 'pointer' }}
-          >
-            {node.name}
-          </span>
-        )}
+        <NavLink
+          to={`/journey/${node.id}`}
+          end
+          className={({ isActive: ia }) => `sidebar-tree-group-name${ia ? ' active' : ''}`}
+          onClick={closeSidebar}
+        >
+          {node.name}
+        </NavLink>
         {jStatus && <StatusDot status={jStatus} />}
       </div>
       {isOpen && (
@@ -118,7 +108,6 @@ export default function Sidebar() {
 
   const hierarchy = index?.hierarchy || []
 
-  // Default: all nodes open on first load
   useEffect(() => {
     if (hierarchy.length > 0 && Object.keys(openNodes).length === 0) {
       const defaults = {}
