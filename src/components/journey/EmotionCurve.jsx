@@ -46,17 +46,17 @@ export default function EmotionCurve({ stages }) {
           <line
             x1={0} y1={midY}
             x2={containerWidth} y2={midY}
-            stroke="#e5e7eb" strokeWidth={1} strokeDasharray="4 4"
+            stroke="#E4E7EB" strokeWidth={1} strokeDasharray="4 4"
           />
           {/* Curve */}
-          <path d={pathD} fill="none" stroke="#22c55e" strokeWidth={2} strokeLinejoin="round" />
+          <path d={pathD} fill="none" stroke="#36B37E" strokeWidth={2} strokeLinejoin="round" />
           {/* Points */}
           {points.map((p, i) => (
             <circle
               key={i}
               cx={p.x} cy={p.y} r={4}
               fill="white"
-              stroke={p.positive ? '#22c55e' : '#ef4444'}
+              stroke={p.positive ? '#36B37E' : '#FF5630'}
               strokeWidth={2}
             />
           ))}

@@ -70,15 +70,15 @@ function InsightsTab({ journey }) {
 
   return (
     <div style={{ padding: '16px 20px', overflow: 'auto', flex: 1 }}>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 10 }}>
+      {allInsights.length === 0 && (
+        <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>
+          No insights available for this journey.
+        </div>
+      )}
+      <div className="insights-tab-list">
         {allInsights.map(ins => (
           <InsightCard key={ins.id} insight={ins} />
         ))}
-        {allInsights.length === 0 && (
-          <div style={{ fontSize: 13, color: 'var(--text-muted)', gridColumn: '1/-1' }}>
-            No insights available for this journey.
-          </div>
-        )}
       </div>
     </div>
   )

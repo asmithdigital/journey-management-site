@@ -88,16 +88,20 @@ function TreeNode({ node, depth, openNodes, toggleNode, journeys }) {
         )}
         {jStatus && <StatusDot status={jStatus} />}
       </div>
-      {isOpen && (node.children || []).map(child => (
-        <TreeNode
-          key={child.id}
-          node={child}
-          depth={depth + 1}
-          openNodes={openNodes}
-          toggleNode={toggleNode}
-          journeys={journeys}
-        />
-      ))}
+      {isOpen && (
+        <div className="sidebar-tree-children">
+          {(node.children || []).map(child => (
+            <TreeNode
+              key={child.id}
+              node={child}
+              depth={depth + 1}
+              openNodes={openNodes}
+              toggleNode={toggleNode}
+              journeys={journeys}
+            />
+          ))}
+        </div>
+      )}
     </div>
   )
 }
