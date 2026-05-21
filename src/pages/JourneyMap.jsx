@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { useData } from '../App.jsx'
 import TopBar from '../components/layout/TopBar.jsx'
 import TabNav from '../components/shared/TabNav.jsx'
@@ -217,90 +217,6 @@ function PlaceholderTab({ label }) {
   )
 }
 
-/* ─── Parent Journey View ──────────────────────────────────────── */
-
-const STATUS_DOT_COLORS = {
-  validated:     '#36B37E',
-  'in-progress': '#FF991F',
-  discovery:     '#6554C0',
-  open:          '#C1C7D0',
-}
-
-function ParentChildCard({ node, journeys }) {
-  const jData = journeys[node.id]
-  const dotColor = STATUS_DOT_COLORS[jData?.status] ?? '#C1C7D0'
-
-  const content = (
-    <>
-      <div className="parent-child-card-name">
-        {node.name}
-        {jData?.status && (
-          <span className="parent-child-status-dot" style={{ background: dotColor }} />
-        )}
-      </div>
-      {jData ? (
-        <div className="parent-child-card-meta">
-          {jData.stages?.length ?? 0} stages · {jData.insights?.length ?? 0} insights
-        </div>
-      ) : (
-        <div className="parent-child-card-meta" style={{ color: '#C1C7D0' }}>No data yet</div>
-      )}
-      {jData?.status && (
-        <span className={`status-tag ${jData.status}`} style={{ fontSize: 10, marginTop: 4, cursor: 'default' }}>
-          {jData.status === 'in-progress' ? 'In Progress' : jData.status.charAt(0).toUpperCase() + jData.status.slice(1)}
-        </span>
-      )}
-    </>
-  )
-
-  if (jData) {
-    return <Link to={`/journey/${node.id}`} className="parent-child-card">{content}</Link>
-  }
-  return <div className="parent-child-card no-data">{content}</div>
-}
-
-function ParentChildGroup({ node, journeys }) {
-  if (node.children && node.children.length > 0) {
-    return (
-      <div className="parent-child-group">
-        <div className="parent-child-group-label">{node.name}</div>
-        <div className="parent-child-grid">
-          {node.children.map(child => (
-            <ParentChildCard key={child.id} node={child} journeys={journeys} />
-          ))}
-        </div>
-      </div>
-    )
-  }
-  return <ParentChildCard node={node} journeys={journeys} />
-}
-
-function ParentJourneyView({ hierarchyNode, journeys, ancestors }) {
-  const children = hierarchyNode.children || []
-  return (
-    <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-      <TopBar journey={{ name: hierarchyNode.name }} ancestors={ancestors} />
-      <div className="parent-journey-view">
-        <div className="parent-journey-header">
-          <div className="parent-journey-name">{hierarchyNode.name}</div>
-          {hierarchyNode.description && (
-            <div className="parent-journey-desc">{hierarchyNode.description}</div>
-          )}
-          {hierarchyNode.owner && (
-            <div className="parent-journey-owner">Owner: {hierarchyNode.owner}</div>
-          )}
-        </div>
-        <div className="parent-journey-section-label">Nested Journeys</div>
-        <div className="parent-top-grid">
-          {children.map(child => (
-            <ParentChildGroup key={child.id} node={child} journeys={journeys} />
-          ))}
-        </div>
-      </div>
-    </div>
-  )
-}
-
 /* ─── Main JourneyMap page ─────────────────────────────────────── */
 
 export default function JourneyMap() {
@@ -360,16 +276,6 @@ export default function JourneyMap() {
   }, [journey, typeFilters, severityFilters])
 
   // Conditional returns after all hooks
-  if (!journey && hierarchyNode?.children?.length > 0) {
-    return (
-      <ParentJourneyView
-        hierarchyNode={hierarchyNode}
-        journeys={journeys}
-        ancestors={ancestors}
-      />
-    )
-  }
-
   if (!journey) {
     return (
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>

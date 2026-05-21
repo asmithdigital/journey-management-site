@@ -1,0 +1,438 @@
+{
+  "id": "insurance",
+  "name": "Insurance",
+  "status": "validated",
+  "lastUpdated": "2026-05-21",
+  "owner": "EXD Team",
+  "description": "The end-to-end insurance experience across quoting, purchasing, renewing, and claiming.",
+  "stages": [
+    {
+      "id": "ins-awareness",
+      "name": "Awareness & Research",
+      "order": 1,
+      "description": "The member realises they need insurance and starts comparing providers online.",
+      "actions": [
+        "Search for home insurance providers",
+        "Compare quotes on comparison sites",
+        "Read reviews and ask for recommendations",
+        "Visit raa.com.au to explore cover options"
+      ],
+      "thoughts": [
+        "How much should home insurance cost?",
+        "Is RAA competitive with other providers?",
+        "What cover do I actually need?"
+      ],
+      "emotions": {
+        "score": 5,
+        "label": "Neutral"
+      },
+      "painPoints": [
+        {
+          "id": "ins-pp-1",
+          "description": "RAA's insurance offer is hard to find and compare on aggregator sites. Members who start research externally often don't reach raa.com.au.",
+          "severity": "medium",
+          "source": "Analytics review, Q1 2026",
+          "evidenceCount": 2
+        }
+      ],
+      "opportunities": [
+        {
+          "id": "ins-op-1",
+          "description": "Improve presence on comparison sites and ensure RAA's value proposition (member discount, roadside bundling) is clearly communicated at the awareness stage",
+          "impact": "high",
+          "effort": "medium"
+        }
+      ]
+    },
+    {
+      "id": "ins-get-quote",
+      "name": "Get a Quote",
+      "order": 2,
+      "description": "The member starts a quote online, entering property details and selecting cover type. Maps to Quote to Buy stages 1–4.",
+      "actions": [
+        "Start quote on raa.com.au",
+        "Accept legal requirements and privacy notice",
+        "Enter home address and confirm",
+        "Select home use type and occupancy",
+        "Enter building details (material, year built)"
+      ],
+      "thoughts": [
+        "How long will this take?",
+        "Do I need to read all this legal text?",
+        "What material are my walls? I'm not sure."
+      ],
+      "emotions": {
+        "score": 4,
+        "label": "Slightly negative"
+      },
+      "painPoints": [
+        {
+          "id": "ins-pp-2",
+          "description": "No indication of how many steps or how long the quote process takes. 8 of 8 participants in the August 2025 baseline study had no mental model of the journey ahead.",
+          "severity": "high",
+          "source": "Usability test round 1, August 2025",
+          "evidenceCount": 8
+        },
+        {
+          "id": "ins-pp-3",
+          "description": "Two mandatory legal checkboxes must be ticked before proceeding. 7 of 8 participants tried to click Next without reading them and were confused by the red error state.",
+          "severity": "high",
+          "source": "Usability test round 4, April 2026",
+          "evidenceCount": 7
+        },
+        {
+          "id": "ins-pp-4",
+          "description": "40% of users paused on the building information page because they didn't know their wall or roof material — this page takes 3x longer than any other.",
+          "severity": "high",
+          "source": "Usability test round 3, February 2026",
+          "evidenceCount": 5
+        }
+      ],
+      "opportunities": [
+        {
+          "id": "ins-op-2",
+          "description": "Add a progress indicator showing estimated time and step count at the start of the quote flow",
+          "impact": "high",
+          "effort": "low"
+        },
+        {
+          "id": "ins-op-3",
+          "description": "Add photos or illustrations to wall and roof material options to help members identify their materials visually",
+          "impact": "high",
+          "effort": "medium"
+        }
+      ]
+    },
+    {
+      "id": "ins-purchase",
+      "name": "Purchase & Setup",
+      "order": 3,
+      "description": "The member reviews their quote, adjusts cover and excess, and completes payment. Maps to Quote to Buy stages 5–8.",
+      "actions": [
+        "Review contents cover and optional extras",
+        "Enter policy holder details",
+        "Review and adjust quote (excess, sum insured)",
+        "Review full summary",
+        "Complete payment"
+      ],
+      "thoughts": [
+        "How much contents cover do I need?",
+        "Is this a good price? What if I change my excess?",
+        "Is everything correct before I pay?"
+      ],
+      "emotions": {
+        "score": 6,
+        "label": "Slightly positive"
+      },
+      "painPoints": [
+        {
+          "id": "ins-pp-5",
+          "description": "Members can't estimate their contents sum insured. The pre-filled $1,000,000 default feels arbitrary — 6 of 8 participants left it without understanding if it was appropriate.",
+          "severity": "high",
+          "source": "Usability test round 2, November 2025",
+          "evidenceCount": 6
+        },
+        {
+          "id": "ins-pp-6",
+          "description": "The quote page requires significant scrolling. Average scroll depth is only 45% — more than half of users never see the coverage inclusions grid.",
+          "severity": "high",
+          "source": "Analytics review, Q1 2026",
+          "evidenceCount": 6
+        },
+        {
+          "id": "ins-pp-7",
+          "description": "Adjusting the excess doesn't update the price in real time. Members must click Save quote to recalculate — 5 of 8 participants assumed the price updated automatically.",
+          "severity": "high",
+          "source": "Usability test round 2, November 2025",
+          "evidenceCount": 5
+        }
+      ],
+      "opportunities": [
+        {
+          "id": "ins-op-4",
+          "description": "Make the quote page a sticky summary card that updates in real time as members adjust excess and cover options",
+          "impact": "high",
+          "effort": "high"
+        },
+        {
+          "id": "ins-op-5",
+          "description": "Add a contents calculator that walks members through room-by-room estimation with sensible defaults",
+          "impact": "high",
+          "effort": "high"
+        }
+      ]
+    },
+    {
+      "id": "ins-ongoing",
+      "name": "Ongoing Management",
+      "order": 4,
+      "description": "The member manages their policy through My Account — updating personal details, viewing coverage, managing payment.",
+      "actions": [
+        "Log into My Account",
+        "View products and policy details",
+        "Update address or payment details",
+        "Download policy documents"
+      ],
+      "thoughts": [
+        "What am I actually covered for?",
+        "How do I change my address?",
+        "Is my payment card up to date?"
+      ],
+      "emotions": {
+        "score": 5,
+        "label": "Neutral"
+      },
+      "painPoints": [
+        {
+          "id": "ins-pp-8",
+          "description": "Changing address requires updating it separately for membership AND each insurance policy. Not synced. This single issue generates 34 support tickets per month.",
+          "severity": "high",
+          "source": "Support ticket analysis, Q1 2026",
+          "evidenceCount": 34
+        },
+        {
+          "id": "ins-pp-9",
+          "description": "Policy detail pages show raw policy numbers and dates without context. Members don't know their excess without clicking through multiple pages.",
+          "severity": "medium",
+          "source": "Usability test round 3, March 2026",
+          "evidenceCount": 5
+        }
+      ],
+      "opportunities": [
+        {
+          "id": "ins-op-6",
+          "description": "Sync address changes across membership and all policies in a single update",
+          "impact": "high",
+          "effort": "high"
+        },
+        {
+          "id": "ins-op-7",
+          "description": "Add a summary card at the top of each product detail page showing excess, premium, renewal date, and cover level at a glance",
+          "impact": "high",
+          "effort": "medium"
+        }
+      ]
+    },
+    {
+      "id": "ins-renewal",
+      "name": "Renewal",
+      "order": 5,
+      "description": "The member receives their renewal notice and decides whether to continue, adjust, or cancel their policy.",
+      "actions": [
+        "Receive renewal email notification",
+        "Log in to review new premium",
+        "Compare with previous year",
+        "Decide to accept, adjust, or let lapse"
+      ],
+      "thoughts": [
+        "Has my premium gone up?",
+        "Why has it changed — I haven't claimed anything.",
+        "Can I get a better deal elsewhere?"
+      ],
+      "emotions": {
+        "score": 4,
+        "label": "Slightly negative"
+      },
+      "painPoints": [
+        {
+          "id": "ins-pp-10",
+          "description": "Renewal email doesn't show the new premium amount. Members have to log in to see the price — 18 support tickets in Q1 2026 were from members who didn't know their new premium until after auto-renewal.",
+          "severity": "high",
+          "source": "Support ticket analysis, Q1 2026",
+          "evidenceCount": 18
+        },
+        {
+          "id": "ins-pp-11",
+          "description": "No year-on-year premium comparison shown. Members can't see what changed between last year and this year without checking old documents.",
+          "severity": "high",
+          "source": "User interview, January 2026",
+          "evidenceCount": 4
+        },
+        {
+          "id": "ins-pp-12",
+          "description": "No explanation of why the premium changed. 6 of 8 participants in the February 2026 test said the increase felt 'unfair' or 'unexplained' — all 6 said a simple explanation would have made it acceptable.",
+          "severity": "high",
+          "source": "Usability test round 3, February 2026",
+          "evidenceCount": 6
+        }
+      ],
+      "opportunities": [
+        {
+          "id": "ins-op-8",
+          "description": "Include the new premium amount and the year-on-year change in the renewal email subject line and body",
+          "impact": "high",
+          "effort": "low"
+        },
+        {
+          "id": "ins-op-9",
+          "description": "Add a 'Why your premium changed' explanation with the contributing factors (claims history, market changes, property value adjustment)",
+          "impact": "high",
+          "effort": "medium"
+        }
+      ]
+    },
+    {
+      "id": "ins-claim",
+      "name": "Make a Claim",
+      "order": 6,
+      "description": "The member experiences an incident and attempts to lodge a claim. Currently all claims require a phone call — no online lodgement exists.",
+      "actions": [
+        "Experience incident (storm damage, theft, accident)",
+        "Check what's covered (logs into My Account or reads PDS)",
+        "Navigate to 'Make a claim' in My Account",
+        "Call the RAA claims line",
+        "Provide policy and incident details",
+        "Receive claim number"
+      ],
+      "thoughts": [
+        "Am I covered for this?",
+        "Can I do this online?",
+        "How long will I be on hold?"
+      ],
+      "emotions": {
+        "score": 2,
+        "label": "Very negative"
+      },
+      "painPoints": [
+        {
+          "id": "ins-pp-13",
+          "description": "Members don't know what their policy covers without logging into My Account and reading the PDS — exactly when they most need this information, it's hardest to access.",
+          "severity": "high",
+          "source": "User interview, April 2026",
+          "evidenceCount": 6
+        },
+        {
+          "id": "ins-pp-14",
+          "description": "No online claim lodgement. The 'Make a claim' button in My Account directs to a phone number. 7 of 8 test participants expected a digital form.",
+          "severity": "high",
+          "source": "Usability test round 3, February 2026",
+          "evidenceCount": 7
+        },
+        {
+          "id": "ins-pp-15",
+          "description": "Phone wait times average 8–12 minutes, rising to 18 minutes during peak periods after storm events. Claims call volume spikes 400% in the 48 hours after major weather events.",
+          "severity": "high",
+          "source": "Contact centre data, Q1 2026",
+          "evidenceCount": 1
+        }
+      ],
+      "opportunities": [
+        {
+          "id": "ins-op-10",
+          "description": "Build an online claim lodgement form accessible from My Account that collects incident details, photos, and supporting documents",
+          "impact": "high",
+          "effort": "high"
+        },
+        {
+          "id": "ins-op-11",
+          "description": "Add a 'What to do after an incident' guide accessible from My Account and the RAA app, tailored to the member's specific policy type",
+          "impact": "high",
+          "effort": "medium"
+        }
+      ]
+    },
+    {
+      "id": "ins-resolution",
+      "name": "Resolution & Recovery",
+      "order": 7,
+      "description": "The member waits for their claim to be assessed, receives updates, and the claim is resolved.",
+      "actions": [
+        "Wait for assessor contact",
+        "Provide additional information if requested",
+        "Receive claim decision",
+        "Arrange repairs or replacement",
+        "Receive payment"
+      ],
+      "thoughts": [
+        "What's happening with my claim?",
+        "Who do I contact for updates?",
+        "How long will this take?"
+      ],
+      "emotions": {
+        "score": 3,
+        "label": "Negative"
+      },
+      "painPoints": [
+        {
+          "id": "ins-pp-16",
+          "description": "No online claim tracking. Members cannot see the status of their claim in My Account. 6 of 6 interview participants said this was their biggest frustration — all had called multiple times for updates.",
+          "severity": "high",
+          "source": "User interview, April 2026",
+          "evidenceCount": 6
+        },
+        {
+          "id": "ins-pp-17",
+          "description": "Communication is inconsistent. Some updates come by email, some by phone, some by letter. There is no single channel or claim history view.",
+          "severity": "high",
+          "source": "User interview, April 2026",
+          "evidenceCount": 5
+        }
+      ],
+      "opportunities": [
+        {
+          "id": "ins-op-12",
+          "description": "Build a claim tracker in My Account showing the current status, next steps, and expected timeline",
+          "impact": "high",
+          "effort": "high"
+        },
+        {
+          "id": "ins-op-13",
+          "description": "Consolidate all claim communications into a single thread in My Account with push notifications for each update",
+          "impact": "high",
+          "effort": "high"
+        }
+      ]
+    }
+  ],
+  "insights": [
+    {
+      "id": "ins-in-1",
+      "description": "Claims NPS is -12 versus Quote to Buy NPS of +45. The post-purchase experience is dramatically worse than pre-purchase, suggesting RAA's digital investment has focused on acquisition over retention.",
+      "severity": "high",
+      "source": "NPS survey, Q1 2026",
+      "relatedPainPoints": ["ins-pp-14", "ins-pp-16"]
+    },
+    {
+      "id": "ins-in-2",
+      "description": "Address changes must be updated separately across membership and every insurance policy. This single pain point generates 34 support tickets per month — the highest-volume complaint category for My Account.",
+      "severity": "high",
+      "source": "Support ticket analysis, Q1 2026",
+      "relatedPainPoints": ["ins-pp-8"]
+    },
+    {
+      "id": "ins-in-3",
+      "description": "The digital experience drops off sharply after purchase. Quote to Buy has 8 fully digital stages; Claims has 0 — lodgement requires a phone call. This is a structural gap in the digital experience.",
+      "severity": "high",
+      "source": "Journey audit, May 2026",
+      "relatedPainPoints": ["ins-pp-14", "ins-pp-16"]
+    },
+    {
+      "id": "ins-in-4",
+      "description": "Conversion from quote page to purchase is 23% against an industry average of 31%. The 8 percentage point gap represents approximately $2.4M in annual premium.",
+      "severity": "high",
+      "source": "Analytics review, Q1 2026",
+      "relatedPainPoints": ["ins-pp-6", "ins-pp-7"]
+    },
+    {
+      "id": "ins-in-5",
+      "description": "22 support calls in Q4 2025 were members wanting to adjust their cover at renewal but finding no online option. Average call duration was 12 minutes — this is a high-cost, easily avoidable support touchpoint.",
+      "severity": "high",
+      "source": "Support ticket analysis, Q4 2025",
+      "relatedPainPoints": ["ins-pp-10", "ins-pp-12"]
+    },
+    {
+      "id": "ins-in-6",
+      "description": "Members with 3 or more products spend 40% longer on the My Account dashboard than single-product members, suggesting the product list becomes harder to navigate at scale — a retention risk for the most valuable segment.",
+      "severity": "medium",
+      "source": "Analytics review, January 2026",
+      "relatedPainPoints": ["ins-pp-9"]
+    }
+  ],
+  "changelog": [
+    {
+      "date": "2026-05-21",
+      "type": "added",
+      "description": "Parent journey map created with aggregated data across Quote to Buy, Renewals, and Claims"
+    }
+  ]
+}
