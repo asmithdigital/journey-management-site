@@ -6,6 +6,9 @@
   "status": "validated",
   "lastUpdated": "2026-05-19",
   "summary": "The end-to-end experience of someone discovering, adopting, and becoming a regular user of the Taskly app \u2014 from first hearing about it through advocacy or churn.",
+  "nestedJourneyPhaseMap": {
+    "account-creation": ["download-first-open", "account-creation"]
+  },
   "stages": [
     {
       "id": "discovery",

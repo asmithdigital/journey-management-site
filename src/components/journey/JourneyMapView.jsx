@@ -437,6 +437,17 @@ export default function JourneyMapView({ journey, filters = {}, onTabChange, chi
   const N = stages.length
   const oppVisible = showOpportunities(typeFilters)
 
+  const nestedPhaseMap = journey.nestedJourneyPhaseMap || {}
+  const stageIdxMap = {}
+  stages.forEach((s, i) => { stageIdxMap[s.id] = i })
+  const nestedCards = childJourneys.map(child => {
+    const phaseIds = nestedPhaseMap[child.id] || []
+    const idxs = phaseIds.map(id => stageIdxMap[id]).filter(v => v !== undefined).sort((a, b) => a - b)
+    const colStart = idxs.length > 0 ? idxs[0] + 1 : null
+    const colSpan = idxs.length > 0 ? (idxs[idxs.length - 1] - idxs[0] + 1) : 1
+    return { child, colStart, colSpan }
+  })
+
   const openDrawer = (item, type) => setDrawer({ item, type })
   const closeDrawer = () => setDrawer(null)
 
@@ -477,6 +488,39 @@ export default function JourneyMapView({ journey, filters = {}, onTabChange, chi
               </div>
             </div>
           ))}
+
+          {/* ── Nested Journeys lane (before emotion) ────── */}
+          {childJourneys.length > 0 && (
+            <>
+              <LaneLabel
+                label="Nested Journeys"
+                collapsed={collapsed.nested}
+                onToggle={() => toggleLane('nested')}
+                className="nested-bg"
+              />
+              <div
+                className="swim-lane-cell nested-bg"
+                style={{ gridColumn: `2 / span ${N}`, padding: 8 }}
+              >
+                {!collapsed.nested && (
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: `repeat(${N}, 1fr)`,
+                    gap: 6,
+                    height: '100%',
+                  }}>
+                    {nestedCards.map(({ child, colStart, colSpan }) =>
+                      colStart !== null ? (
+                        <div key={child.id} style={{ gridColumn: `${colStart} / span ${colSpan}` }}>
+                          <NestedJourneyCard child={child} />
+                        </div>
+                      ) : null
+                    )}
+                  </div>
+                )}
+              </div>
+            </>
+          )}
 
           {/* ── Emotion curve lane (FIRST — Part 2) ──────── */}
           <LaneLabel
@@ -655,29 +699,6 @@ export default function JourneyMapView({ journey, filters = {}, onTabChange, chi
             </div>
           ))}
 
-          {/* ── Nested Journeys lane (Part 1) ─────────────── */}
-          {childJourneys.length > 0 && (
-            <>
-              <LaneLabel
-                label="Nested Journeys"
-                collapsed={collapsed.nested}
-                onToggle={() => toggleLane('nested')}
-                className="nested-bg"
-              />
-              <div
-                className="swim-lane-cell nested-bg"
-                style={{ gridColumn: `2 / span ${N}` }}
-              >
-                {!collapsed.nested && (
-                  <div className="nested-journeys-cards">
-                    {childJourneys.map(child => (
-                      <NestedJourneyCard key={child.id} child={child} />
-                    ))}
-                  </div>
-                )}
-              </div>
-            </>
-          )}
 
         </div>
       </div>

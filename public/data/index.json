@@ -7,33 +7,19 @@
       "description": "End-to-end member experience across all RAA digital products and services",
       "owner": "EXD Team",
       "children": [
-        {
-          "id": "my-account",
-          "name": "My Account",
-          "level": "sub-journey"
-        },
-        {
-          "id": "insurance",
-          "name": "Insurance",
-          "level": "sub-journey",
-          "children": [
-            {
-              "id": "quote-to-buy",
-              "name": "Quote to Buy (Home)",
-              "level": "sub-journey"
-            },
-            {
-              "id": "renewals",
-              "name": "Renewals",
-              "level": "sub-journey"
-            },
-            {
-              "id": "claims",
-              "name": "Claims",
-              "level": "sub-journey"
-            }
-          ]
-        }
+        { "id": "my-account", "name": "My Account", "level": "sub-journey" }
+      ]
+    },
+    {
+      "id": "insurance",
+      "name": "Insurance",
+      "level": "top",
+      "description": "The end-to-end insurance experience across quoting, purchasing, renewing, and claiming",
+      "owner": "EXD Team",
+      "children": [
+        { "id": "quote-to-buy", "name": "Quote to Buy (Home)", "level": "sub-journey" },
+        { "id": "renewals", "name": "Renewals", "level": "sub-journey" },
+        { "id": "claims", "name": "Claims", "level": "sub-journey" }
       ]
     },
     {
@@ -43,17 +29,13 @@
       "description": "End-to-end experience from app discovery through advocacy or churn",
       "owner": "Product Team",
       "children": [
-        {
-          "id": "account-creation",
-          "name": "Account Creation",
-          "level": "sub-journey"
-        }
+        { "id": "account-creation", "name": "Account Creation", "level": "sub-journey" }
       ]
     }
   ],
   "metadata": {
-    "totalJourneys": 7,
-    "totalInsights": 89,
+    "totalJourneys": 8,
+    "totalInsights": 95,
     "lastUpdated": "2026-05-21"
   },
   "changelog": [

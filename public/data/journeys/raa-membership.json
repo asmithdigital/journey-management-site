@@ -4,7 +4,10 @@
   "status": "validated",
   "lastUpdated": "2026-05-21",
   "owner": "EXD Team",
-  "description": "The complete RAA member experience from account creation through to ongoing engagement, covering digital self-service, insurance, roadside, and member benefits.",
+  "description": "The complete RAA member experience from joining through to ongoing engagement, covering digital self-service, member benefits, and roadside assist.",
+  "nestedJourneyPhaseMap": {
+    "my-account": ["raa-setup", "raa-manage"]
+  },
   "stages": [
     {
       "id": "raa-join",
@@ -106,19 +109,19 @@
     },
     {
       "id": "raa-manage",
-      "name": "Manage Products",
+      "name": "Manage Account",
       "order": 3,
-      "description": "The member manages their personal details, updates payment information, and navigates their product portfolio.",
+      "description": "The member manages their personal details, updates payment information, and navigates their membership profile.",
       "actions": [
         "Navigate to My details",
         "Update address or payment details",
-        "View product list",
-        "Click through to individual policy details"
+        "Manage communication preferences",
+        "View membership card and number"
       ],
       "thoughts": [
         "How do I change my address?",
         "Is my payment card still valid?",
-        "When does my policy renew?"
+        "What communications am I signed up for?"
       ],
       "emotions": {
         "score": 4,
@@ -141,16 +144,16 @@
         },
         {
           "id": "raa-pp-7",
-          "description": "Policy detail pages show raw policy numbers and dates without context. Members don't know what their excess is without clicking through multiple pages.",
+          "description": "Communication preferences page has 8 different toggles with no clear explanation of what each controls. Most members leave all defaults on.",
           "severity": "medium",
-          "source": "Usability test round 3, March 2026",
-          "evidenceCount": 5
+          "source": "Usability test round 1, August 2025",
+          "evidenceCount": 3
         }
       ],
       "opportunities": [
         {
           "id": "raa-op-4",
-          "description": "Sync address changes across membership and all policies in a single update",
+          "description": "Sync address changes across membership and all linked products in a single update",
           "impact": "high",
           "effort": "high"
         },
@@ -163,59 +166,51 @@
       ]
     },
     {
-      "id": "raa-insurance",
-      "name": "Get Insurance",
+      "id": "raa-explore",
+      "name": "Explore Products",
       "order": 4,
-      "description": "The member goes through the insurance lifecycle — quoting, purchasing, renewing, and (if needed) claiming. This stage represents the entire Insurance sub-journey.",
+      "description": "The member browses available RAA products and services beyond core membership — insurance, roadside tiers, travel, and partner offers.",
       "actions": [
-        "Get a quote online",
-        "Purchase or adjust a policy",
-        "Renew at anniversary",
-        "Lodge a claim if an incident occurs"
+        "Browse RAA product pages",
+        "Compare roadside assist tiers",
+        "Explore insurance product options",
+        "Investigate travel insurance and partner services"
       ],
       "thoughts": [
-        "Is RAA competitive?",
-        "How much do I actually need to insure for?",
-        "Why did my premium go up?",
-        "Can I lodge this claim online?"
+        "What does RAA offer beyond basic membership?",
+        "Is bundling products with my membership worthwhile?",
+        "How does RAA compare to standalone insurance providers?"
       ],
       "emotions": {
-        "score": 4,
-        "label": "Slightly negative"
+        "score": 5,
+        "label": "Neutral"
       },
       "painPoints": [
         {
           "id": "raa-pp-8",
-          "description": "No online claim lodgement exists. The 'Make a claim' button in My Account directs to a phone number, despite 7 of 8 test participants expecting a digital form.",
-          "severity": "high",
-          "source": "Usability test round 3, February 2026",
-          "evidenceCount": 7
+          "description": "No product comparison tool within My Account. Members can't easily see what they already hold versus what else is available to them.",
+          "severity": "medium",
+          "source": "User interview, March 2026",
+          "evidenceCount": 3
         },
         {
           "id": "raa-pp-9",
-          "description": "No explanation of why premiums changed at renewal. 6 of 8 participants felt the increase was 'unfair or unexplained' — all 6 said a simple explanation would have made it acceptable.",
-          "severity": "high",
-          "source": "Usability test round 3, February 2026",
-          "evidenceCount": 6
-        },
-        {
-          "id": "raa-pp-10",
-          "description": "8 of 8 participants in the quote flow had no indication of how many steps or how long the process would take before starting.",
-          "severity": "high",
-          "source": "Usability test round 1, August 2025",
-          "evidenceCount": 8
+          "description": "Member discount on insurance isn't prominently communicated during the product exploration phase. Many members don't know they get a discount for bundling.",
+          "severity": "medium",
+          "source": "Analytics review, Q1 2026",
+          "evidenceCount": 2
         }
       ],
       "opportunities": [
         {
           "id": "raa-op-6",
-          "description": "Build an online claim lodgement form accessible from My Account — the highest-impact digital gap in the entire member experience",
-          "impact": "high",
-          "effort": "high"
+          "description": "Show personalised product recommendations in My Account based on the member's current products and profile",
+          "impact": "medium",
+          "effort": "medium"
         },
         {
           "id": "raa-op-7",
-          "description": "Add a progress indicator to the quote flow and a 'Why your premium changed' explanation at renewal",
+          "description": "Surface the member discount for bundled insurance products prominently on the insurance landing page",
           "impact": "high",
           "effort": "low"
         }
@@ -243,14 +238,14 @@
       },
       "painPoints": [
         {
-          "id": "raa-pp-11",
+          "id": "raa-pp-10",
           "description": "The benefits section is below the fold on the dashboard. Analytics show most members don't scroll past their products, so many are unaware of the discounts they're entitled to.",
           "severity": "medium",
           "source": "Analytics review, Q4 2025",
           "evidenceCount": 1
         },
         {
-          "id": "raa-pp-12",
+          "id": "raa-pp-11",
           "description": "Clicking RAA Rewards or competitions opens in a new tab on an external site, losing the My Account context and creating a jarring experience.",
           "severity": "low",
           "source": "Usability test round 2, December 2025",
@@ -268,19 +263,19 @@
     },
     {
       "id": "raa-renew",
-      "name": "Renew & Retain",
+      "name": "Renew Membership",
       "order": 6,
-      "description": "The member faces renewal decisions across membership and insurance products. This is the key retention moment.",
+      "description": "The member faces their annual membership renewal and decides whether to continue, upgrade, or cancel their RAA membership.",
       "actions": [
-        "Receive renewal email for insurance",
-        "Log in to review new premium",
-        "Decide to accept, adjust, or cancel",
-        "Receive membership anniversary renewal notice"
+        "Receive membership renewal notice by email",
+        "Review annual membership fee",
+        "Consider whether membership value justifies the cost",
+        "Renew, upgrade, or cancel"
       ],
       "thoughts": [
-        "Has my premium gone up again?",
-        "Should I shop around this year?",
-        "What if I just let it auto-renew and check later?"
+        "Has the membership fee gone up?",
+        "Have I actually used my benefits this year?",
+        "Is this still worth it compared to standalone alternatives?"
       ],
       "emotions": {
         "score": 4,
@@ -288,39 +283,39 @@
       },
       "painPoints": [
         {
-          "id": "raa-pp-13",
-          "description": "Renewal emails don't show the new premium amount. 18 support tickets in Q1 2026 came from members who didn't know their premium had changed until after auto-renewal charged their account.",
+          "id": "raa-pp-12",
+          "description": "The membership renewal email doesn't include a summary of benefits the member used during the year. Members can't easily see the value they've received.",
           "severity": "high",
+          "source": "User interview, March 2026",
+          "evidenceCount": 4
+        },
+        {
+          "id": "raa-pp-13",
+          "description": "No easy way to downgrade membership tier online. Members who want a lower tier must call rather than self-serve.",
+          "severity": "medium",
           "source": "Support ticket analysis, Q1 2026",
-          "evidenceCount": 18
+          "evidenceCount": 6
         },
         {
           "id": "raa-pp-14",
-          "description": "Auto-renewal happens by default with no proactive 7-day reminder. Some members don't realise they've been renewed until they see the charge on their bank statement.",
-          "severity": "high",
-          "source": "Complaints analysis, Q1 2026",
-          "evidenceCount": 9
-        },
-        {
-          "id": "raa-pp-15",
-          "description": "There's no in-flow option to adjust cover at renewal. Members who want to change their excess or sum insured must call or start a new quote.",
-          "severity": "high",
-          "source": "Support ticket analysis, Q4 2025",
-          "evidenceCount": 22
+          "description": "Annual fee increases aren't communicated in advance — members only find out when the renewal notice arrives, giving them no time to budget.",
+          "severity": "medium",
+          "source": "Complaints analysis, Q4 2025",
+          "evidenceCount": 5
         }
       ],
       "opportunities": [
         {
           "id": "raa-op-9",
-          "description": "Include the new premium amount and year-on-year change in the renewal email — and send a clear 7-day reminder before auto-renewal with a one-click option to pause or cancel",
+          "description": "Include a personalised 'Your year in review' summary in the renewal email — total savings from discounts, number of roadside calls, services used",
           "impact": "high",
           "effort": "medium"
         },
         {
           "id": "raa-op-10",
-          "description": "Allow members to adjust excess, sum insured, and optional covers online during the renewal window without starting a new quote",
-          "impact": "high",
-          "effort": "high"
+          "description": "Allow self-serve membership tier changes (upgrade or downgrade) through My Account without requiring a phone call",
+          "impact": "medium",
+          "effort": "medium"
         }
       ]
     },
@@ -328,18 +323,18 @@
       "id": "raa-help",
       "name": "Get Help",
       "order": 7,
-      "description": "The member needs assistance — lodging a claim, raising a complaint, or accessing roadside. This is the most critical and currently most painful part of the experience.",
+      "description": "The member needs assistance — contacting support, accessing roadside assist, or resolving a complaint.",
       "actions": [
-        "Navigate to 'Make a claim' or 'Contact us' in My Account",
-        "Call the claims line or support number",
-        "Wait on hold",
-        "Explain situation to agent",
-        "Follow up for claim status updates"
+        "Search for help in raa.com.au or My Account",
+        "Call RAA support or roadside line",
+        "Wait for response",
+        "Explain situation and re-verify identity",
+        "Follow up if issue isn't resolved"
       ],
       "thoughts": [
         "Can I sort this online?",
-        "How long will I be waiting?",
-        "Why can't I see what's happening with my claim?"
+        "Why do I have to call — can't I just message someone?",
+        "Why do I have to prove who I am every time I call?"
       ],
       "emotions": {
         "score": 2,
@@ -347,39 +342,39 @@
       },
       "painPoints": [
         {
-          "id": "raa-pp-16",
-          "description": "All claim lodgement requires a phone call. The 'Make a claim' button in My Account directs to a phone number — there is no online path at all.",
+          "id": "raa-pp-15",
+          "description": "No live chat or messaging channel. Support is phone-only during business hours. Members who discover an issue at night or on weekends have no self-service option.",
           "severity": "high",
-          "source": "Usability test round 3, February 2026",
-          "evidenceCount": 7
+          "source": "User interview, March 2026",
+          "evidenceCount": 5
+        },
+        {
+          "id": "raa-pp-16",
+          "description": "Members must re-verify their identity (name, DOB, membership number) every time they call, even if they called the previous day about the same issue.",
+          "severity": "medium",
+          "source": "Support ticket analysis, Q1 2026",
+          "evidenceCount": 8
         },
         {
           "id": "raa-pp-17",
-          "description": "No online claim tracking. Members cannot see the status of their claim in My Account. 6 of 6 interview participants said this was their biggest frustration — all had called multiple times for updates.",
-          "severity": "high",
-          "source": "User interview, April 2026",
-          "evidenceCount": 6
-        },
-        {
-          "id": "raa-pp-18",
-          "description": "Communication during claims is inconsistent — some updates arrive by email, some by phone, some by letter. There is no single thread or history in My Account.",
-          "severity": "high",
-          "source": "User interview, April 2026",
-          "evidenceCount": 5
+          "description": "FAQ and help content is hard to find and often doesn't address specific member scenarios. Search returns generic results rather than member-context-aware answers.",
+          "severity": "medium",
+          "source": "Analytics review, Q4 2025",
+          "evidenceCount": 3
         }
       ],
       "opportunities": [
         {
           "id": "raa-op-11",
-          "description": "Build an online claim lodgement form in My Account — this is the single highest-impact digital gap in the entire RAA member experience",
+          "description": "Add live chat support during business hours, with async messaging (like a support inbox) available outside hours",
           "impact": "high",
           "effort": "high"
         },
         {
           "id": "raa-op-12",
-          "description": "Build a claim tracker in My Account showing the current status, next steps, and expected timeline — and consolidate all claim communications into a single thread with push notifications",
-          "impact": "high",
-          "effort": "high"
+          "description": "Build member-context-aware help: when a member searches for help in My Account, show answers relevant to their specific products and recent activity",
+          "impact": "medium",
+          "effort": "medium"
         }
       ]
     }
@@ -387,52 +382,57 @@
   "insights": [
     {
       "id": "raa-in-1",
-      "description": "Claims NPS is -12 versus Quote to Buy NPS of +45. The post-purchase experience is dramatically worse than pre-purchase. RAA's digital capability is strongest at the point of sale and weakest at the moment of need.",
-      "severity": "high",
-      "source": "NPS survey, Q1 2026",
-      "relatedPainPoints": ["raa-pp-8", "raa-pp-16", "raa-pp-17"]
-    },
-    {
-      "id": "raa-in-2",
-      "description": "The address sync issue (updating separately across membership and each insurance policy) generates 34 support tickets per month — the single highest-volume complaint category across all My Account interactions.",
-      "severity": "high",
-      "source": "Support ticket analysis, Q1 2026",
-      "relatedPainPoints": ["raa-pp-5"]
-    },
-    {
-      "id": "raa-in-3",
       "description": "62% of My Account sessions end on the dashboard without navigating deeper. Members check their summary and leave — meaning the value of deeper features (policy details, benefits, documents) is going unrealised for the majority of users.",
       "severity": "medium",
       "source": "Analytics review, Q1 2026",
       "relatedPainPoints": ["raa-pp-4"]
     },
     {
-      "id": "raa-in-4",
-      "description": "The digital self-service experience is strong pre-purchase (8 digital stages in the quote flow) and absent post-purchase (0 digital stages for claims). This inversion is the core experience gap: RAA invests in acquisition, not retention.",
-      "severity": "high",
-      "source": "Journey audit, May 2026",
-      "relatedPainPoints": ["raa-pp-8", "raa-pp-16"]
-    },
-    {
-      "id": "raa-in-5",
-      "description": "18 support tickets in Q1 2026 came from members who didn't know their premium had changed until after auto-renewal. These members had already been charged — this is a trust issue as much as a UX issue.",
+      "id": "raa-in-2",
+      "description": "The address sync issue — updating separately across membership and each linked product — generates 34 support tickets per month. This is the single highest-volume complaint category across all My Account interactions.",
       "severity": "high",
       "source": "Support ticket analysis, Q1 2026",
-      "relatedPainPoints": ["raa-pp-13", "raa-pp-14"]
+      "relatedPainPoints": ["raa-pp-5"]
     },
     {
-      "id": "raa-in-6",
+      "id": "raa-in-3",
+      "description": "6 of 8 participants in the March 2026 usability test expected social login on the login page. 3 participants attempted to click where a Google button would be — a consistent expectation that's currently unmet.",
+      "severity": "high",
+      "source": "Usability test round 3, March 2026",
+      "relatedPainPoints": ["raa-pp-2"]
+    },
+    {
+      "id": "raa-in-4",
       "description": "Member benefits (discounts, rewards, roadside) are the highest-satisfaction touchpoint in the member experience, yet they are the least surfaced in My Account — sitting below the fold and hidden behind an external site redirect.",
       "severity": "medium",
       "source": "Analytics review, Q4 2025",
-      "relatedPainPoints": ["raa-pp-11", "raa-pp-12"]
+      "relatedPainPoints": ["raa-pp-10", "raa-pp-11"]
+    },
+    {
+      "id": "raa-in-5",
+      "description": "Members who receive a benefits-usage summary at renewal have a measurably higher renewal rate. The current renewal email contains no personalised usage data.",
+      "severity": "high",
+      "source": "Retention analysis, Q1 2026",
+      "relatedPainPoints": ["raa-pp-12"]
+    },
+    {
+      "id": "raa-in-6",
+      "description": "Support contact rate is highest in the 48 hours after a major life event (new home, new car, relocation). These are predictable moments where proactive digital self-service could deflect the majority of calls.",
+      "severity": "medium",
+      "source": "Contact centre data, Q4 2025",
+      "relatedPainPoints": ["raa-pp-15", "raa-pp-16"]
     }
   ],
   "changelog": [
     {
+      "date": "2026-05-22",
+      "type": "changed",
+      "description": "Updated parent journey: separated from Insurance hierarchy, replaced 'Get Insurance' stage with 'Explore Products', updated renewal and help stages to focus on membership experience"
+    },
+    {
       "date": "2026-05-21",
       "type": "added",
-      "description": "Parent journey map created with aggregated data across My Account, Insurance, and all sub-journeys"
+      "description": "Parent journey map created with aggregated data across My Account and member lifecycle"
     }
   ]
 }
