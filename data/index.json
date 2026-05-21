@@ -7,12 +7,33 @@
       "description": "End-to-end member experience across all RAA digital products and services",
       "owner": "EXD Team",
       "children": [
-        { "id": "my-account", "name": "My Account", "level": "sub-journey" },
-        { "id": "insurance", "name": "Insurance", "level": "sub-journey", "children": [
-          { "id": "quote-to-buy", "name": "Quote to Buy (Home)", "level": "sub-journey" },
-          { "id": "renewals", "name": "Renewals", "level": "sub-journey" },
-          { "id": "claims", "name": "Claims", "level": "sub-journey" }
-        ]}
+        {
+          "id": "my-account",
+          "name": "My Account",
+          "level": "sub-journey"
+        },
+        {
+          "id": "insurance",
+          "name": "Insurance",
+          "level": "sub-journey",
+          "children": [
+            {
+              "id": "quote-to-buy",
+              "name": "Quote to Buy (Home)",
+              "level": "sub-journey"
+            },
+            {
+              "id": "renewals",
+              "name": "Renewals",
+              "level": "sub-journey"
+            },
+            {
+              "id": "claims",
+              "name": "Claims",
+              "level": "sub-journey"
+            }
+          ]
+        }
       ]
     },
     {
@@ -22,7 +43,11 @@
       "description": "End-to-end experience from app discovery through advocacy or churn",
       "owner": "Product Team",
       "children": [
-        { "id": "account-creation", "name": "Account Creation", "level": "sub-journey" }
+        {
+          "id": "account-creation",
+          "name": "Account Creation",
+          "level": "sub-journey"
+        }
       ]
     }
   ],
@@ -30,5 +55,17 @@
     "totalJourneys": 7,
     "totalInsights": 89,
     "lastUpdated": "2026-05-21"
-  }
+  },
+  "changelog": [
+    {
+      "date": "2026-05-21",
+      "type": "added",
+      "description": "RAA Membership journeys added: My Account, Quote to Buy, Renewals, Claims"
+    },
+    {
+      "date": "2026-05-19",
+      "type": "added",
+      "description": "Taskly User Lifecycle and Account Creation journeys published"
+    }
+  ]
 }
