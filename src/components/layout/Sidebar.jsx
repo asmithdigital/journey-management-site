@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { NavLink, useLocation } from 'react-router-dom'
+import { NavLink, Link, useLocation } from 'react-router-dom'
 import { useData, SidebarContext } from '../../App.jsx'
 
 const NAV_ITEMS = [
@@ -65,7 +65,6 @@ function TreeNode({ node, depth, openNodes, toggleNode, journeys }) {
     )
   }
 
-  // Parent node with children: arrow toggles, name navigates
   return (
     <div>
       <div
@@ -108,14 +107,18 @@ function TreeNode({ node, depth, openNodes, toggleNode, journeys }) {
 }
 
 export default function Sidebar() {
-  const { index, journeys } = useData()
+  const { index, journeys, benchmarking } = useData()
   const { sidebarOpen, closeSidebar } = useContext(SidebarContext)
+  const location = useLocation()
+
   const [frameworksOpen, setFrameworksOpen] = useState(true)
   const [repositoryOpen, setRepositoryOpen] = useState(true)
   const [blocksOpen, setBlocksOpen] = useState(false)
   const [openNodes, setOpenNodes] = useState({})
 
+  const isBenchmarking = location.pathname.startsWith('/benchmarking')
   const hierarchy = index?.hierarchy || []
+  const products = benchmarking?.products || []
 
   useEffect(() => {
     if (hierarchy.length > 0 && Object.keys(openNodes).length === 0) {
@@ -141,6 +144,7 @@ export default function Sidebar() {
         <div className="sidebar-backdrop" onClick={closeSidebar} aria-hidden="true" />
       )}
       <nav className={`sidebar${sidebarOpen ? ' sidebar-open' : ''}`}>
+
         {/* Workspace */}
         <div className="sidebar-workspace">
           <div className="sidebar-workspace-info">
@@ -152,6 +156,24 @@ export default function Sidebar() {
             <button className="sidebar-icon-btn" title="Menu">▾</button>
             <button className="sidebar-icon-btn" title="New">⊞</button>
           </div>
+        </div>
+
+        {/* Mode toggle */}
+        <div className="sidebar-mode-toggle">
+          <Link
+            to="/"
+            className={`sidebar-mode-btn${!isBenchmarking ? ' mode-active-journey' : ''}`}
+            onClick={closeSidebar}
+          >
+            ⌂ Journey Maps
+          </Link>
+          <Link
+            to="/benchmarking"
+            className={`sidebar-mode-btn${isBenchmarking ? ' mode-active-bench' : ''}`}
+            onClick={closeSidebar}
+          >
+            ▣ Benchmarking
+          </Link>
         </div>
 
         {/* Main nav */}
@@ -177,83 +199,118 @@ export default function Sidebar() {
           ))}
         </div>
 
-        {/* Journey Frameworks */}
-        <div className="sidebar-section">
-          <div className="sidebar-section-header">
-            <span className="sidebar-section-label">Journey Frameworks</span>
-            <div className="sidebar-section-actions">
-              <button className="sidebar-icon-btn" title="Add">+</button>
-              <button
-                className="sidebar-icon-btn"
-                onClick={() => setFrameworksOpen(o => !o)}
-                title="Collapse"
-              >
-                {frameworksOpen ? '▾' : '▸'}
-              </button>
+        {isBenchmarking ? (
+          /* ── Benchmarking sidebar ─────────────────────── */
+          <div className="sidebar-section">
+            <div className="sidebar-section-header">
+              <span className="sidebar-section-label" style={{ color: '#C96C00' }}>UX Benchmarking</span>
             </div>
+            {products.map(product => {
+              const rounds = product.uxBenchmarks.rounds
+              const latest = rounds[rounds.length - 1]
+              const isActive = location.pathname === `/benchmarking/${product.id}`
+              return (
+                <NavLink
+                  key={product.id}
+                  to={`/benchmarking/${product.id}`}
+                  className={() => `sidebar-tree-item${isActive ? ' bench-active' : ''}`}
+                  style={{ paddingLeft: 22 }}
+                  onClick={closeSidebar}
+                >
+                  <span className="sidebar-tree-bullet" style={{ background: isActive ? '#ea8600' : undefined }} />
+                  <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: 12 }}>
+                    {product.name}
+                  </span>
+                  {latest && (
+                    <span style={{ fontSize: 10, color: '#97A0AF', flexShrink: 0 }}>
+                      {latest.metrics.msat.value}/5
+                    </span>
+                  )}
+                </NavLink>
+              )
+            })}
           </div>
-
-          {frameworksOpen && hierarchy.map(top => (
-            <TreeNode
-              key={top.id}
-              node={top}
-              depth={0}
-              openNodes={openNodes}
-              toggleNode={toggleNode}
-              journeys={journeys}
-            />
-          ))}
-        </div>
-
-        {/* Repository */}
-        <div className="sidebar-section">
-          <div className="sidebar-section-header">
-            <span className="sidebar-section-label">Repository</span>
-            <div className="sidebar-section-actions">
-              <button
-                className="sidebar-icon-btn"
-                onClick={() => setRepositoryOpen(o => !o)}
-                title="Collapse"
-              >
-                {repositoryOpen ? '▾' : '▸'}
-              </button>
+        ) : (
+          /* ── Journey sidebar ──────────────────────────── */
+          <>
+            {/* Journey Frameworks */}
+            <div className="sidebar-section">
+              <div className="sidebar-section-header">
+                <span className="sidebar-section-label">Journey Frameworks</span>
+                <div className="sidebar-section-actions">
+                  <button className="sidebar-icon-btn" title="Add">+</button>
+                  <button
+                    className="sidebar-icon-btn"
+                    onClick={() => setFrameworksOpen(o => !o)}
+                    title="Collapse"
+                  >
+                    {frameworksOpen ? '▾' : '▸'}
+                  </button>
+                </div>
+              </div>
+              {frameworksOpen && hierarchy.map(top => (
+                <TreeNode
+                  key={top.id}
+                  node={top}
+                  depth={0}
+                  openNodes={openNodes}
+                  toggleNode={toggleNode}
+                  journeys={journeys}
+                />
+              ))}
             </div>
-          </div>
-          {repositoryOpen && REPOSITORY_ITEMS.map(item => (
-            <NavLink
-              key={item.label}
-              to={item.to}
-              className={({ isActive }) => `sidebar-tree-item${isActive ? ' active' : ''}`}
-              style={{ paddingLeft: 22 }}
-              onClick={closeSidebar}
-            >
-              <span className="sidebar-nav-icon" style={{ fontSize: 12, marginRight: 6 }}>{item.icon}</span>
-              {item.label}
-            </NavLink>
-          ))}
-        </div>
 
-        {/* Building Blocks */}
-        <div className="sidebar-section">
-          <div className="sidebar-section-header">
-            <span className="sidebar-section-label">Building Blocks</span>
-            <div className="sidebar-section-actions">
-              <button
-                className="sidebar-icon-btn"
-                onClick={() => setBlocksOpen(o => !o)}
-                title="Collapse"
-              >
-                {blocksOpen ? '▾' : '▸'}
-              </button>
+            {/* Repository */}
+            <div className="sidebar-section">
+              <div className="sidebar-section-header">
+                <span className="sidebar-section-label">Repository</span>
+                <div className="sidebar-section-actions">
+                  <button
+                    className="sidebar-icon-btn"
+                    onClick={() => setRepositoryOpen(o => !o)}
+                    title="Collapse"
+                  >
+                    {repositoryOpen ? '▾' : '▸'}
+                  </button>
+                </div>
+              </div>
+              {repositoryOpen && REPOSITORY_ITEMS.map(item => (
+                <NavLink
+                  key={item.label}
+                  to={item.to}
+                  className={({ isActive }) => `sidebar-tree-item${isActive ? ' active' : ''}`}
+                  style={{ paddingLeft: 22 }}
+                  onClick={closeSidebar}
+                >
+                  <span className="sidebar-nav-icon" style={{ fontSize: 12, marginRight: 6 }}>{item.icon}</span>
+                  {item.label}
+                </NavLink>
+              ))}
             </div>
-          </div>
-          {blocksOpen && BUILDING_BLOCKS.map(item => (
-            <div key={item.label} className="sidebar-tree-item">
-              <span style={{ fontSize: 12, opacity: 0.6 }}>{item.icon}</span>
-              {item.label}
+
+            {/* Building Blocks */}
+            <div className="sidebar-section">
+              <div className="sidebar-section-header">
+                <span className="sidebar-section-label">Building Blocks</span>
+                <div className="sidebar-section-actions">
+                  <button
+                    className="sidebar-icon-btn"
+                    onClick={() => setBlocksOpen(o => !o)}
+                    title="Collapse"
+                  >
+                    {blocksOpen ? '▾' : '▸'}
+                  </button>
+                </div>
+              </div>
+              {blocksOpen && BUILDING_BLOCKS.map(item => (
+                <div key={item.label} className="sidebar-tree-item">
+                  <span style={{ fontSize: 12, opacity: 0.6 }}>{item.icon}</span>
+                  {item.label}
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </>
+        )}
 
         <div className="sidebar-spacer" />
 

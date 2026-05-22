@@ -11,6 +11,8 @@ import GlobalOpportunities from './pages/GlobalOpportunities.jsx'
 import GlobalSolutions from './pages/GlobalSolutions.jsx'
 import GlobalMetrics from './pages/GlobalMetrics.jsx'
 import Personas from './pages/Personas.jsx'
+import BenchmarkingDashboard from './pages/BenchmarkingDashboard.jsx'
+import BenchmarkingDetail from './pages/BenchmarkingDetail.jsx'
 
 export const DataContext = createContext(null)
 export const SidebarContext = createContext({ sidebarOpen: false, openSidebar: () => {}, closeSidebar: () => {} })
@@ -28,7 +30,6 @@ function collectAllIds(nodes) {
 function MobileAppBar() {
   const location = useLocation()
   const { openSidebar } = useContext(SidebarContext)
-  // Journey pages have their own TopBar with a hamburger button
   if (location.pathname.startsWith('/journey/')) return null
   return (
     <div className="mobile-app-bar">
@@ -42,6 +43,7 @@ function MobileAppBar() {
 export default function App() {
   const [index, setIndex] = useState(null)
   const [journeys, setJourneys] = useState({})
+  const [benchmarking, setBenchmarking] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -59,18 +61,27 @@ export default function App() {
 
         const journeyIds = collectAllIds(idx.hierarchy)
 
+        const [journeyResults, benchRes] = await Promise.all([
+          Promise.all(
+            journeyIds.map(async id => {
+              try {
+                const r = await fetch(`${BASE}data/journeys/${id}.json`)
+                if (r.ok) return [id, await r.json()]
+              } catch {}
+              return null
+            })
+          ),
+          fetch(`${BASE}data/benchmarking.json`)
+            .then(r => r.ok ? r.json() : null)
+            .catch(() => null),
+        ])
+
         const loaded = {}
-        await Promise.all(
-          journeyIds.map(async id => {
-            try {
-              const r = await fetch(`${BASE}data/journeys/${id}.json`)
-              if (r.ok) loaded[id] = await r.json()
-            } catch {
-              // journey file doesn't exist yet — expected
-            }
-          })
-        )
+        journeyResults.forEach(result => {
+          if (result) loaded[result[0]] = result[1]
+        })
         setJourneys(loaded)
+        setBenchmarking(benchRes)
       } catch (err) {
         setError(err.message)
       } finally {
@@ -97,7 +108,7 @@ export default function App() {
   }
 
   return (
-    <DataContext.Provider value={{ index, journeys }}>
+    <DataContext.Provider value={{ index, journeys, benchmarking }}>
       <SidebarContext.Provider value={{ sidebarOpen, openSidebar, closeSidebar }}>
         <div className="app-shell">
           <Sidebar />
@@ -118,6 +129,8 @@ export default function App() {
               <Route path="/solutions" element={<GlobalSolutions />} />
               <Route path="/metrics" element={<GlobalMetrics />} />
               <Route path="/personas" element={<Personas />} />
+              <Route path="/benchmarking" element={<BenchmarkingDashboard />} />
+              <Route path="/benchmarking/:productId" element={<BenchmarkingDetail />} />
             </Routes>
           </main>
         </div>

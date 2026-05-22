@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import OpportunityCard from '../cards/OpportunityCard.jsx'
 import InsightCard from '../cards/InsightCard.jsx'
 import EmotionCurve from './EmotionCurve.jsx'
+import { useData } from '../../App.jsx'
 
 /* ─── Helpers ──────────────────────────────────────────────────── */
 
@@ -119,7 +120,7 @@ function LaneLabel({ label, collapsed, onToggle, className = '' }) {
 
 /* ─── Metric line chart (for panel) ───────────────────────────── */
 
-function MetricLineChart({ series, width = 316, height = 110 }) {
+function MetricLineChart({ series, labels, width = 316, height = 110 }) {
   if (!series || series.length === 0) return null
   const PAD = { top: 12, right: 8, bottom: 28, left: 36 }
   const W = width - PAD.left - PAD.right
@@ -129,14 +130,14 @@ function MetricLineChart({ series, width = 316, height = 110 }) {
   const range = max - min || 1
 
   const pts = series.map((v, i) => ({
-    x: PAD.left + (i / (series.length - 1)) * W,
+    x: PAD.left + (i / Math.max(series.length - 1, 1)) * W,
     y: PAD.top + (1 - (v - min) / range) * H,
     v,
   }))
 
   const linePath = pts.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ')
-
   const gridYValues = [min, Math.round((min + max) / 2), max]
+  const xLabels = labels || MONTHS.slice(0, series.length)
 
   return (
     <svg width={width} height={height} style={{ display: 'block', width: '100%' }}>
@@ -149,10 +150,10 @@ function MetricLineChart({ series, width = 316, height = 110 }) {
           </g>
         )
       })}
-      {MONTHS.slice(0, series.length).map((m, i) => {
-        const gx = PAD.left + (i / (series.length - 1)) * W
+      {xLabels.map((lbl, i) => {
+        const gx = PAD.left + (i / Math.max(series.length - 1, 1)) * W
         return (
-          <text key={m} x={gx} y={height - 6} textAnchor="middle" fontSize={9} fill="#97A0AF">{m}</text>
+          <text key={i} x={gx} y={height - 6} textAnchor="middle" fontSize={9} fill="#97A0AF">{lbl}</text>
         )
       })}
       <path d={linePath} fill="none" stroke="#0052CC" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
@@ -163,11 +164,50 @@ function MetricLineChart({ series, width = 316, height = 110 }) {
   )
 }
 
+/* ─── Derive metric cards from benchmarking data ───────────────── */
+
+const BM_METRIC_CONFIG = {
+  msat:           { name: 'MSAT',           icon: '★', unit: '/5'  },
+  taskCompletion: { name: 'Task Completion', icon: '✓', unit: '%'   },
+  errorRate:      { name: 'Error Rate',      icon: '⚠', unit: '%'   },
+  timeOnTask:     { name: 'Time on Task',    icon: '⏱', unit: 's'   },
+}
+
+function deriveBenchmarkMetrics(product) {
+  const rounds = product.uxBenchmarks.rounds
+  if (!rounds.length) return []
+  const latest = rounds[rounds.length - 1]
+  return Object.entries(latest.metrics).map(([key, data]) => {
+    const cfg = BM_METRIC_CONFIG[key] || { name: key, icon: '▣', unit: data.unit || '' }
+    return {
+      id: key,
+      name: cfg.name,
+      icon: cfg.icon,
+      score: data.value,
+      unit: cfg.unit,
+      series: rounds.map(r => r.metrics[key]?.value ?? 0),
+      labels: rounds.map(r => `R${r.id.replace('r', '')}`),
+      latestCI: data.ci,
+      rounds: rounds.map(r => ({
+        label: r.label,
+        date: r.date,
+        value: r.metrics[key]?.value ?? 0,
+        ci: r.metrics[key]?.ci,
+      })),
+      productId: product.id,
+      summary: `Based on ${rounds.length} benchmark round${rounds.length !== 1 ? 's' : ''} on ${product.name}.`,
+    }
+  })
+}
+
 /* ─── Metric Panel (Part 9) ────────────────────────────────────── */
 
 function MetricPanel({ metric, onClose }) {
   if (!metric) return null
-  const scoreColor = metric.score != null && metric.score < 0 ? '#FF5630' : '#36B37E'
+  const hasUnit = !!metric.unit
+  const isNeg = !hasUnit && metric.score != null && metric.score < 0
+  const scoreColor = isNeg ? '#FF5630' : '#36B37E'
+  const prefix = !hasUnit && metric.score > 0 ? '+' : ''
 
   return (
     <div className="drawer-overlay" onClick={onClose}>
@@ -181,20 +221,72 @@ function MetricPanel({ metric, onClose }) {
             <>
               <div style={{ marginBottom: 20 }}>
                 <div style={{ fontSize: 32, fontWeight: 700, color: scoreColor, lineHeight: 1, marginBottom: 4 }}>
-                  {metric.score > 0 ? `+${metric.score}` : metric.score}
+                  {prefix}{metric.score}{metric.unit || ''}
                 </div>
-                <div style={{ fontSize: 11, color: '#5E6C84' }}>Current score · Last 6 months</div>
+                <div style={{ fontSize: 11, color: '#5E6C84' }}>
+                  {metric.latestCI
+                    ? `95% CI: [${metric.latestCI[0]}, ${metric.latestCI[1]}]${metric.unit || ''}`
+                    : 'Current score · Last 6 months'}
+                </div>
               </div>
+
               {metric.series && (
                 <div className="drawer-section">
                   <div className="drawer-section-label">Trend</div>
-                  <MetricLineChart series={metric.series} />
+                  <MetricLineChart series={metric.series} labels={metric.labels} />
                 </div>
               )}
+
+              {metric.rounds && metric.rounds.length > 0 && (
+                <div className="drawer-section">
+                  <div className="drawer-section-label">All rounds</div>
+                  {metric.rounds.map((r, i) => (
+                    <div key={i} style={{
+                      display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start',
+                      padding: '7px 0',
+                      borderBottom: i < metric.rounds.length - 1 ? '1px solid #F4F5F7' : 'none',
+                    }}>
+                      <div>
+                        <div style={{ fontSize: 12, color: '#172B4D', fontWeight: 500, lineHeight: 1.4 }}>
+                          {r.label}
+                        </div>
+                        <div style={{ fontSize: 11, color: '#97A0AF' }}>{r.date}</div>
+                      </div>
+                      <div style={{ textAlign: 'right' }}>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: '#172B4D' }}>
+                          {r.value}{metric.unit || ''}
+                        </div>
+                        {r.ci && (
+                          <div style={{ fontSize: 10, color: '#C1C7D0' }}>
+                            CI [{r.ci[0]}, {r.ci[1]}]
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
               {metric.summary && (
                 <div className="drawer-section">
                   <div className="drawer-section-label">Summary</div>
                   <div className="drawer-section-content">{metric.summary}</div>
+                </div>
+              )}
+
+              {metric.productId && (
+                <div style={{ paddingTop: 16, marginTop: 8, borderTop: '1px solid #E4E7EB' }}>
+                  <Link
+                    to={`/benchmarking/${metric.productId}`}
+                    onClick={onClose}
+                    style={{
+                      display: 'inline-flex', alignItems: 'center', gap: 4,
+                      color: '#ea8600', fontSize: 13, fontWeight: 600,
+                      textDecoration: 'none',
+                    }}
+                  >
+                    View full benchmarking dashboard →
+                  </Link>
                 </div>
               )}
             </>
@@ -324,14 +416,20 @@ function DetailDrawer({ item, type, onClose, onViewInsightsTab }) {
 /* ─── Metric Card (Part 4) ─────────────────────────────────────── */
 
 function MetricCard({ metric, onClick }) {
-  const scoreColor = metric.score != null && metric.score < 0 ? '#FF5630' : '#172B4D'
+  const hasUnit = !!metric.unit
+  const isNeg = !hasUnit && metric.score != null && metric.score < 0
+  const scoreColor = isNeg ? '#FF5630' : '#172B4D'
+  const prefix = !hasUnit && metric.score > 0 ? '+' : ''
   return (
     <div className="metric-card" onClick={onClick}>
       <div className="metric-card-icon">{metric.icon}</div>
       <div className="metric-card-name">{metric.name}</div>
       {metric.score != null ? (
-        <div className="metric-card-score" style={{ color: scoreColor }}>
-          {metric.score > 0 ? `+${metric.score}` : metric.score}
+        <div
+          className="metric-card-score"
+          style={{ color: scoreColor, fontSize: hasUnit ? 18 : 24 }}
+        >
+          {prefix}{metric.score}{metric.unit || ''}
         </div>
       ) : (
         <div className="metric-card-nodata">No data</div>
@@ -391,11 +489,15 @@ export default function JourneyMapView({ journey, filters = {}, onTabChange, chi
   const [drawer, setDrawer] = useState(null)
   const [metricPanel, setMetricPanel] = useState(null)
 
+  const { benchmarking } = useData()
+  const bmProduct = benchmarking?.products?.find(p => p.journey === journey.id)
+  const journeyMetrics = bmProduct
+    ? deriveBenchmarkMetrics(bmProduct)
+    : JOURNEY_METRIC_DATA[journey.id] ?? (journey.metrics || [])
+
   function toggleLane(id) {
     setCollapsed(prev => ({ ...prev, [id]: !prev[id] }))
   }
-
-  const journeyMetrics = JOURNEY_METRIC_DATA[journey.id] ?? (journey.metrics || [])
 
   let oppGlobalIdx = 0
   const oppsByStage = stages.map(stage => {
