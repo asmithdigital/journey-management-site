@@ -1,0 +1,306 @@
+{
+  "products": [
+    {
+      "id": "qtb-home-insurance",
+      "name": "Quote to Buy — Home Insurance",
+      "journey": "insurance",
+      "description": "End-to-end quote and purchase flow for home insurance",
+      "uxBenchmarks": {
+        "testPlan": {
+          "tasks": [
+            "Get a quote for home insurance with standard details",
+            "Update your excess amount and see the new price",
+            "Find and understand what events are not covered",
+            "Complete the purchase with a saved payment method"
+          ],
+          "participantsPerRound": 40,
+          "cadence": "Quarterly",
+          "platform": "UserTesting.com (unmoderated)",
+          "notes": "Same 4 tasks every round. Do NOT change tasks between rounds — longitudinal consistency is required for valid comparison."
+        },
+        "rounds": [
+          {
+            "id": "r1",
+            "date": "2025-11-15",
+            "label": "Baseline (pre-redesign)",
+            "participants": 42,
+            "metrics": {
+              "taskCompletion": { "value": 58, "unit": "%", "ci": [52, 64] },
+              "timeOnTask": { "value": 312, "unit": "seconds", "ci": [285, 339] },
+              "errorRate": { "value": 34, "unit": "%", "ci": [28, 40] },
+              "msat": { "value": 3.1, "unit": "/5", "ci": [2.8, 3.4] }
+            },
+            "notes": "Baseline before progress bar redesign. Major friction at address confirmation (stage 3).",
+            "significantFindings": [
+              "34% drop-off at vehicle details — empty form with no pre-fill",
+              "Average 10+ clicks before seeing a price",
+              "3/42 participants called RAA instead of completing online"
+            ]
+          },
+          {
+            "id": "r2",
+            "date": "2026-02-20",
+            "label": "Post-redesign (progress bar + pre-fill)",
+            "participants": 40,
+            "metrics": {
+              "taskCompletion": { "value": 74, "unit": "%", "ci": [68, 80] },
+              "timeOnTask": { "value": 228, "unit": "seconds", "ci": [208, 248] },
+              "errorRate": { "value": 18, "unit": "%", "ci": [13, 23] },
+              "msat": { "value": 3.8, "unit": "/5", "ci": [3.5, 4.1] }
+            },
+            "notes": "Progress bar and pre-fill both shipped. Significant improvement across all metrics.",
+            "significantFindings": [
+              "Task completion up 16 percentage points (statistically significant, p < 0.01)",
+              "Time on task reduced by 27%",
+              "Pre-fill eliminated the empty form problem — drop-off at stage 3 fell from 34% to 12%"
+            ]
+          },
+          {
+            "id": "r3",
+            "date": "2026-05-18",
+            "label": "Quarterly drift check",
+            "participants": 41,
+            "metrics": {
+              "taskCompletion": { "value": 71, "unit": "%", "ci": [65, 77] },
+              "timeOnTask": { "value": 241, "unit": "seconds", "ci": [220, 262] },
+              "errorRate": { "value": 21, "unit": "%", "ci": [16, 26] },
+              "msat": { "value": 3.6, "unit": "/5", "ci": [3.3, 3.9] }
+            },
+            "notes": "Slight regression from R2. New payment method selector may be causing confusion. Investigating.",
+            "significantFindings": [
+              "Task completion dropped 3pp from R2 — not statistically significant (within CI overlap)",
+              "Error rate increased slightly — 2 participants confused by new payment selector",
+              "MSAT stable within confidence interval"
+            ]
+          }
+        ]
+      },
+      "chromeScans": [
+        {
+          "id": "cs1",
+          "date": "2025-11-10",
+          "label": "Pre-redesign baseline scan",
+          "type": "baseline",
+          "metrics": {
+            "totalScreens": 14,
+            "totalFormFields": 38,
+            "totalClicks": 12,
+            "frictionPoints": 7,
+            "accessibilityIssues": 4
+          },
+          "findings": [
+            "No progress indicator across 14 screens",
+            "Address confirmation mismatch between entered and displayed format",
+            "Calculator opens in new tab — breaks flow",
+            "No pre-fill on vehicle details despite data existing in policy system",
+            "Price only visible after 10+ clicks"
+          ]
+        },
+        {
+          "id": "cs2",
+          "date": "2026-02-25",
+          "label": "Post-redesign scan",
+          "type": "comparison",
+          "comparedTo": "cs1",
+          "metrics": {
+            "totalScreens": 11,
+            "totalFormFields": 28,
+            "totalClicks": 8,
+            "frictionPoints": 3,
+            "accessibilityIssues": 2
+          },
+          "changes": {
+            "screensRemoved": ["Address confirmation (merged into details)", "Calculator (embedded inline)", "Review your details (combined with summary)"],
+            "screensAdded": [],
+            "fieldsRemoved": 10,
+            "fieldsAdded": 0,
+            "newFeatures": ["Progress bar with 5 steps", "Pre-filled vehicle details from policy system", "Inline premium calculator"],
+            "resolvedFrictions": ["Address mismatch fixed", "Calculator no longer breaks flow", "Pre-fill eliminates empty form", "Progress indicator added"],
+            "newFrictions": ["Payment method selector has small tap targets on mobile"]
+          }
+        },
+        {
+          "id": "cs3",
+          "date": "2026-05-20",
+          "label": "Quarterly drift check scan",
+          "type": "comparison",
+          "comparedTo": "cs2",
+          "metrics": {
+            "totalScreens": 12,
+            "totalFormFields": 30,
+            "totalClicks": 9,
+            "frictionPoints": 4,
+            "accessibilityIssues": 2
+          },
+          "changes": {
+            "screensAdded": ["New payment method selection screen (added by dev without design review)"],
+            "screensRemoved": [],
+            "fieldsAdded": 2,
+            "fieldsRemoved": 0,
+            "newFeatures": ["Apple Pay option"],
+            "resolvedFrictions": [],
+            "newFrictions": ["New payment screen adds a step", "Payment method selector layout differs from design spec"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "my-account",
+      "name": "My Account — Policy Management",
+      "journey": "my-account",
+      "description": "Viewing and managing existing policies, updating details, and accessing documents",
+      "uxBenchmarks": {
+        "testPlan": {
+          "tasks": [
+            "Find your current home insurance policy and check the renewal date",
+            "Update your address on an existing policy",
+            "Download your certificate of insurance",
+            "Add a second driver to your motor policy"
+          ],
+          "participantsPerRound": 35,
+          "cadence": "Quarterly",
+          "platform": "UserTesting.com (unmoderated)",
+          "notes": "Baseline only — no redesign delivered yet."
+        },
+        "rounds": [
+          {
+            "id": "r1",
+            "date": "2026-04-10",
+            "label": "Baseline",
+            "participants": 36,
+            "metrics": {
+              "taskCompletion": { "value": 45, "unit": "%", "ci": [38, 52] },
+              "timeOnTask": { "value": 402, "unit": "seconds", "ci": [365, 439] },
+              "errorRate": { "value": 41, "unit": "%", "ci": [34, 48] },
+              "msat": { "value": 2.4, "unit": "/5", "ci": [2.1, 2.7] }
+            },
+            "notes": "Very poor baseline. Navigation is the primary issue — participants cannot find their policies.",
+            "significantFindings": [
+              "Only 45% could complete all 4 tasks",
+              "Average time on task over 6.5 minutes",
+              "12/36 participants used search instead of navigation — search returned no results for 'policy'",
+              "Certificate download buried 4 levels deep"
+            ]
+          }
+        ]
+      },
+      "chromeScans": [
+        {
+          "id": "cs1",
+          "date": "2026-04-08",
+          "label": "Baseline scan",
+          "type": "baseline",
+          "metrics": {
+            "totalScreens": 22,
+            "totalFormFields": 45,
+            "totalClicks": 18,
+            "frictionPoints": 11,
+            "accessibilityIssues": 6
+          },
+          "findings": [
+            "22 screens across policy management — no clear hierarchy",
+            "Search returns no results for common terms like 'policy' and 'renewal'",
+            "Certificate download requires: My Account → Policies → Select → Documents → Certificate → Download (6 clicks)",
+            "Address update form clears all fields on validation error",
+            "No confirmation step before address change is saved"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "taskly-onboarding",
+      "name": "Taskly — Onboarding Flow",
+      "journey": "account-creation",
+      "description": "New user registration and first-task creation flow for the Taskly demo app",
+      "uxBenchmarks": {
+        "testPlan": {
+          "tasks": [
+            "Create a new account using your email",
+            "Set up your first project and give it a name",
+            "Create a task with a due date and assign it to yourself",
+            "Find the task you just created and mark it complete"
+          ],
+          "participantsPerRound": 30,
+          "cadence": "After each iteration",
+          "platform": "UserTesting.com (unmoderated)",
+          "notes": "Demo product — faster iteration cycle than production RAA products."
+        },
+        "rounds": [
+          {
+            "id": "r1",
+            "date": "2026-03-01",
+            "label": "V1 — basic flow",
+            "participants": 30,
+            "metrics": {
+              "taskCompletion": { "value": 82, "unit": "%", "ci": [75, 89] },
+              "timeOnTask": { "value": 145, "unit": "seconds", "ci": [128, 162] },
+              "errorRate": { "value": 12, "unit": "%", "ci": [7, 17] },
+              "msat": { "value": 4.1, "unit": "/5", "ci": [3.8, 4.4] }
+            },
+            "notes": "Good baseline for a new product. Date picker was the main confusion point.",
+            "significantFindings": [
+              "Date picker caused 8/30 participants to enter wrong format",
+              "Task creation was intuitive — 28/30 completed without help",
+              "3 participants expected a tutorial/walkthrough on first login"
+            ]
+          },
+          {
+            "id": "r2",
+            "date": "2026-04-15",
+            "label": "V2 — improved date picker + onboarding tooltip",
+            "participants": 31,
+            "metrics": {
+              "taskCompletion": { "value": 91, "unit": "%", "ci": [85, 97] },
+              "timeOnTask": { "value": 118, "unit": "seconds", "ci": [104, 132] },
+              "errorRate": { "value": 5, "unit": "%", "ci": [2, 8] },
+              "msat": { "value": 4.5, "unit": "/5", "ci": [4.2, 4.8] }
+            },
+            "notes": "Significant improvement. Date picker fix resolved the main error source. Onboarding tooltip helped first-time users.",
+            "significantFindings": [
+              "Task completion up 9pp (statistically significant, p < 0.05)",
+              "Error rate dropped from 12% to 5% — date picker fix confirmed",
+              "Time on task reduced 19% — onboarding tooltip saved exploration time"
+            ]
+          }
+        ]
+      },
+      "chromeScans": []
+    }
+  ],
+  "methodology": {
+    "uxBenchmarking": {
+      "description": "Quantitative usability testing with fixed tasks, run at regular intervals to measure change over time.",
+      "rules": [
+        "Same tasks every round — never change the test between rounds",
+        "Same participant criteria — demographics, tech proficiency, familiarity with product",
+        "Same platform and test conditions — moderated vs unmoderated stays consistent",
+        "Minimum 30 participants per round for statistical significance",
+        "Report confidence intervals (95% CI) for all metrics",
+        "Statistical significance tested between rounds — p < 0.05 minimum"
+      ],
+      "metrics": {
+        "taskCompletion": { "name": "Task Completion Rate", "description": "Percentage of participants who complete all tasks successfully", "good": "higher", "unit": "%" },
+        "timeOnTask": { "name": "Time on Task", "description": "Average time to complete the task set", "good": "lower", "unit": "seconds" },
+        "errorRate": { "name": "Error Rate", "description": "Percentage of participants who encounter at least one error", "good": "lower", "unit": "%" },
+        "msat": { "name": "MSAT (Member Satisfaction)", "description": "Post-task satisfaction rating", "good": "higher", "unit": "/5" }
+      }
+    },
+    "chromeScanning": {
+      "description": "Automated product state capture using Claude's Chrome extension. Documents every screen, form field, and interaction point.",
+      "metrics": {
+        "totalScreens": "Number of distinct screens in the flow",
+        "totalFormFields": "Total form inputs across all screens",
+        "totalClicks": "Minimum clicks to complete the primary task",
+        "frictionPoints": "Identified UX friction points",
+        "accessibilityIssues": "WCAG 2.1 AA violations detected"
+      },
+      "cadence": "Before and after each delivery cycle, plus quarterly drift checks"
+    },
+    "statisticalNotes": {
+      "confidenceInterval": "All metrics report 95% confidence intervals. If the CIs of two rounds overlap, the difference is likely not statistically significant.",
+      "sampleSize": "Minimum 30 participants per round. Below 30, confidence intervals widen and results become unreliable for decision-making.",
+      "significance": "We use p < 0.05 as the threshold. A result is 'statistically significant' when there's less than a 5% chance the difference is due to random variation.",
+      "longitudinal": "Benchmarking studies are longitudinal by definition. Changing the tasks, participant criteria, or test conditions between rounds invalidates the comparison. If the product changes enough that the tasks no longer make sense, start a new benchmark study — don't modify the existing one."
+    }
+  }
+}
