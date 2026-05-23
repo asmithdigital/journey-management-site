@@ -11,8 +11,8 @@ import GlobalOpportunities from './pages/GlobalOpportunities.jsx'
 import GlobalSolutions from './pages/GlobalSolutions.jsx'
 import GlobalMetrics from './pages/GlobalMetrics.jsx'
 import Personas from './pages/Personas.jsx'
-import BenchmarkingDashboard from './pages/BenchmarkingDashboard.jsx'
-import BenchmarkingDetail from './pages/BenchmarkingDetail.jsx'
+import MetricsDashboard from './pages/MetricsDashboard.jsx'
+import MetricsDetail from './pages/MetricsDetail.jsx'
 
 export const DataContext = createContext(null)
 export const SidebarContext = createContext({ sidebarOpen: false, openSidebar: () => {}, closeSidebar: () => {} })
@@ -129,8 +129,8 @@ export default function App() {
               <Route path="/solutions" element={<GlobalSolutions />} />
               <Route path="/metrics" element={<GlobalMetrics />} />
               <Route path="/personas" element={<Personas />} />
-              <Route path="/benchmarking" element={<BenchmarkingDashboard />} />
-              <Route path="/benchmarking/:productId" element={<BenchmarkingDetail />} />
+              <Route path="/metrics-dashboard" element={<MetricsDashboard />} />
+              <Route path="/metrics-dashboard/:productId" element={<MetricsDetail />} />
             </Routes>
           </main>
         </div>

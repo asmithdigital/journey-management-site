@@ -4070,3 +4070,307 @@ a.sidebar-tree-group-name.active {
   .bench-scan-metrics { grid-template-columns: repeat(2, 1fr); }
   .bench-round-metrics { grid-template-columns: 1fr 1fr; }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   METRICS DASHBOARD — grid layout (Part 10)
+   ═══════════════════════════════════════════════════════════════ */
+
+.metrics-dash-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+  margin-bottom: 4px;
+}
+
+/* Round history: 2-col grid on desktop */
+.bench-rounds-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+/* Chrome scan: 2-col on desktop */
+.bench-scan-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ANALYTICS SWIM LANE (Part 4)
+   ═══════════════════════════════════════════════════════════════ */
+
+.swim-lane-cell.analytics-bg { background: #F0FBF9; min-height: 80px; }
+.swim-lane-label-cell.analytics-bg { background: #E8F5E9; }
+
+.analytics-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 2px 0;
+}
+
+.analytics-chip {
+  background: white;
+  border: 1px solid #B2DFDB;
+  border-left: 3px solid #00897B;
+  border-radius: 6px;
+  padding: 7px 10px;
+  min-width: 120px;
+  cursor: pointer;
+  transition: box-shadow 0.15s, border-color 0.15s;
+}
+
+.analytics-chip:hover {
+  box-shadow: 0 2px 8px rgba(0, 137, 123, 0.15);
+  border-color: #00897B;
+}
+
+.analytics-chip-name {
+  font-size: 11px;
+  font-weight: 700;
+  color: #42526E;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.analytics-chip-value-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.analytics-chip-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: #00897B;
+  line-height: 1;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   EXECUTIVE SUMMARY ROW (Part 12)
+   ═══════════════════════════════════════════════════════════════ */
+
+.exec-summary-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.exec-summary-card {
+  background: white;
+  border: 1px solid #E4E7EB;
+  border-radius: 8px;
+  padding: 10px 16px;
+  min-width: 110px;
+  flex: 1;
+}
+
+.exec-summary-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #5E6C84;
+  margin-bottom: 4px;
+}
+
+.exec-summary-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: #172B4D;
+  line-height: 1;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CONTRAST FIXES (Part 9)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Darken all previously-muted text that was too light */
+.bench-kpi-label {
+  color: #42526E !important;
+}
+
+.bench-round-date {
+  color: #5E6C84 !important;
+}
+
+.bench-round-metric-name {
+  color: #42526E !important;
+  font-weight: 700;
+}
+
+.bench-round-metric-value {
+  color: #172B4D !important;
+}
+
+.bench-round-metric-ci {
+  color: #5E6C84 !important;
+}
+
+.bench-scan-metric-label {
+  color: #42526E !important;
+}
+
+.bench-scan-date {
+  color: #5E6C84 !important;
+}
+
+.bench-scan-compared {
+  color: #5E6C84 !important;
+}
+
+.bench-change-group-label {
+  color: #42526E !important;
+  font-weight: 700;
+}
+
+.bench-product-footer {
+  color: #5E6C84 !important;
+}
+
+.bench-section-block-meta {
+  color: #42526E !important;
+}
+
+.bench-chart-title {
+  color: #42526E !important;
+  font-weight: 700;
+}
+
+.bench-methodology-list li {
+  color: #42526E !important;
+}
+
+.bench-methodology-metric-row {
+  color: #42526E !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MOBILE RESPONSIVENESS (Part 8)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Drawer panels — full width on mobile */
+@media (max-width: 768px) {
+  .drawer-panel {
+    width: 100% !important;
+  }
+
+  /* Journey map mobile — reduce phase column min width */
+  .phase-grid {
+    grid-template-columns: 36px repeat(var(--phase-count, 4), minmax(160px, 320px));
+  }
+
+  /* Swim lane labels — icon-only mode on mobile */
+  .swim-lane-label-text {
+    display: none;
+  }
+
+  .swim-lane-label-cell {
+    min-width: 36px;
+    width: 36px;
+    padding: 8px 4px;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .swim-lane-label-cell::before {
+    content: attr(data-icon);
+    font-size: 14px;
+    color: #5E6C84;
+  }
+
+  .swim-lane-collapse-btn {
+    display: none;
+  }
+
+  /* Phase header corner — narrower */
+  .phase-header-corner {
+    min-width: 36px;
+    width: 36px;
+    padding: 8px 4px;
+  }
+
+  .phase-corner-label { display: none; }
+
+  /* Metric cards above journey — fixed position, wrap to 2 col */
+  .metric-cards-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  /* Metric card compact on mobile */
+  .metric-card {
+    min-width: unset;
+    padding: 10px 12px;
+  }
+
+  /* Round history single column */
+  .bench-rounds-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Chrome scan grid single col */
+  .bench-scan-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Metrics dash grids single col */
+  .metrics-dash-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Charts grid 1 col */
+  .bench-charts-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Exec summary 2 col */
+  .exec-summary-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .exec-summary-card {
+    flex: unset;
+    min-width: unset;
+  }
+}
+
+@media (max-width: 480px) {
+  .metric-cards-row {
+    grid-template-columns: 1fr;
+  }
+
+  .exec-summary-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   METRICS DASHBOARD responsive (Part 10)
+   ═══════════════════════════════════════════════════════════════ */
+
+@media (min-width: 1200px) {
+  .metrics-dash-grid {
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  }
+
+  .bench-rounds-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .bench-scan-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 1199px) and (min-width: 769px) {
+  .bench-rounds-grid {
+    grid-template-columns: 1fr;
+  }
+}

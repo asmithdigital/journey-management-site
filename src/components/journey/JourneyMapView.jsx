@@ -120,7 +120,7 @@ function LaneLabel({ label, collapsed, onToggle, className = '' }) {
 
 /* ─── Metric line chart (for panel) ───────────────────────────── */
 
-function MetricLineChart({ series, labels, width = 316, height = 110 }) {
+function MetricLineChart({ series, labels, width = 316, height = 110, color = '#0052CC' }) {
   if (!series || series.length === 0) return null
   const PAD = { top: 12, right: 8, bottom: 28, left: 36 }
   const W = width - PAD.left - PAD.right
@@ -156,12 +156,38 @@ function MetricLineChart({ series, labels, width = 316, height = 110 }) {
           <text key={i} x={gx} y={height - 6} textAnchor="middle" fontSize={9} fill="#97A0AF">{lbl}</text>
         )
       })}
-      <path d={linePath} fill="none" stroke="#0052CC" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+      <path d={linePath} fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
       {pts.map((p, i) => (
-        <circle key={i} cx={p.x} cy={p.y} r={4} fill="white" stroke="#0052CC" strokeWidth={2} />
+        <circle key={i} cx={p.x} cy={p.y} r={4} fill="white" stroke={color} strokeWidth={2} />
       ))}
     </svg>
   )
+}
+
+/* ─── Metric type constants ────────────────────────────────────── */
+
+const METRIC_TYPES = {
+  UX_BENCH: {
+    color: '#ea8600',
+    bgColor: '#FFF4E0',
+    borderColor: '#F5C07D',
+    sourceLabel: 'UX Benchmarking · Claude Code upload',
+    icon: '▣',
+  },
+  MEMBER_RESEARCH: {
+    color: '#0052CC',
+    bgColor: '#EAF0FF',
+    borderColor: '#B3D4FF',
+    sourceLabel: 'Member Research · Qualtrics',
+    icon: '◉',
+  },
+  ANALYTICS: {
+    color: '#00897B',
+    bgColor: '#E0F2F1',
+    borderColor: '#80CBC4',
+    sourceLabel: 'Analytics · Google Analytics',
+    icon: '▤',
+  },
 }
 
 /* ─── Derive metric cards from benchmarking data ───────────────── */
@@ -186,7 +212,7 @@ function deriveBenchmarkMetrics(product) {
       score: data.value,
       unit: cfg.unit,
       series: rounds.map(r => r.metrics[key]?.value ?? 0),
-      labels: rounds.map(r => `R${r.id.replace('r', '')}`),
+      labels: rounds.map(r => `R${r.id.replace(/^r-?pre\d+$/, 'pre').replace(/^r(\d+)$/, 'R$1')}`),
       latestCI: data.ci,
       rounds: rounds.map(r => ({
         label: r.label,
@@ -195,25 +221,103 @@ function deriveBenchmarkMetrics(product) {
         ci: r.metrics[key]?.ci,
       })),
       productId: product.id,
+      metricType: 'UX_BENCH',
       summary: `Based on ${rounds.length} benchmark round${rounds.length !== 1 ? 's' : ''} on ${product.name}.`,
     }
   })
 }
 
-/* ─── Metric Panel (Part 9) ────────────────────────────────────── */
+/* ─── Derive member research metrics ───────────────────────────── */
+
+function deriveMemberResearchMetrics(memberResearch, insuranceNps, journeyId) {
+  const metrics = []
+  if (memberResearch) {
+    Object.entries(memberResearch).forEach(([key, metric]) => {
+      if (metric.journeyId !== journeyId) return
+      const rounds = metric.rounds
+      const latest = rounds[rounds.length - 1]
+      const isNps = key === 'nps'
+      metrics.push({
+        id: `mr-${key}`,
+        name: metric.name,
+        icon: METRIC_TYPES.MEMBER_RESEARCH.icon,
+        score: latest.value,
+        unit: isNps ? '' : '%',
+        series: rounds.map(r => r.value),
+        labels: rounds.map(r => r.date.slice(0, 7)),
+        metricType: 'MEMBER_RESEARCH',
+        summary: `${metric.name} from ${rounds.length} quarterly Qualtrics survey rounds. Latest sample: ${latest.sample?.toLocaleString()} respondents.`,
+      })
+    })
+  }
+  if (insuranceNps && insuranceNps.journeyId === journeyId) {
+    const rounds = insuranceNps.rounds
+    const latest = rounds[rounds.length - 1]
+    metrics.push({
+      id: 'mr-ins-nps',
+      name: insuranceNps.name,
+      icon: METRIC_TYPES.MEMBER_RESEARCH.icon,
+      score: latest.value,
+      unit: '',
+      series: rounds.map(r => r.value),
+      labels: rounds.map(r => r.date.slice(0, 7)),
+      metricType: 'MEMBER_RESEARCH',
+      summary: `Insurance NPS from ${rounds.length} quarterly Qualtrics survey rounds. Latest sample: ${latest.sample?.toLocaleString()} respondents.`,
+    })
+  }
+  return metrics
+}
+
+/* ─── Tiny sparkline ────────────────────────────────────────────── */
+
+function TinySparkline({ data, color, width = 40, height = 16 }) {
+  if (!data || data.length < 2) return null
+  const min = Math.min(...data)
+  const max = Math.max(...data)
+  const range = max - min || 1
+  const pts = data.map((v, i) => {
+    const x = (i / (data.length - 1)) * (width - 2) + 1
+    const y = (height - 2) - ((v - min) / range) * (height - 4) + 1
+    return `${x.toFixed(1)},${y.toFixed(1)}`
+  })
+  return (
+    <svg width={width} height={height} style={{ display: 'inline-block', flexShrink: 0 }}>
+      <polyline points={pts.join(' ')} fill="none" stroke={color} strokeWidth={1.5}
+        strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+/* ─── Metric Panel ─────────────────────────────────────────────── */
 
 function MetricPanel({ metric, onClose }) {
   if (!metric) return null
+  const typeKey = metric.metricType || 'UX_BENCH'
+  const typeCfg = METRIC_TYPES[typeKey] || METRIC_TYPES.UX_BENCH
   const hasUnit = !!metric.unit
   const isNeg = !hasUnit && metric.score != null && metric.score < 0
-  const scoreColor = isNeg ? '#FF5630' : '#36B37E'
+  const scoreColor = isNeg ? '#FF5630' : typeCfg.color
   const prefix = !hasUnit && metric.score > 0 ? '+' : ''
 
   return (
     <div className="drawer-overlay" onClick={onClose}>
       <div className="drawer-panel" onClick={e => e.stopPropagation()}>
-        <div className="drawer-header">
-          <div className="drawer-title">{metric.name}</div>
+        <div className="drawer-header" style={{ borderBottom: `2px solid ${typeCfg.color}` }}>
+          <div style={{ flex: 1 }}>
+            <div style={{ marginBottom: 6 }}>
+              <span style={{
+                display: 'inline-flex', alignItems: 'center', gap: 5,
+                background: typeCfg.bgColor, border: `1px solid ${typeCfg.borderColor}`,
+                borderRadius: 4, padding: '2px 7px',
+                fontSize: 10, fontWeight: 700, color: typeCfg.color,
+                letterSpacing: '0.04em', whiteSpace: 'nowrap',
+              }}>
+                <span style={{ width: 6, height: 6, borderRadius: '50%', background: typeCfg.color, display: 'inline-block' }} />
+                {typeCfg.sourceLabel}
+              </span>
+            </div>
+            <div className="drawer-title">{metric.name}</div>
+          </div>
           <button className="drawer-close" onClick={onClose}>×</button>
         </div>
         <div className="drawer-body">
@@ -233,7 +337,7 @@ function MetricPanel({ metric, onClose }) {
               {metric.series && (
                 <div className="drawer-section">
                   <div className="drawer-section-label">Trend</div>
-                  <MetricLineChart series={metric.series} labels={metric.labels} />
+                  <MetricLineChart series={metric.series} labels={metric.labels} color={typeCfg.color} />
                 </div>
               )}
 
@@ -247,18 +351,23 @@ function MetricPanel({ metric, onClose }) {
                       borderBottom: i < metric.rounds.length - 1 ? '1px solid #F4F5F7' : 'none',
                     }}>
                       <div>
-                        <div style={{ fontSize: 12, color: '#172B4D', fontWeight: 500, lineHeight: 1.4 }}>
+                        <div style={{ fontSize: 12, color: '#172B4D', fontWeight: 600, lineHeight: 1.4 }}>
                           {r.label}
                         </div>
-                        <div style={{ fontSize: 11, color: '#97A0AF' }}>{r.date}</div>
+                        <div style={{ fontSize: 11, color: '#5E6C84' }}>{r.date}</div>
                       </div>
                       <div style={{ textAlign: 'right' }}>
                         <div style={{ fontSize: 13, fontWeight: 700, color: '#172B4D' }}>
                           {r.value}{metric.unit || ''}
                         </div>
                         {r.ci && (
-                          <div style={{ fontSize: 10, color: '#C1C7D0' }}>
+                          <div style={{ fontSize: 10, color: '#5E6C84' }}>
                             CI [{r.ci[0]}, {r.ci[1]}]
+                          </div>
+                        )}
+                        {r.sample && (
+                          <div style={{ fontSize: 10, color: '#5E6C84' }}>
+                            n={r.sample?.toLocaleString()}
                           </div>
                         )}
                       </div>
@@ -270,31 +379,107 @@ function MetricPanel({ metric, onClose }) {
               {metric.summary && (
                 <div className="drawer-section">
                   <div className="drawer-section-label">Summary</div>
-                  <div className="drawer-section-content">{metric.summary}</div>
+                  <div className="drawer-section-content" style={{ color: '#42526E' }}>{metric.summary}</div>
                 </div>
               )}
 
-              {metric.productId && (
-                <div style={{ paddingTop: 16, marginTop: 8, borderTop: '1px solid #E4E7EB' }}>
-                  <Link
-                    to={`/benchmarking/${metric.productId}`}
-                    onClick={onClose}
-                    style={{
-                      display: 'inline-flex', alignItems: 'center', gap: 4,
-                      color: '#ea8600', fontSize: 13, fontWeight: 600,
-                      textDecoration: 'none',
-                    }}
-                  >
-                    View full benchmarking dashboard →
-                  </Link>
-                </div>
-              )}
+              <div style={{ paddingTop: 16, marginTop: 8, borderTop: '1px solid #E4E7EB' }}>
+                <Link
+                  to={metric.productId ? `/metrics-dashboard/${metric.productId}` : '/metrics-dashboard'}
+                  onClick={onClose}
+                  style={{
+                    display: 'inline-flex', alignItems: 'center', gap: 4,
+                    color: typeCfg.color, fontSize: 13, fontWeight: 600,
+                    textDecoration: 'none',
+                  }}
+                >
+                  View in Metrics Dashboard →
+                </Link>
+              </div>
             </>
           ) : (
             <div style={{ fontSize: 13, color: '#5E6C84', textAlign: 'center', paddingTop: 40 }}>
               No data available for this metric.
             </div>
           )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* ─── Analytics chip panel ─────────────────────────────────────── */
+
+function AnalyticsPanel({ chip, onClose }) {
+  if (!chip) return null
+  const typeCfg = METRIC_TYPES.ANALYTICS
+  return (
+    <div className="drawer-overlay" onClick={onClose}>
+      <div className="drawer-panel" onClick={e => e.stopPropagation()}>
+        <div className="drawer-header" style={{ borderBottom: `2px solid ${typeCfg.color}` }}>
+          <div style={{ flex: 1 }}>
+            <div style={{ marginBottom: 6 }}>
+              <span style={{
+                display: 'inline-flex', alignItems: 'center', gap: 5,
+                background: typeCfg.bgColor, border: `1px solid ${typeCfg.borderColor}`,
+                borderRadius: 4, padding: '2px 7px',
+                fontSize: 10, fontWeight: 700, color: typeCfg.color,
+                letterSpacing: '0.04em',
+              }}>
+                <span style={{ width: 6, height: 6, borderRadius: '50%', background: typeCfg.color, display: 'inline-block' }} />
+                {typeCfg.sourceLabel}
+              </span>
+            </div>
+            <div className="drawer-title">{chip.name}</div>
+          </div>
+          <button className="drawer-close" onClick={onClose}>×</button>
+        </div>
+        <div className="drawer-body">
+          <div style={{ marginBottom: 20 }}>
+            <div style={{ fontSize: 32, fontWeight: 700, color: typeCfg.color, lineHeight: 1, marginBottom: 4 }}>
+              {chip.latestValue}{chip.unit}
+            </div>
+            <div style={{ fontSize: 11, color: '#5E6C84' }}>Latest · {chip.data[chip.data.length - 1]?.date}</div>
+          </div>
+
+          <div className="drawer-section">
+            <div className="drawer-section-label">Monthly trend</div>
+            {chip.data && (
+              <MetricLineChart
+                series={chip.data.map(d => d.value)}
+                labels={chip.data.map(d => d.date)}
+                color={typeCfg.color}
+              />
+            )}
+          </div>
+
+          <div className="drawer-section">
+            <div className="drawer-section-label">All data points</div>
+            {(chip.data || []).map((d, i) => (
+              <div key={i} style={{
+                display: 'flex', justifyContent: 'space-between',
+                padding: '6px 0',
+                borderBottom: i < chip.data.length - 1 ? '1px solid #F4F5F7' : 'none',
+              }}>
+                <div style={{ fontSize: 12, color: '#42526E', fontWeight: 500 }}>{d.date}</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: '#172B4D' }}>{d.value}{chip.unit}</div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ paddingTop: 16, marginTop: 8, borderTop: '1px solid #E4E7EB' }}>
+            <Link
+              to="/metrics-dashboard"
+              onClick={onClose}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 4,
+                color: typeCfg.color, fontSize: 13, fontWeight: 600,
+                textDecoration: 'none',
+              }}
+            >
+              View in Metrics Dashboard →
+            </Link>
+          </div>
         </div>
       </div>
     </div>
@@ -413,16 +598,30 @@ function DetailDrawer({ item, type, onClose, onViewInsightsTab }) {
   )
 }
 
-/* ─── Metric Card (Part 4) ─────────────────────────────────────── */
+/* ─── Metric Card ──────────────────────────────────────────────── */
 
 function MetricCard({ metric, onClick }) {
+  const typeKey = metric.metricType || 'UX_BENCH'
+  const typeCfg = METRIC_TYPES[typeKey] || METRIC_TYPES.UX_BENCH
   const hasUnit = !!metric.unit
   const isNeg = !hasUnit && metric.score != null && metric.score < 0
-  const scoreColor = isNeg ? '#FF5630' : '#172B4D'
+  const scoreColor = isNeg ? '#FF5630' : typeCfg.color
   const prefix = !hasUnit && metric.score > 0 ? '+' : ''
   return (
-    <div className="metric-card" onClick={onClick}>
-      <div className="metric-card-icon">{metric.icon}</div>
+    <div
+      className="metric-card"
+      onClick={onClick}
+      style={{ borderLeft: `3px solid ${typeCfg.color}` }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
+        <div className="metric-card-icon" style={{ color: typeCfg.color }}>{metric.icon}</div>
+        <span style={{
+          fontSize: 9, fontWeight: 700, color: typeCfg.color, textTransform: 'uppercase',
+          letterSpacing: '0.04em', opacity: 0.8,
+        }}>
+          {typeKey === 'UX_BENCH' ? 'UX' : typeKey === 'MEMBER_RESEARCH' ? 'Research' : 'Analytics'}
+        </span>
+      </div>
       <div className="metric-card-name">{metric.name}</div>
       {metric.score != null ? (
         <div
@@ -478,6 +677,60 @@ function NestedJourneyCard({ child }) {
 
 /* ─── Main component ───────────────────────────────────────────── */
 
+/* ─── Executive Summary row for parent journeys ─────────────────── */
+
+function ExecSummary({ journey, childJourneys, allJourneys, accentColor = '#0052CC' }) {
+  const stages = journey.stages || []
+
+  const totalPainPoints = stages.reduce((acc, s) => acc + (s.painPoints || []).length, 0) +
+    (journey.insights?.filter(i => i.severity === 'high').length || 0) +
+    childJourneys.reduce((acc, c) => {
+      const j = allJourneys[c.id]
+      if (!j) return acc
+      return acc + (j.stages || []).reduce((a, s) => a + (s.painPoints || []).length, 0)
+    }, 0)
+
+  const totalOpps = stages.reduce((acc, s) => acc + (s.opportunities || []).length, 0) +
+    childJourneys.reduce((acc, c) => {
+      const j = allJourneys[c.id]
+      if (!j) return acc
+      return acc + (j.stages || []).reduce((a, s) => a + (s.opportunities || []).length, 0)
+    }, 0)
+
+  const totalInsights = (journey.insights?.length || 0) +
+    childJourneys.reduce((acc, c) => acc + (allJourneys[c.id]?.insights?.length || 0), 0)
+
+  const allStagesWithEmotion = stages.filter(s => s.emotions?.score != null)
+  const avgEmotion = allStagesWithEmotion.length > 0
+    ? (allStagesWithEmotion.reduce((a, s) => a + s.emotions.score, 0) / allStagesWithEmotion.length).toFixed(1)
+    : null
+
+  const worstStage = allStagesWithEmotion.length > 0
+    ? allStagesWithEmotion.reduce((a, b) => a.emotions.score < b.emotions.score ? a : b)
+    : null
+
+  const stats = [
+    { label: 'Pain Points', value: totalPainPoints, color: '#FF5630' },
+    { label: 'Opportunities', value: totalOpps, color: accentColor },
+    { label: 'Insights', value: totalInsights, color: '#6554C0' },
+    ...(avgEmotion != null ? [{ label: 'Avg Emotion', value: `${avgEmotion}/10`, color: '#42526E' }] : []),
+    ...(worstStage != null ? [{ label: 'Worst Stage', value: worstStage.name, color: '#FF5630', small: true }] : []),
+  ]
+
+  return (
+    <div className="exec-summary-row">
+      {stats.map((s, i) => (
+        <div key={i} className="exec-summary-card" style={{ borderTop: `3px solid ${s.color}` }}>
+          <div className="exec-summary-label">{s.label}</div>
+          <div className="exec-summary-value" style={{ color: s.color, fontSize: s.small ? 14 : undefined }}>
+            {s.value}
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 export default function JourneyMapView({ journey, filters = {}, onTabChange, childJourneys = [] }) {
   const typeFilters = filters.typeFilters ?? new Set(['all'])
   const severityFilters = filters.severityFilters ?? new Set()
@@ -488,12 +741,24 @@ export default function JourneyMapView({ journey, filters = {}, onTabChange, chi
   const [collapsed, setCollapsed] = useState({})
   const [drawer, setDrawer] = useState(null)
   const [metricPanel, setMetricPanel] = useState(null)
+  const [analyticsPanel, setAnalyticsPanel] = useState(null)
 
-  const { benchmarking } = useData()
+  const { benchmarking, journeys: allJourneys } = useData()
+
+  const isTopLevel = childJourneys.length > 0
+
   const bmProduct = benchmarking?.products?.find(p => p.journey === journey.id)
-  const journeyMetrics = bmProduct
+  const uxMetrics = bmProduct
     ? deriveBenchmarkMetrics(bmProduct)
     : JOURNEY_METRIC_DATA[journey.id] ?? (journey.metrics || [])
+
+  const memberResearchMetrics = isTopLevel
+    ? deriveMemberResearchMetrics(benchmarking?.memberResearch, benchmarking?.insuranceNps, journey.id)
+    : []
+
+  const journeyMetrics = [...uxMetrics, ...memberResearchMetrics]
+
+  const analyticsData = benchmarking?.analytics?.[bmProduct?.id] || null
 
   function toggleLane(id) {
     setCollapsed(prev => ({ ...prev, [id]: !prev[id] }))
@@ -557,7 +822,17 @@ export default function JourneyMapView({ journey, filters = {}, onTabChange, chi
     <>
       <div className="journey-canvas">
 
-        {/* ── Metric cards row (Part 4) ─────────────────────── */}
+        {/* ── Executive Summary (Part 12, top-level only) ───── */}
+        {isTopLevel && (
+          <ExecSummary
+            journey={journey}
+            childJourneys={childJourneys}
+            allJourneys={allJourneys || {}}
+            accentColor="#0052CC"
+          />
+        )}
+
+        {/* ── Metric cards row ──────────────────────────────── */}
         {journeyMetrics.length > 0 && (
           <div className="metric-cards-row">
             {journeyMetrics.map(m => (
@@ -721,6 +996,61 @@ export default function JourneyMapView({ journey, filters = {}, onTabChange, chi
             </div>
           ))}
 
+          {/* ── Analytics swim lane ───────────────────────── */}
+          <LaneLabel
+            label="Analytics"
+            collapsed={collapsed.analytics}
+            onToggle={() => toggleLane('analytics')}
+            className="analytics-bg"
+          />
+          {stages.map((stage, si) => {
+            const stageAnalytics = analyticsData?.stages?.[stage.id]
+            const chips = stageAnalytics
+              ? Object.entries(stageAnalytics.metrics).map(([key, m]) => {
+                  const latest = m.data[m.data.length - 1]
+                  const prev = m.data[m.data.length - 2]
+                  const trend = prev ? latest.value - prev.value : 0
+                  const improving = m.good === 'higher' ? trend >= 0 : trend <= 0
+                  return {
+                    key, name: m.name, unit: m.unit, latestValue: latest.value,
+                    trend, improving, good: m.good, data: m.data,
+                  }
+                })
+              : []
+            return (
+              <div key={stage.id} className="swim-lane-cell analytics-bg">
+                {!collapsed.analytics && chips.length > 0 && (
+                  <div className="analytics-chips">
+                    {chips.map(chip => (
+                      <div
+                        key={chip.key}
+                        className="analytics-chip"
+                        onClick={() => setAnalyticsPanel(chip)}
+                      >
+                        <div className="analytics-chip-name">{chip.name}</div>
+                        <div className="analytics-chip-value-row">
+                          <span className="analytics-chip-value">
+                            {chip.latestValue}{chip.unit}
+                          </span>
+                          <span style={{ fontSize: 11, fontWeight: 700, color: chip.improving ? '#36B37E' : '#FF5630' }}>
+                            {chip.trend > 0 ? '↑' : chip.trend < 0 ? '↓' : '→'}
+                          </span>
+                          <TinySparkline
+                            data={chip.data.map(d => d.value)}
+                            color={chip.improving ? '#36B37E' : '#FF5630'}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {!collapsed.analytics && chips.length === 0 && (
+                  <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>No analytics</span>
+                )}
+              </div>
+            )
+          })}
+
           {/* ── Solutions lane ────────────────────────────── */}
           <LaneLabel
             label="Solutions"
@@ -816,6 +1146,10 @@ export default function JourneyMapView({ journey, filters = {}, onTabChange, chi
 
       {metricPanel && (
         <MetricPanel metric={metricPanel} onClose={() => setMetricPanel(null)} />
+      )}
+
+      {analyticsPanel && (
+        <AnalyticsPanel chip={analyticsPanel} onClose={() => setAnalyticsPanel(null)} />
       )}
     </>
   )

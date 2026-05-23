@@ -14,7 +14,6 @@ const REPOSITORY_ITEMS = [
   { icon: '◈', label: 'Insights', to: '/insights' },
   { icon: '◆', label: 'Opportunities', to: '/opportunities' },
   { icon: '✓', label: 'Solutions', to: '/solutions' },
-  { icon: '▣', label: 'Metrics', to: '/metrics' },
   { icon: '◉', label: 'Personas', to: '/personas' },
 ]
 
@@ -116,7 +115,7 @@ export default function Sidebar() {
   const [blocksOpen, setBlocksOpen] = useState(false)
   const [openNodes, setOpenNodes] = useState({})
 
-  const isBenchmarking = location.pathname.startsWith('/benchmarking')
+  const isBenchmarking = location.pathname.startsWith('/metrics-dashboard')
   const hierarchy = index?.hierarchy || []
   const products = benchmarking?.products || []
 
@@ -168,11 +167,11 @@ export default function Sidebar() {
             ⌂ Journey Maps
           </Link>
           <Link
-            to="/benchmarking"
+            to="/metrics-dashboard"
             className={`sidebar-mode-btn${isBenchmarking ? ' mode-active-bench' : ''}`}
             onClick={closeSidebar}
           >
-            ▣ Benchmarking
+            ▣ Metrics Dashboard
           </Link>
         </div>
 
@@ -200,7 +199,7 @@ export default function Sidebar() {
         </div>
 
         {isBenchmarking ? (
-          /* ── Benchmarking sidebar ─────────────────────── */
+          /* ── Metrics Dashboard sidebar ────────────────── */
           <div className="sidebar-section">
             <div className="sidebar-section-header">
               <span className="sidebar-section-label" style={{ color: '#C96C00' }}>UX Benchmarking</span>
@@ -208,11 +207,11 @@ export default function Sidebar() {
             {products.map(product => {
               const rounds = product.uxBenchmarks.rounds
               const latest = rounds[rounds.length - 1]
-              const isActive = location.pathname === `/benchmarking/${product.id}`
+              const isActive = location.pathname === `/metrics-dashboard/${product.id}`
               return (
                 <NavLink
                   key={product.id}
-                  to={`/benchmarking/${product.id}`}
+                  to={`/metrics-dashboard/${product.id}`}
                   className={() => `sidebar-tree-item${isActive ? ' bench-active' : ''}`}
                   style={{ paddingLeft: 22 }}
                   onClick={closeSidebar}
@@ -222,7 +221,7 @@ export default function Sidebar() {
                     {product.name}
                   </span>
                   {latest && (
-                    <span style={{ fontSize: 10, color: '#97A0AF', flexShrink: 0 }}>
+                    <span style={{ fontSize: 10, color: '#5E6C84', flexShrink: 0 }}>
                       {latest.metrics.msat.value}/5
                     </span>
                   )}
