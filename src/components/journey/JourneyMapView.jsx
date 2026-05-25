@@ -4,6 +4,7 @@ import OpportunityCard from '../cards/OpportunityCard.jsx'
 import InsightCard from '../cards/InsightCard.jsx'
 import EmotionCurve from './EmotionCurve.jsx'
 import { useData } from '../../App.jsx'
+import { PERSONAS, PERSONA_COLORS } from '../../data/personas.js'
 
 /* ─── Helpers ──────────────────────────────────────────────────── */
 
@@ -742,8 +743,23 @@ export default function JourneyMapView({ journey, filters = {}, onTabChange, chi
   const [drawer, setDrawer] = useState(null)
   const [metricPanel, setMetricPanel] = useState(null)
   const [analyticsPanel, setAnalyticsPanel] = useState(null)
+  const [activePersonaIds, setActivePersonaIds] = useState(new Set())
+  const [personaPickerOpen, setPersonaPickerOpen] = useState(false)
 
   const { benchmarking, journeys: allJourneys } = useData()
+
+  const linkedPersonas = PERSONAS.filter(p => p.linkedJourneys.some(j => j.id === journey.id))
+  const personaLines = linkedPersonas
+    .filter(p => activePersonaIds.has(p.id))
+    .map(p => {
+      const pIdx = PERSONAS.indexOf(p)
+      return {
+        id: p.id,
+        name: p.name,
+        color: PERSONA_COLORS[pIdx % PERSONA_COLORS.length],
+        data: p.personaEmotions?.[journey.id] || [],
+      }
+    })
 
   const isTopLevel = childJourneys.length > 0
 
@@ -910,7 +926,63 @@ export default function JourneyMapView({ journey, filters = {}, onTabChange, chi
             className="swim-lane-cell emotion-bg"
             style={{ gridColumn: `2 / span ${N}`, padding: '16px 0' }}
           >
-            {!collapsed.emotion && <EmotionCurve stages={stages} />}
+            {!collapsed.emotion && (
+              <>
+                {linkedPersonas.length > 0 && (
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '0 16px 6px', position: 'relative' }}>
+                    <div style={{ position: 'relative' }}>
+                      <button
+                        className="emotion-persona-btn"
+                        onClick={() => setPersonaPickerOpen(prev => !prev)}
+                      >
+                        Personas{activePersonaIds.size > 0 ? ` (${activePersonaIds.size})` : ''} ▾
+                      </button>
+                      {personaPickerOpen && (
+                        <div className="persona-popover">
+                          {linkedPersonas.map(p => {
+                            const pIdx = PERSONAS.indexOf(p)
+                            const color = PERSONA_COLORS[pIdx % PERSONA_COLORS.length]
+                            return (
+                              <label key={p.id} className="persona-popover-item">
+                                <input
+                                  type="checkbox"
+                                  checked={activePersonaIds.has(p.id)}
+                                  onChange={() => {
+                                    setActivePersonaIds(prev => {
+                                      const next = new Set(prev)
+                                      if (next.has(p.id)) next.delete(p.id)
+                                      else next.add(p.id)
+                                      return next
+                                    })
+                                  }}
+                                />
+                                <span style={{ color, fontSize: 13, lineHeight: 1 }}>●</span>
+                                <span>{p.name}</span>
+                              </label>
+                            )
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+                <EmotionCurve stages={stages} personaLines={personaLines} />
+                {activePersonaIds.size > 0 && (
+                  <div className="emotion-persona-legend">
+                    <span style={{ fontSize: 11, color: '#5E6C84', display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#36B37E', display: 'inline-block' }} />
+                      Average
+                    </span>
+                    {personaLines.map(pl => (
+                      <span key={pl.id} style={{ fontSize: 11, color: '#42526E', display: 'flex', alignItems: 'center', gap: 4 }}>
+                        <span style={{ width: 8, height: 8, borderRadius: '50%', background: pl.color, display: 'inline-block' }} />
+                        {pl.name}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </>
+            )}
             {collapsed.emotion && (
               <span style={{ fontSize: 11, color: 'var(--text-muted)', padding: '0 10px' }}>
                 Emotion curve hidden

@@ -3140,7 +3140,7 @@ a.sidebar-tree-group-name.active {
 
 .persona-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 16px;
 }
 
@@ -3235,9 +3235,215 @@ a.sidebar-tree-group-name.active {
   gap: 0;
 }
 
+/* ── Persona card avatar ─────────────────────────────────────── */
+
+.persona-card-avatar-wrap {
+  margin-bottom: 4px;
+}
+
+.persona-card-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 2.5px solid;
+  display: block;
+  background: #F4F5F7;
+}
+
+.persona-card-occupation {
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.persona-card-quote {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-style: italic;
+  line-height: 1.5;
+  margin-top: 2px;
+}
+
+/* ── Persona detail panel ────────────────────────────────────── */
+
+.persona-panel-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 3px solid;
+  display: block;
+  flex-shrink: 0;
+  background: #F4F5F7;
+}
+
+.persona-panel-occupation {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 3px;
+}
+
+.persona-quote-block {
+  font-style: italic;
+  font-size: 13px;
+  color: var(--text-secondary);
+  border-left: 3px solid #FFAB00;
+  padding: 10px 14px;
+  margin: 0 0 16px;
+  background: #FFFAE6;
+  border-radius: 0 4px 4px 0;
+  line-height: 1.6;
+}
+
+.persona-attr-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.persona-attr-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.persona-attr-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.persona-attr-value {
+  font-size: 12px;
+  color: var(--text-primary);
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.persona-section-items {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.persona-section-item {
+  font-size: 12px;
+  color: var(--text-secondary);
+  padding: 8px 10px;
+  border-radius: 0 4px 4px 0;
+  line-height: 1.5;
+}
+
+.persona-section-item-green {
+  border-left: 3px solid #36B37E;
+  background: #F1FDF7;
+}
+
+.persona-section-item-red {
+  border-left: 3px solid #FF5630;
+  background: #FFF4F2;
+}
+
+.persona-section-item-blue {
+  border-left: 3px solid #0052CC;
+  background: #F0F4FF;
+}
+
+.persona-scenario-item {
+  padding: 10px 12px;
+  background: #F8F9FA;
+  border-radius: 6px;
+  border: 1px solid #E4E7EB;
+}
+
+.persona-scenario-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.persona-scenario-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* ── Emotion persona overlay ─────────────────────────────────── */
+
+.emotion-persona-btn {
+  font-size: 11px;
+  font-weight: 600;
+  color: #42526E;
+  background: white;
+  border: 1px solid #DFE1E6;
+  border-radius: 4px;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.emotion-persona-btn:hover {
+  border-color: #0052CC;
+  color: #0052CC;
+}
+
+.persona-popover {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  background: white;
+  border: 1px solid #DFE1E6;
+  border-radius: 6px;
+  padding: 6px;
+  min-width: 190px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.persona-popover-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--text-secondary);
+  transition: background 0.1s;
+  user-select: none;
+}
+
+.persona-popover-item:hover {
+  background: #F4F5F7;
+}
+
+.persona-popover-item input[type="checkbox"] {
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.emotion-persona-legend {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 6px 16px 0;
+}
+
 /* ═══════════════════════════════════════════════════════════════
    RESPONSIVE — global pages on mobile
    ═══════════════════════════════════════════════════════════════ */
+
+@media (max-width: 1024px) {
+  .persona-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
 
 @media (max-width: 768px) {
   .global-page {

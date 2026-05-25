@@ -1,108 +1,134 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-
-const PERSONA_COLORS = ['#0052CC', '#6554C0', '#36B37E', '#FF991F', '#00B8D9']
-
-const PERSONAS = [
-  {
-    id: 'sarah-mitchell',
-    initials: 'SM',
-    name: 'Sarah Mitchell',
-    age: 42,
-    location: 'Regional SA',
-    tagline: 'Long-term RAA member managing family policies',
-    description: `Sarah has been an RAA member for 15 years and holds car, home, and contents insurance. She manages renewals and policy changes for her entire household and expects everything to work seamlessly online. She's comfortable with technology but frustrated when digital processes don't match the level of service she expects from a trusted brand. Sarah is most likely to make a claim and most affected by renewal pricing.`,
-    linkedJourneys: [
-      { id: 'my-account', name: 'My Account' },
-      { id: 'renewals', name: 'Renewals' },
-      { id: 'claims', name: 'Claims' },
-    ],
-  },
-  {
-    id: 'james-cooper',
-    initials: 'JC',
-    name: 'James Cooper',
-    age: 28,
-    location: 'Adelaide Metro',
-    tagline: 'First-time insurance buyer, highly price sensitive',
-    description: `James recently bought his first car and is getting insurance for the first time. He's comparing multiple providers and is highly price sensitive. He expects a fast, transparent digital experience and will abandon the quote flow if it becomes too complex or asks for too much information upfront. James relies heavily on comparison sites and reads reviews before committing.`,
-    linkedJourneys: [
-      { id: 'quote-to-buy', name: 'Quote to Buy' },
-    ],
-  },
-  {
-    id: 'priya-sharma',
-    initials: 'PS',
-    name: 'Priya Sharma',
-    age: 35,
-    location: 'Adelaide CBD',
-    tagline: 'Mid-career professional with multiple policies',
-    description: `Priya holds car and home insurance with RAA and has made two claims in the past three years. She values transparency and clear communication above all else — particularly when it comes to understanding why her premium has changed and what she's actually covered for. She prefers digital self-service but will call when the stakes feel high. Priya is most frustrated by opaque premium increases.`,
-    linkedJourneys: [
-      { id: 'insurance', name: 'Insurance' },
-      { id: 'renewals', name: 'Renewals' },
-      { id: 'claims', name: 'Claims' },
-    ],
-  },
-  {
-    id: 'tom-lisa-chen',
-    initials: 'TC',
-    name: 'Tom & Lisa Chen',
-    age: null,
-    ageRange: '33 & 31',
-    location: 'Adelaide Hills',
-    tagline: 'Young family reassessing cover for bushfire risk',
-    description: `Tom (33) and Lisa (31) recently moved to the Adelaide Hills and need to reassess their insurance coverage to account for bushfire risk. They approach insurance decisions together and want clear, jargon-free explanations of what each policy covers. They're time-poor and prefer to complete everything online rather than via phone. Both are digitally confident but new to home insurance.`,
-    linkedJourneys: [
-      { id: 'quote-to-buy', name: 'Quote to Buy' },
-      { id: 'my-account', name: 'My Account' },
-    ],
-  },
-]
+import { PERSONAS, PERSONA_COLORS } from '../data/personas'
 
 function PersonaPanel({ persona, colorIndex, onClose }) {
   const color = PERSONA_COLORS[colorIndex % PERSONA_COLORS.length]
-  const metaSub = persona.ageRange
-    ? `${persona.ageRange} · ${persona.location}`
-    : persona.age
-    ? `${persona.age} · ${persona.location}`
-    : persona.location
+  const ageDisplay = persona.ageRange ? persona.ageRange : persona.age ? `${persona.age}` : ''
+  const metaSub = [ageDisplay, persona.location].filter(Boolean).join(' · ')
 
   return (
     <div className="detail-panel-overlay" onClick={onClose}>
       <div className="detail-panel" onClick={e => e.stopPropagation()}>
         <div className="detail-panel-header">
           <div className="detail-panel-header-top">
-            <div className="persona-panel-initials" style={{ background: color }}>
-              {persona.initials}
-            </div>
+            <img
+              src={persona.photo}
+              alt={persona.name}
+              className="persona-panel-avatar"
+              style={{ borderColor: color }}
+            />
             <div style={{ flex: 1, minWidth: 0 }}>
               <div className="detail-panel-title">{persona.name}</div>
               <div className="persona-panel-sub">{metaSub}</div>
+              {persona.occupation && (
+                <div className="persona-panel-occupation">{persona.occupation}</div>
+              )}
             </div>
             <button className="drawer-close" onClick={onClose}>×</button>
           </div>
         </div>
 
         <div className="detail-panel-body" style={{ paddingTop: 0 }}>
+          {persona.quote && (
+            <div className="persona-quote-block">"{persona.quote}"</div>
+          )}
+
           <div className="drawer-section">
-            <div className="drawer-section-label">About</div>
-            <div className="drawer-section-content" style={{ lineHeight: 1.7 }}>
-              {persona.description}
+            <div className="drawer-section-label">Profile</div>
+            <div className="persona-attr-grid">
+              {persona.memberSince && (
+                <div className="persona-attr-item">
+                  <div className="persona-attr-label">Member since</div>
+                  <div className="persona-attr-value">{persona.memberSince}</div>
+                </div>
+              )}
+              {persona.familyStatus && (
+                <div className="persona-attr-item">
+                  <div className="persona-attr-label">Family status</div>
+                  <div className="persona-attr-value">{persona.familyStatus}</div>
+                </div>
+              )}
+              {persona.digitalConfidence && (
+                <div className="persona-attr-item">
+                  <div className="persona-attr-label">Digital confidence</div>
+                  <div className="persona-attr-value">{persona.digitalConfidence}</div>
+                </div>
+              )}
+              {persona.preferredChannel && (
+                <div className="persona-attr-item">
+                  <div className="persona-attr-label">Preferred channel</div>
+                  <div className="persona-attr-value">{persona.preferredChannel}</div>
+                </div>
+              )}
+              {persona.products && persona.products.length > 0 && (
+                <div className="persona-attr-item" style={{ gridColumn: '1 / -1' }}>
+                  <div className="persona-attr-label">RAA Products</div>
+                  <div className="persona-attr-value">{persona.products.join(', ')}</div>
+                </div>
+              )}
             </div>
           </div>
 
+          {persona.goals && persona.goals.length > 0 && (
+            <div className="drawer-section">
+              <div className="drawer-section-label">Goals</div>
+              <div className="persona-section-items">
+                {persona.goals.map((g, i) => (
+                  <div key={i} className="persona-section-item persona-section-item-green">{g}</div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {persona.frustrations && persona.frustrations.length > 0 && (
+            <div className="drawer-section">
+              <div className="drawer-section-label">Frustrations</div>
+              <div className="persona-section-items">
+                {persona.frustrations.map((f, i) => (
+                  <div key={i} className="persona-section-item persona-section-item-red">{f}</div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {persona.behaviours && persona.behaviours.length > 0 && (
+            <div className="drawer-section">
+              <div className="drawer-section-label">Behaviours</div>
+              <div className="persona-section-items">
+                {persona.behaviours.map((b, i) => (
+                  <div key={i} className="persona-section-item persona-section-item-blue">{b}</div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {persona.scenarios && persona.scenarios.length > 0 && (
+            <div className="drawer-section">
+              <div className="drawer-section-label">Scenarios</div>
+              <div className="persona-section-items">
+                {persona.scenarios.map((s, i) => (
+                  <div key={i} className="persona-scenario-item">
+                    <div className="persona-scenario-title">{s.title}</div>
+                    <div className="persona-scenario-desc">{s.description}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="drawer-section">
             <div className="drawer-section-label">Linked Journeys</div>
-            <div className="persona-linked-cards">
+            <div className="persona-linked-tags">
               {persona.linkedJourneys.map(j => (
                 <Link
                   key={j.id}
                   to={`/journey/${j.id}`}
-                  className="detail-linked-card"
+                  className="persona-journey-tag"
+                  style={{ textDecoration: 'none' }}
                   onClick={onClose}
                 >
-                  <div className="detail-linked-card-name">{j.name}</div>
+                  {j.name}
                 </Link>
               ))}
             </div>
@@ -127,7 +153,7 @@ export default function Personas() {
     <div className="global-page">
       <div className="global-page-header">
         <div className="page-heading">Personas</div>
-        <div className="page-subheading">Key customer personas across journeys</div>
+        <div className="page-subheading">Key customer personas across RAA journeys</div>
       </div>
 
       <div className="persona-grid">
@@ -144,10 +170,24 @@ export default function Personas() {
               className="persona-card"
               onClick={() => { setSelected(p); setSelectedIdx(i) }}
             >
-              <div className="persona-initials" style={{ background: color }}>{p.initials}</div>
+              <div className="persona-card-avatar-wrap">
+                <img
+                  src={p.photo}
+                  alt={p.name}
+                  className="persona-card-avatar"
+                  style={{ borderColor: color }}
+                />
+              </div>
               <div className="persona-card-name">{p.name}</div>
               <div className="persona-card-meta">{meta}</div>
-              <div className="persona-card-tagline">{p.tagline}</div>
+              {p.occupation && (
+                <div className="persona-card-occupation">{p.occupation}</div>
+              )}
+              {p.quote && (
+                <div className="persona-card-quote">
+                  "{p.quote.length > 90 ? p.quote.slice(0, 89) + '…' : p.quote}"
+                </div>
+              )}
               <div className="persona-linked-tags">
                 {p.linkedJourneys.map(j => (
                   <span key={j.id} className="persona-journey-tag">{j.name}</span>
