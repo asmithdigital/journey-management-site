@@ -1,128 +1,200 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
 import { useData } from '../App.jsx'
 
-const STATUS_DOT_COLOR = {
-  validated:     '#36B37E',
+const BASE = import.meta.env.BASE_URL
+
+const CATEGORY_COLORS = {
+  'raa-web':    '#0052CC',
+  'raa-app':    '#EA580C',
+  'raa-member': '#6554C0',
+}
+
+const CATEGORY_BG = {
+  'raa-web':    'rgba(0,82,204,0.1)',
+  'raa-app':    'rgba(234,88,12,0.1)',
+  'raa-member': 'rgba(101,84,192,0.1)',
+}
+
+const CATEGORY_LABELS = {
+  'raa-web':    'RAA Web',
+  'raa-app':    'RAA App',
+  'raa-member': 'RAA Member',
+}
+
+const STATUS_COLOR = {
+  current:       '#36B37E',
   'in-progress': '#FF991F',
-  discovery:     '#6554C0',
-  open:          '#C1C7D0',
+  planned:       '#6554C0',
 }
 
-const ACCENT_COLORS = [
-  '#0052CC', '#6554C0', '#36B37E', '#FF991F',
-  '#00B8D9', '#FF5630', '#0747A6', '#403294',
-]
+const STATUS_LABEL = {
+  current:       'Current',
+  'in-progress': 'In Progress',
+  planned:       'Planned',
+}
 
-function JourneyCard({ node, journeys, accent }) {
-  const jData = journeys[node.id]
-  const dotColor = STATUS_DOT_COLOR[jData?.status] ?? '#C1C7D0'
-
-  const content = (
-    <>
-      <div className="journey-child-name-row">
-        <span className="journey-child-name">{node.name}</span>
-        {jData?.status && (
-          <span className="journey-child-status-dot" style={{ background: dotColor }} />
-        )}
-      </div>
-      {jData ? (
-        <div className="journey-child-tag has-data">
-          {jData.stages?.length ?? 0} stages · {jData.insights?.length ?? 0} insights
-        </div>
-      ) : (
-        <div className="journey-child-tag">no data yet</div>
-      )}
-    </>
+function CategoryPill({ category }) {
+  const color = CATEGORY_COLORS[category] || '#5E6C84'
+  const bg    = CATEGORY_BG[category]    || '#F4F5F7'
+  return (
+    <span className="journey-cat-pill" style={{ color, background: bg, borderColor: color + '40' }}>
+      {CATEGORY_LABELS[category] || category}
+    </span>
   )
-
-  if (jData) {
-    return <Link to={`/journey/${node.id}`} className="journey-child-card">{content}</Link>
-  }
-  return <div className="journey-child-card no-data">{content}</div>
 }
 
-function JourneyChildrenSection({ nodes, journeys }) {
-  return nodes.map(node => {
-    if (node.children && node.children.length > 0) {
-      return (
-        <div key={node.id} className="journey-sub-group">
-          <div className="journey-sub-group-header">{node.name}</div>
-          <div className="journey-children-grid journey-sub-grid">
-            {node.children.map(child => (
-              <JourneyCard key={child.id} node={child} journeys={journeys} />
-            ))}
-          </div>
-        </div>
-      )
-    }
-    return <JourneyCard key={node.id} node={node} journeys={journeys} />
-  })
+function StatusBadge({ status }) {
+  const color = STATUS_COLOR[status] || '#C1C7D0'
+  return (
+    <span className="journey-status-badge">
+      <span className="journey-status-dot" style={{ background: color }} />
+      {STATUS_LABEL[status] || status}
+    </span>
+  )
 }
 
 export default function Dashboard() {
-  const { index, journeys } = useData()
-  const hierarchy = index?.hierarchy || []
+  const { index } = useData()
   const metadata = index?.metadata || {}
 
-  const journeyCount = Object.keys(journeys).length
-  const insightCount = metadata.totalInsights ?? 0
-  const stageCount = Object.values(journeys).reduce((acc, j) => acc + (j.stages?.length ?? 0), 0)
+  const [slackData, setSlackData]     = useState(null)
+  const [activeCategory, setActive]   = useState('all')
+
+  useEffect(() => {
+    fetch(`${BASE}data/journeys.json`)
+      .then(r => r.ok ? r.json() : null)
+      .then(d => setSlackData(d))
+      .catch(() => {})
+  }, [])
+
+  const allJourneys      = slackData?.journeys || []
+  const totalTouchpoints = allJourneys.reduce((acc, j) => acc + (j.touchpoints?.length || 0), 0)
+  const categories       = ['all', ...Array.from(new Set(allJourneys.map(j => j.category)))]
+
+  const filtered = activeCategory === 'all'
+    ? allJourneys
+    : allJourneys.filter(j => j.category === activeCategory)
+
+  const sorted = [...filtered].sort((a, b) => b.lastUpdated.localeCompare(a.lastUpdated))
 
   return (
     <div className="dashboard-page">
-      <div className="page-header">
-        <div className="page-heading">Journey Management</div>
-        <div className="page-subheading">Overview of all customer journeys and insights</div>
+
+      {/* Header */}
+      <div className="page-header" style={{ marginBottom: 16 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 16, flexWrap: 'wrap' }}>
+          <div>
+            <div className="page-heading">Journey Management</div>
+            <div className="page-subheading">All customer journeys mapped, tracked, and cross-linked</div>
+          </div>
+          <div className="platform-links-row">
+            <a
+              href="https://asmithdigital.github.io/design-system-site/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="platform-ext-link"
+            >
+              <span className="platform-ext-icon">◈</span>
+              Apiary Design System
+              <span className="platform-ext-arrow">↗</span>
+            </a>
+            <a
+              href="https://asmithdigital.github.io/raa-prototype-platform/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="platform-ext-link"
+            >
+              <span className="platform-ext-icon">⊞</span>
+              Prototype Platform
+              <span className="platform-ext-arrow">↗</span>
+            </a>
+          </div>
+        </div>
       </div>
 
-      <div className="stat-row">
+      {/* Stats */}
+      <div className="stat-row" style={{ marginBottom: 16 }}>
         <div className="stat-card">
-          <div className="stat-card-number">{metadata.totalJourneys ?? journeyCount}</div>
+          <div className="stat-card-number">{allJourneys.length || (metadata.totalJourneys ?? '—')}</div>
           <div className="stat-card-label">Journeys</div>
         </div>
         <div className="stat-card">
-          <div className="stat-card-number">{insightCount}</div>
-          <div className="stat-card-label">Insights</div>
+          <div className="stat-card-number">{totalTouchpoints || '—'}</div>
+          <div className="stat-card-label">Touchpoints</div>
         </div>
         <div className="stat-card">
-          <div className="stat-card-number">{stageCount}</div>
-          <div className="stat-card-label">Stages mapped</div>
+          <div className="stat-card-number">{categories.length - 1 || '—'}</div>
+          <div className="stat-card-label">Channels</div>
         </div>
         <div className="stat-card">
-          <div className="stat-card-number">{journeyCount}</div>
-          <div className="stat-card-label">With data</div>
+          <div className="stat-card-number">{slackData?.meta?.lastUpdated ?? metadata.lastUpdated ?? '—'}</div>
+          <div className="stat-card-label">Last updated</div>
         </div>
       </div>
 
-      {hierarchy.map((top, i) => (
-        <div
-          key={top.id}
-          className="journey-hierarchy-block"
-          style={{ borderLeft: `4px solid ${ACCENT_COLORS[i % ACCENT_COLORS.length]}` }}
-        >
-          <div className="journey-hierarchy-header">
-            <div style={{ flex: 1 }}>
-              <div className="journey-hierarchy-name">{top.name}</div>
-              {top.description && (
-                <div className="journey-hierarchy-desc">{top.description}</div>
+      {/* Category filter pills */}
+      <div className="journey-filter-pills">
+        {categories.map(cat => {
+          const isActive = activeCategory === cat
+          const color    = CATEGORY_COLORS[cat]
+          return (
+            <button
+              key={cat}
+              className="journey-filter-pill"
+              style={isActive && cat !== 'all'
+                ? { background: color, borderColor: color, color: 'white' }
+                : isActive
+                  ? { background: '#172B4D', borderColor: '#172B4D', color: 'white' }
+                  : {}
+              }
+              onClick={() => setActive(cat)}
+            >
+              {cat === 'all' ? 'All journeys' : CATEGORY_LABELS[cat] || cat}
+            </button>
+          )
+        })}
+      </div>
+
+      {/* Journey table */}
+      {slackData ? (
+        <div className="journey-table-wrap">
+          <table className="journey-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Status</th>
+                <th className="journey-table-center">Touchpoints</th>
+                <th>Last Updated</th>
+              </tr>
+            </thead>
+            <tbody>
+              {sorted.map(j => (
+                <tr key={j.id}>
+                  <td>
+                    <div className="journey-table-name">{j.name}</div>
+                    <div className="journey-table-desc">{j.description}</div>
+                  </td>
+                  <td><CategoryPill category={j.category} /></td>
+                  <td><StatusBadge status={j.status} /></td>
+                  <td className="journey-table-center">
+                    <span className="journey-touchpoint-count">{j.touchpoints?.length || 0}</span>
+                  </td>
+                  <td className="journey-table-date">{j.lastUpdated}</td>
+                </tr>
+              ))}
+              {sorted.length === 0 && (
+                <tr>
+                  <td colSpan={5} style={{ padding: '32px 20px', textAlign: 'center', color: '#5E6C84' }}>
+                    No journeys in this category yet.
+                  </td>
+                </tr>
               )}
-            </div>
-            {top.owner && (
-              <div className="journey-hierarchy-owner">{top.owner}</div>
-            )}
-          </div>
-
-          <div className="journey-children-grid">
-            <JourneyChildrenSection nodes={top.children || []} journeys={journeys} />
-          </div>
+            </tbody>
+          </table>
         </div>
-      ))}
-
-      {metadata.lastUpdated && (
-        <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 12 }}>
-          Last updated {metadata.lastUpdated}
-        </div>
+      ) : (
+        <div style={{ padding: '32px 0', color: '#5E6C84', fontSize: 13 }}>Loading journeys…</div>
       )}
     </div>
   )

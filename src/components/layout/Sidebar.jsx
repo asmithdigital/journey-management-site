@@ -313,6 +313,41 @@ export default function Sidebar() {
 
         <div className="sidebar-spacer" />
 
+        {/* Platform cross-links */}
+        <div className="sidebar-platforms">
+          <div className="sidebar-section-label" style={{ padding: '0 12px 6px 20px', display: 'block' }}>Platforms</div>
+          <a
+            href="https://asmithdigital.github.io/design-system-site/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="sidebar-platform-link"
+          >
+            <span className="sidebar-nav-icon" style={{ fontSize: 12 }}>◈</span>
+            Apiary Design System
+            <span className="sidebar-platform-arrow">↗</span>
+          </a>
+          <a
+            href="https://asmithdigital.github.io/raa-prototype-platform/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="sidebar-platform-link"
+          >
+            <span className="sidebar-nav-icon" style={{ fontSize: 12 }}>⊞</span>
+            Prototype Platform
+            <span className="sidebar-platform-arrow">↗</span>
+          </a>
+          <a
+            href="https://asmithdigital.github.io/journey-management-site/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="sidebar-platform-link"
+          >
+            <span className="sidebar-nav-icon" style={{ fontSize: 12 }}>⌂</span>
+            Journey Management
+            <span className="sidebar-platform-arrow">↗</span>
+          </a>
+        </div>
+
         {/* Bottom nav */}
         <div className="sidebar-bottom">
           {BOTTOM_ITEMS.map(item => (

@@ -1,0 +1,233 @@
+{
+  "meta": {
+    "lastUpdated": "2026-06-12",
+    "description": "RAA Journey Management — queryable by Slack bot"
+  },
+  "journeys": [
+    {
+      "id": "home-insurance-qtb",
+      "name": "Home Insurance Quote to Buy",
+      "category": "raa-web",
+      "status": "current",
+      "description": "End-to-end flow for obtaining a home and/or contents insurance quote and purchasing a policy online.",
+      "lastUpdated": "2026-06-10",
+      "touchpoints": [
+        {
+          "id": "htb-tp-1",
+          "name": "Quote Entry",
+          "channel": "web",
+          "description": "User lands on quote start page, accepts legal notices, and selects cover type (Home & Contents, Home only, Contents only).",
+          "prototypeScreenId": "qtb-start"
+        },
+        {
+          "id": "htb-tp-2",
+          "name": "Address Lookup",
+          "channel": "web",
+          "description": "User searches and confirms their home address via autocomplete lookup.",
+          "prototypeScreenId": "qtb-address"
+        },
+        {
+          "id": "htb-tp-3",
+          "name": "Home Occupancy & Use",
+          "channel": "web",
+          "description": "User describes how the property is used (owner-occupied, holiday home, unoccupied) and number of occupants.",
+          "prototypeScreenId": "qtb-home-use"
+        },
+        {
+          "id": "htb-tp-4",
+          "name": "Building Details",
+          "channel": "web",
+          "description": "User enters construction details: building type, wall material, roof material, and year built.",
+          "prototypeScreenId": "qtb-building"
+        },
+        {
+          "id": "htb-tp-5",
+          "name": "Contents Cover & Extras",
+          "channel": "web",
+          "description": "User sets contents sum insured and selects optional covers such as accidental damage and valuable items.",
+          "prototypeScreenId": "qtb-contents"
+        },
+        {
+          "id": "htb-tp-6",
+          "name": "Quote Review & Purchase",
+          "channel": "web",
+          "description": "User reviews quote price, adjusts excess, confirms policy holder details, and completes payment.",
+          "prototypeScreenId": "qtb-quote"
+        }
+      ]
+    },
+    {
+      "id": "roadside-assistance-callout",
+      "name": "Roadside Assistance Callout",
+      "category": "raa-app",
+      "status": "current",
+      "description": "Member requests roadside assistance via the RAA app or phone when their vehicle breaks down.",
+      "lastUpdated": "2026-06-08",
+      "touchpoints": [
+        {
+          "id": "rsa-tp-1",
+          "name": "Emergency Login",
+          "channel": "app",
+          "description": "Member opens the RAA app and authenticates to access roadside assistance services.",
+          "prototypeScreenId": "rsa-login"
+        },
+        {
+          "id": "rsa-tp-2",
+          "name": "Request Assistance",
+          "channel": "app",
+          "description": "Member taps Request Roadside Assistance, confirms location via GPS or manual entry, and describes the breakdown.",
+          "prototypeScreenId": "rsa-request"
+        },
+        {
+          "id": "rsa-tp-3",
+          "name": "Phone Triage",
+          "channel": "phone",
+          "description": "If app is unavailable or member prefers, they call the RAA roadside hotline and speak to a dispatcher.",
+          "prototypeScreenId": null
+        },
+        {
+          "id": "rsa-tp-4",
+          "name": "Live ETA Tracking",
+          "channel": "app",
+          "description": "Member views real-time patrol location on a map and receives push notifications as the patrol approaches.",
+          "prototypeScreenId": "rsa-tracking"
+        },
+        {
+          "id": "rsa-tp-5",
+          "name": "Service Completion",
+          "channel": "app",
+          "description": "Patrol marks job complete; member receives a summary notification and is prompted to rate the experience.",
+          "prototypeScreenId": "rsa-complete"
+        }
+      ]
+    },
+    {
+      "id": "fuel-price-search",
+      "name": "Fuel Price Search",
+      "category": "raa-app",
+      "status": "current",
+      "description": "Member uses the RAA app to find the cheapest local fuel price and navigate to the station.",
+      "lastUpdated": "2026-05-28",
+      "touchpoints": [
+        {
+          "id": "fps-tp-1",
+          "name": "Fuel Finder Entry",
+          "channel": "app",
+          "description": "Member opens the Fuel Prices section from the RAA app home screen or bottom navigation.",
+          "prototypeScreenId": "fuel-entry"
+        },
+        {
+          "id": "fps-tp-2",
+          "name": "Location & Fuel Type Filter",
+          "channel": "app",
+          "description": "Member sets search radius and selects fuel type (Unleaded, Diesel, E10, Premium). Results list by price.",
+          "prototypeScreenId": "fuel-filter"
+        },
+        {
+          "id": "fps-tp-3",
+          "name": "Station Detail View",
+          "channel": "app",
+          "description": "Member taps a station to see current price, last updated time, address, and trading hours.",
+          "prototypeScreenId": "fuel-detail"
+        },
+        {
+          "id": "fps-tp-4",
+          "name": "Navigate to Station",
+          "channel": "app",
+          "description": "Member taps Get Directions and is handed off to Apple Maps or Google Maps with the station pre-loaded.",
+          "prototypeScreenId": "fuel-navigate"
+        }
+      ]
+    },
+    {
+      "id": "membership-renewal",
+      "name": "RAA Membership Renewal",
+      "category": "raa-member",
+      "status": "current",
+      "description": "Existing member receives renewal notice and completes annual membership renewal across web and app channels.",
+      "lastUpdated": "2026-06-05",
+      "touchpoints": [
+        {
+          "id": "mr-tp-1",
+          "name": "Renewal Notice Email",
+          "channel": "web",
+          "description": "Member receives automated renewal reminder email 30 days before expiry with a link to renew online.",
+          "prototypeScreenId": null
+        },
+        {
+          "id": "mr-tp-2",
+          "name": "Membership Summary Review",
+          "channel": "web",
+          "description": "Member logs into My Account and views current membership tier, expiry date, and renewal price.",
+          "prototypeScreenId": "mr-summary"
+        },
+        {
+          "id": "mr-tp-3",
+          "name": "Tier & Add-ons Selection",
+          "channel": "web",
+          "description": "Member can upgrade membership tier or add services such as home assist or caravan cover.",
+          "prototypeScreenId": "mr-tier"
+        },
+        {
+          "id": "mr-tp-4",
+          "name": "App Renewal Prompt",
+          "channel": "app",
+          "description": "RAA app surfaces a renewal banner when membership is within 14 days of expiry, with one-tap renewal for saved payment methods.",
+          "prototypeScreenId": "mr-app-prompt"
+        },
+        {
+          "id": "mr-tp-5",
+          "name": "Payment & Confirmation",
+          "channel": "web",
+          "description": "Member completes payment via saved card or BPAY and receives an instant confirmation email with updated membership card.",
+          "prototypeScreenId": "mr-payment"
+        }
+      ]
+    },
+    {
+      "id": "car-insurance-quote",
+      "name": "Car Insurance Quote",
+      "category": "raa-web",
+      "status": "in-progress",
+      "description": "Prospective customer or existing member obtains a comprehensive car insurance quote online.",
+      "lastUpdated": "2026-06-12",
+      "touchpoints": [
+        {
+          "id": "ciq-tp-1",
+          "name": "Vehicle Lookup",
+          "channel": "web",
+          "description": "User enters their vehicle registration or selects make, model, and year to identify the insured vehicle.",
+          "prototypeScreenId": "car-vehicle"
+        },
+        {
+          "id": "ciq-tp-2",
+          "name": "Driver Details",
+          "channel": "web",
+          "description": "User enters primary and additional driver details including age, licence type, and driving history.",
+          "prototypeScreenId": "car-driver"
+        },
+        {
+          "id": "ciq-tp-3",
+          "name": "Vehicle Use & Storage",
+          "channel": "web",
+          "description": "User specifies annual kilometres, primary use (personal/business), and overnight storage location.",
+          "prototypeScreenId": "car-use"
+        },
+        {
+          "id": "ciq-tp-4",
+          "name": "Cover Options",
+          "channel": "web",
+          "description": "User selects cover type (Comprehensive, Third Party Fire & Theft, Third Party) and optional extras.",
+          "prototypeScreenId": "car-cover"
+        },
+        {
+          "id": "ciq-tp-5",
+          "name": "Quote & Purchase",
+          "channel": "web",
+          "description": "User reviews quote with member and multi-policy discounts applied, adjusts excess, and proceeds to buy.",
+          "prototypeScreenId": "car-quote"
+        }
+      ]
+    }
+  ]
+}

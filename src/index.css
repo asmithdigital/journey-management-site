@@ -4580,3 +4580,229 @@ a.sidebar-tree-group-name.active {
     grid-template-columns: 1fr;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   JOURNEY TABLE DASHBOARD
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Platform cross-links — header row */
+.platform-links-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.platform-ext-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 30px;
+  padding: 0 12px;
+  border: 1px solid #E4E7EB;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #42526E;
+  background: white;
+  text-decoration: none;
+  transition: border-color 0.12s, color 0.12s, background 0.12s;
+  white-space: nowrap;
+}
+
+.platform-ext-link:hover {
+  border-color: #0052CC;
+  color: #0052CC;
+  background: #EAF0FF;
+}
+
+.platform-ext-icon { font-size: 12px; }
+.platform-ext-arrow { font-size: 11px; opacity: 0.7; }
+
+/* Category filter pills */
+.journey-filter-pills {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.journey-filter-pill {
+  height: 30px;
+  padding: 0 14px;
+  border-radius: 15px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #42526E;
+  background: white;
+  border: 1px solid #E4E7EB;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+  white-space: nowrap;
+  font-family: inherit;
+}
+
+.journey-filter-pill:hover {
+  border-color: #C1C7D0;
+  color: #172B4D;
+}
+
+/* Journey table */
+.journey-table-wrap {
+  background: white;
+  border: 1px solid #E4E7EB;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.journey-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.journey-table thead tr {
+  background: #F8F9FA;
+  border-bottom: 1px solid #E4E7EB;
+}
+
+.journey-table th {
+  padding: 10px 16px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #5E6C84;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.journey-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #F4F5F7;
+  vertical-align: middle;
+  font-size: 13px;
+  color: #172B4D;
+}
+
+.journey-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.journey-table tbody tr:hover td {
+  background: #F8F9FA;
+}
+
+.journey-table-center {
+  text-align: center !important;
+}
+
+.journey-table-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #172B4D;
+  margin-bottom: 3px;
+}
+
+.journey-table-desc {
+  font-size: 11px;
+  color: #5E6C84;
+  line-height: 1.4;
+  max-width: 420px;
+}
+
+.journey-table-date {
+  font-size: 12px;
+  color: #5E6C84;
+  white-space: nowrap;
+}
+
+/* Category pill in table */
+.journey-cat-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+/* Status badge in table */
+.journey-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #42526E;
+  white-space: nowrap;
+}
+
+.journey-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Touchpoint count in table */
+.journey-touchpoint-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 22px;
+  background: #EAF0FF;
+  color: #0052CC;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* Sidebar platform links */
+.sidebar-platforms {
+  border-top: 1px solid #E4E7EB;
+  padding: 10px 0 4px;
+}
+
+.sidebar-platform-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 30px;
+  padding: 0 12px 0 22px;
+  margin: 1px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #5E6C84;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.12s, color 0.12s;
+}
+
+.sidebar-platform-link:hover {
+  background: #F4F5F7;
+  color: #172B4D;
+}
+
+.sidebar-platform-arrow {
+  margin-left: auto;
+  font-size: 11px;
+  opacity: 0.5;
+}
+
+@media (max-width: 768px) {
+  .platform-links-row {
+    display: none;
+  }
+
+  .journey-table-desc {
+    display: none;
+  }
+
+  .journey-table th:nth-child(4),
+  .journey-table td:nth-child(4) {
+    display: none;
+  }
+}
